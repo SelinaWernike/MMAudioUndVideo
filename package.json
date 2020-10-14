@@ -1,0 +1,19 @@
+{
+  "name": "vima",
+  "version": "1.0.0",
+  "description": "A video and audio editor",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/SelinaWernike/MMAudioUndVideo.git"
+  },
+  "author": "Corinna Bockhop, Tim Oelkers, Anna Schwarz, Selina Wernike",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/SelinaWernike/MMAudioUndVideo/issues"
+  },
+  "homepage": "https://github.com/SelinaWernike/MMAudioUndVideo#readme"
+}
