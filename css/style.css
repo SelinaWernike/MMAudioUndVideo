@@ -1,0 +1,30 @@
+body {
+    width: 100%;
+}
+
+.mainArea {
+    display: flex;
+    flex-direction: row;
+    height: 50%;
+}
+
+#fileArea {
+    width: 40%;
+}
+
+#videoArea {
+    display: flex;
+    flex-direction: column;
+    width: 60%;
+}
+
+#canvasContainer {
+    flex-grow: 1;
+    min-height: 0;
+    min-width: 0;
+}
+
+img {
+    width: 100%;
+    height: 100%;
+}
