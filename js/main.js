@@ -1,9 +1,13 @@
 import FilterManager from "./filterManager.js"
+import FileManager from "./fileManager.js"
 
 let canvas = document.querySelector("canvas")
 let context = canvas.getContext("2d")
 let video = document.querySelector("video")
+let input = document.querySelector('input');
+input.style.opacity = '0';
 let filterManager = new FilterManager()
+let fileManager = new FileManager()
 resizeCanvas()
 
 video.addEventListener("play", () => {
@@ -12,6 +16,10 @@ video.addEventListener("play", () => {
 
 window.addEventListener("resize", () => {
     resizeCanvas()
+})
+
+input.addEventListener("change", () => {
+    fileManager.addFile();
 })
 
 window.onPlayPauseClick = function(event) {

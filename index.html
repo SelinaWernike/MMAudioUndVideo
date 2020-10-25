@@ -8,7 +8,12 @@
     <video id="video" src="https://www.radiantmediaplayer.com/media/big-buck-bunny-360p.mp4" hidden="true" crossorigin="anonymous"></video>
     <div class="mainArea">
         <div id="fileArea">
-            <img src="https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fopenclipart.org%2Fimage%2F2400px%2Fsvg_to_png%2F194077%2FPlaceholder.png&f=1&nofb=1">
+            <div id="fileInputContainer">
+                <label for="fileInput" id="fileLabel">+</label>
+                <input id="fileInput" name="fileInput" type="file" accept="audio/mpeg, audio/mp4, audio/mp4, video/mpeg, video/mp4">
+            </div>
+            <ul id="fileList">
+            </ul>
         </div>
         <div id="videoArea">
             <div id="canvasContainer">
