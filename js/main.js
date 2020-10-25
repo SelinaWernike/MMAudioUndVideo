@@ -3,9 +3,13 @@ import FilterManager from "./filterManager.js"
 let canvas = document.querySelector("canvas")
 let context = canvas.getContext("2d")
 let video = document.querySelector("video")
+let listElements = document.querySelectorAll("li")
+let items = document.querySelectorAll(".item1, .item2, item3")
+let deleteEdit = document.querySelector("#delete")
 let filterManager = new FilterManager()
 resizeCanvas()
 
+//Add Event Listener
 video.addEventListener("play", () => {
     requestAnimationFrame(render)
 })
@@ -13,6 +17,32 @@ video.addEventListener("play", () => {
 window.addEventListener("resize", () => {
     resizeCanvas()
 })
+
+deleteEdit.addEventListener("dragover", (ev) => {
+    ev.preventDefault();
+})
+deleteEdit.addEventListener("dragend", (ev) => {
+    ev.preventDefault();
+    let data = ev.dataTransfer.getData("id")
+    console.log(data);
+    let temp = document.querySelector("#" + data)
+    temp.remove()
+})
+
+listElements.forEach(element => {
+    element.setAttribute("draggable", true);
+    element.addEventListener("dragstart", (ev) => {
+        ev.dataTransfer.setData("id", ev.target.id);
+    })
+});
+
+items.forEach(element => {
+    element.setAttribute("draggable", true);
+    element.addEventListener("dragstart", (ev) => {
+        console.log(ev.target.id)
+        ev.dataTransfer.setData("id", ev.target.id);
+    })
+});
 
 window.onPlayPauseClick = function(event) {
     if (video.paused) {
