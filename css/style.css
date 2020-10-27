@@ -19,7 +19,48 @@ body {
 
 
 #fileArea {
-    width: 40%;
+    width: 25%;
+}
+
+#fileInputContainer {
+    /*border: 1px solid #747474;*/
+    background: #dcdcdc;
+    /*vertical-align: middle;*/
+    padding-left: 2%;
+    padding-right: auto;
+    font-size: 16px;
+}
+
+.fileListImage {
+    width: 50px;
+    height: auto;
+    /*float: left;*/
+}
+
+.fileNameText {
+    display: flex;
+    /*height: 30px;*/
+}
+
+ul {
+    margin: 0;
+    padding: 0;
+}
+
+ul li {
+    /*position: relative;*/
+    background: #eee;
+    font-size: 18px;
+    padding: 5px;
+
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+}
+
+ul li:nth-child(odd) {
+    background: #f9f9f9;
 }
 
 #videoArea {

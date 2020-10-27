@@ -1,12 +1,16 @@
 import FilterManager from "./filterManager.js"
+import FileManager from "./fileManager.js"
 
 let canvas = document.querySelector("canvas")
 let context = canvas.getContext("2d")
 let video = document.querySelector("video")
+let input = document.querySelector('input');
+input.style.opacity = '0';
 let listElements = document.querySelectorAll("li")
 let items = document.querySelectorAll(".item1, .item2, .item3")
 let deleteEdit = document.querySelector("#delete")
 let filterManager = new FilterManager()
+let fileManager = new FileManager()
 resizeCanvas()
 
 //Add Event Listener
@@ -18,6 +22,9 @@ window.addEventListener("resize", () => {
     resizeCanvas()
 })
 
+input.addEventListener("change", () => {
+    fileManager.addFile();
+})
 deleteEdit.addEventListener("dragover", (ev) => {
     ev.preventDefault();
 })
