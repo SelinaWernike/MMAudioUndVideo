@@ -46,7 +46,7 @@ listElements.forEach(element => {
     })
     element.addEventListener("dragend", (e) => {
         e.preventDefault();
-    } )
+    })
 });
 
 items.forEach(element => {
@@ -57,8 +57,7 @@ items.forEach(element => {
     })
     element.addEventListener("dragend", (e) => {
         e.preventDefault();
-    } )
-    
+    })
 });
 
 window.onPlayPauseClick = function(event) {

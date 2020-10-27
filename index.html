@@ -1,7 +1,7 @@
 <html>
 <head>
     <title>ViMa</title>
-    <script type="module" src="./js/main.js" type="text/javascript"></script>
+    <script type="module" src="./js/main.js"></script>
     <link rel="stylesheet" href="./css/style.css" type="text/css">
 </head>
 <body>
@@ -22,13 +22,13 @@
             <input type="button" value="Play" onclick="onPlayPauseClick(event)">
         </div>
     </div>
-    <div id="editArea">
+    <div class="mainArea">
         <div class="grid-container" id="editGrid">
             <div class="item1" id="heading">
                 <h2>Edit</h2>
-                <input type="button" id="addbtn" value="Add">
+                <input type="button" id="addBtn" value="Add">
             </div>
-            <div class="item2" id="videoarea">
+            <div class="item2" id="videoRow">
                 <h3>Videotrack</h3>
                 <div class="track">
                     <div class="grid-container" id="videotrack">
@@ -38,7 +38,7 @@
                     </div>
                 </div>
             </div>
-            <div class="item3" id="audioarea">
+            <div class="item3" id="audioRow">
                 <h3>Audiotrack</h3>
                 <div class="track">
                     <div class="grid-container" id="audiotrack">
@@ -48,7 +48,7 @@
                     </div>
                 </div>
             </div>
-            <div class="item4" id="effektarea">
+            <div class="item4" id="effectRow">
                 <h3>Effecttrack</h3>
                 <div class="trackList">
                     <ul id="effectTrackList">
@@ -63,9 +63,5 @@
             </div>
         </div>
     </div>
-</div>
-</div class="mainArea">
-
-
 </body>
 </html>
