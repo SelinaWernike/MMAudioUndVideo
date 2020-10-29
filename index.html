@@ -1,11 +1,12 @@
 <html>
 <head>
     <title>ViMa</title>
+    <script type="text/javascript" src="./js/videoController.js"></script>
     <script type="module" src="./js/main.js"></script>
     <link rel="stylesheet" href="./css/style.css" type="text/css">
 </head>
 <body>
-    <video id="video" src="https://www.radiantmediaplayer.com/media/big-buck-bunny-360p.mp4" hidden="true" crossorigin="anonymous"></video>
+    <video id="video" src="https://www.radiantmediaplayer.com/media/big-buck-bunny-360p.mp4" crossorigin="anonymous" hidden=""></video>
     <div class="mainArea">
         <div id="fileArea">
             <div id="fileInputContainer">
@@ -19,7 +20,25 @@
             <div id="canvasContainer">
                 <canvas id="canvas"></canvas>
             </div>
-            <input type="button" value="Play" onclick="onPlayPauseClick(event)">
+            <div id="videoControls">
+                <div>
+                    <img id="volumeOnIcon" src="./images/volume.png" width="24" height="24" onclick="onVolumeOnClick()" class="pointer">
+                    <img id="volumeOffIcon" src="./images/mute.png" width="24" height="24" onclick="onVolumeOffClick()" class="pointer" hidden="">
+                    <input id="volumeSlider" type="range" min="0" max="1" value="1" step="0.01" oninput="onVolumeChange(event)">
+                </div>
+                <div>
+                    <img src="./images/toStart.png" width="24" height="24" onclick="onToStartClick()" class="pointer">
+                    <img src="./images/rewind.png" width="24" height="24" onclick="onRewindClick()" class="pointer">
+                    <img id="playIcon" src="./images/play.png" width="24" height="24" onclick="onPlayClick()" class="pointer">
+                    <img id="pauseIcon" src="./images/pause.png" width="24" height="24" onclick="onPauseClick()" class="pointer" hidden="">
+                    <img src="./images/fast_forward.png" width="24" height="24" onclick="onForwardClick()" class="pointer">
+                    <img src="./images/toEnd.png" width="24" height="24" onclick="onToEndClick()" class="pointer">
+                </div>
+                <img src="./images/loop.png" width="24" height="24" onclick="onLoopClick()" class="pointer">
+            </div>
+        </div>
+        <div id="filterArea">
+
         </div>
     </div>
     <div class="mainArea">

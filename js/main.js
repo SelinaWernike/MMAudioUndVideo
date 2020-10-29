@@ -35,7 +35,6 @@ deleteEdit.addEventListener("drop", (ev) => {
     if(data) {
         let temp = document.querySelector("#" + data)
         temp.remove()
-
     }
 })
 
@@ -59,16 +58,6 @@ items.forEach(element => {
         e.preventDefault();
     })
 });
-
-window.onPlayPauseClick = function(event) {
-    if (video.paused) {
-        event.target.value = "Pause"
-        video.play()
-    } else {
-        event.target.value = "Play"
-        video.pause()
-    }
-}
 
 function resizeCanvas() {
     canvas.width = canvas.parentNode.clientWidth;
