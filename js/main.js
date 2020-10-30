@@ -15,7 +15,11 @@ resizeCanvas()
 
 //Add Event Listener
 video.addEventListener("play", () => {
-    requestAnimationFrame(render)
+    requestAnimationFrame(renderVideo)
+})
+
+video.addEventListener("seeked", () => {
+    renderCurrentFrame()
 })
 
 window.addEventListener("resize", () => {
@@ -64,10 +68,16 @@ function resizeCanvas() {
     canvas.height = canvas.parentNode.clientHeight;
 }
 
-function render() {
+function renderVideo() {
+    if (!video.paused && !video.ended) {
+        renderCurrentFrame()
+        requestAnimationFrame(renderVideo)
+    }
+}
+
+function renderCurrentFrame() {
     context.drawImage(video, 0, 0, canvas.width, canvas.height)
     let currentFrame = context.getImageData(0, 0, canvas.width, canvas.height)
     let newFrame = filterManager.apply(currentFrame)
     context.putImageData(newFrame, 0, 0)
-    requestAnimationFrame(render)
 }
