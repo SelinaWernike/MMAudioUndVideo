@@ -5,8 +5,11 @@ window.onload = function() {
     const volumeOnIcon = document.querySelector("#volumeOnIcon")
     const volumeOffIcon = document.querySelector("#volumeOffIcon")
     const volumeSlider = document.querySelector("#volumeSlider")
+    const loopIcon = document.querySelector("#loopIcon")
+    const noLoopIcon = document.querySelector("#noLoopIcon")
     changeVolume(volumeSlider.value)
     let previousVolume = video.volume
+    setLoopIcon()
 
     video.addEventListener("ended", () => {
         pauseIcon.setAttribute("hidden", "")
@@ -42,8 +45,9 @@ window.onload = function() {
     }
 
     window.onLoopClick = function() {
-        video.loop = !video.loop;
-    }
+        video.loop = !video.loop
+        setLoopIcon()
+    }    
 
     window.onVolumeOnClick = function() {
         previousVolume = video.volume
@@ -69,5 +73,16 @@ window.onload = function() {
             volumeOnIcon.removeAttribute("hidden")
         }
         video.volume = volume
+    }
+
+    function setLoopIcon() {
+        console.log(video.loop)
+        if (video.loop) {
+            noLoopIcon.setAttribute("hidden", "")
+            loopIcon.removeAttribute("hidden")
+        } else {
+            noLoopIcon.removeAttribute("hidden")
+            loopIcon.setAttribute("hidden", "")
+        }
     }
 }
