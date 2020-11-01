@@ -10,6 +10,10 @@ export default class FileManager {
         if (!( fileList.length === 0)){
             for(const file of fileList){
                 const listItem = document.createElement('li');
+                listItem.setAttribute("draggable", true);
+                listItem.addEventListener("dragstart", (e) => {
+                    e.dataTransfer.setData("html", e.target.innerHTML)
+                })
                 const textDiv = document.createElement("div");
                 const text = document.createTextNode(`${file.name}`);
                 textDiv.appendChild(text);

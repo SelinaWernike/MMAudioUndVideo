@@ -107,10 +107,15 @@ ul li:hover {
 }
 
 .track .grid-container {
-    display: grid;
-    grid-template-columns: auto auto auto;
+    display: inline;
     padding-right: 5px;
     padding-left: 5px;
+}
+
+.track:after {
+    content: "";
+    display: table;
+    clear: both;
 }
 
 #heading {
@@ -152,4 +157,11 @@ ul li:hover {
     height: 230px;
     padding-left: 2px;
     padding-right: 2px;
+}
+
+.column {
+    float: left;
+    width: 30%;
+    padding: 2px;
+    background-color: white;
 }
