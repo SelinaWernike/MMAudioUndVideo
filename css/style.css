@@ -9,9 +9,10 @@ body {
     height: 50%;
 }
 
-.track, .trackList {
-    display: block;
-    width: 920px;
+.track {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
     height: 230px;
     background-image: url(/images/pngkit_movie-tape-png_3163594.png);
     margin-top: 1em;
@@ -120,48 +121,44 @@ ul li:hover {
 
 #heading {
     grid-area: header;
-    width: 230px;
+    width: 100%;
 }
 
 #videoRow {
     grid-area: vmenu;
-    width: 230px;
+    width: 100%;
 }
 
 #audioRow {
     grid-area: amenu;
-    width: 230px;
+    width: 100%;
 }
 
 #effectRow {
     grid-area: emenu;
-    width: 230px;
+    width: 100%;
 }
 
 #delete {
     grid-area: delete;
-    width: 230px;
+    width: 100%;
 }
 
 #editGrid {
     display: grid;
-    grid-template-areas: "header header"
-                         "vmenu delete"
-                         "amenu delete"
-                         "emenu delete";
+    grid-template-areas: "header header header header"
+                         "vmenu vmenu  vmenu delete"
+                         "amenu amenu amenu delete"
+                         "emenu emenu emenu delete";
     padding-right: 0em;
     padding-left: 0em;
+    width: 100%;
 }
 
-.track .item1, .track .item2, .track .item3 {
-    height: 230px;
-    padding-left: 2px;
-    padding-right: 2px;
-}
 
 .column {
     float: left;
-    width: 30%;
+    width: 99%;
     padding: 2px;
     background-color: white;
 }
