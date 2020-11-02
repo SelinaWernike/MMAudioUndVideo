@@ -4,13 +4,16 @@ import FileManager from "./fileManager.js"
 let canvas = document.querySelector("canvas")
 let context = canvas.getContext("2d")
 let video = document.querySelector("video")
-let input = document.querySelector('input');
+let input = document.querySelector("input");
 input.style.opacity = '0';
 let listElements = document.querySelectorAll("li")
 let items = document.querySelectorAll(".item1, .item2, .item3")
 let deleteEdit = document.querySelector("#delete")
 let filterManager = new FilterManager()
 let fileManager = new FileManager()
+let filterModal = document.querySelector("#filterModal");
+let filterButton = document.querySelector("#filterInput");
+let filterModalClose = document.querySelector("#filterModalClose");
 resizeCanvas()
 
 //Add Event Listener
@@ -25,6 +28,32 @@ window.addEventListener("resize", () => {
 input.addEventListener("change", () => {
     fileManager.addFile();
 })
+
+// filterButton.addEventListener("onclick", () => {
+//     console.log("add Filter");
+//     filterModal.style.display = "block";
+// })
+
+filterButton.addEventListener("click", () => {
+    console.log("add Filter");
+    let filterModalList = document.querySelector("#filterModalList");
+    if(filterModalList.childElementCount == 0){
+        FilterManager.fillHtmlFilterList(filterModalList);
+    }
+    console.log("main filterModalList: ", filterModalList);
+    filterModal.style.display = "block";
+})
+
+filterModalClose.addEventListener("click", () => {
+    filterModal.style.display = "none";
+})
+
+window.addEventListener("click", (event) => {
+    if (event.target == filterModal) {
+        filterModal.style.display = "none";
+    }
+})
+
 deleteEdit.addEventListener("dragover", (ev) => {
     ev.preventDefault();
 })

@@ -9,7 +9,7 @@
     <div class="mainArea">
         <div id="fileArea">
             <div id="fileInputContainer">
-                <label for="fileInput" id="fileLabel">+</label>
+                <label for="fileInput" id="fileLabel">+ Audio/Video hinzufügen</label>
                 <input id="fileInput" name="fileInput" type="file" accept="audio/mpeg, audio/mp4, audio/mp4, video/mpeg, video/mp4">
             </div>
             <ul id="fileList">
@@ -20,6 +20,19 @@
                 <canvas id="canvas"></canvas>
             </div>
             <input type="button" value="Play" onclick="onPlayPauseClick(event)">
+        </div>
+        <div id="filterArea">
+            <div id="filterInputContainer">
+                <button id="filterInput">+ Filter hinzufügen</button>
+            </div>
+            <div id="filterModal" class="modal">
+                <div class="modal-content">
+                    <span id="filterModalClose" class="close">&times;</span>
+                    <ul id="filterModalList"/>
+                </div>
+            </div>
+            <ul id="filterList">
+            </ul>
         </div>
     </div>
     <div class="mainArea">
