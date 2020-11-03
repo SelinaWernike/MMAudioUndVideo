@@ -1,24 +1,33 @@
 import FilterManager from "./filterManager.js"
 import FileManager from "./fileManager.js"
+import EditManager from "./editManager.js"
 
 let canvas = document.querySelector("canvas")
 let context = canvas.getContext("2d")
 let video = document.querySelector("video")
 let input = document.querySelector("input");
 input.style.opacity = '0';
-let listElements = document.querySelectorAll("li")
-let items = document.querySelectorAll(".item1, .item2, .item3")
 let deleteEdit = document.querySelector("#delete")
 let filterManager = new FilterManager()
 let fileManager = new FileManager()
 let filterModal = document.querySelector("#filterModal");
 let filterButton = document.querySelector("#filterInput");
 let filterModalClose = document.querySelector("#filterModalClose");
+let videoManager = new EditManager("videogrid", "videotrack", "mp4")
+let audioManager = new EditManager("audiogrid", "audiotrack", "mp3")
+let effectManager = new EditManager("effectgrid", "effecttrack", "effect")
 resizeCanvas()
 
+videoManager.initializeTrack();
+audioManager.initializeTrack();
+effectManager.initializeTrack();
 //Add Event Listener
 video.addEventListener("play", () => {
-    requestAnimationFrame(render)
+    requestAnimationFrame(renderVideo)
+})
+
+video.addEventListener("seeked", () => {
+    renderCurrentFrame()
 })
 
 window.addEventListener("resize", () => {
@@ -104,10 +113,16 @@ function resizeCanvas() {
     canvas.height = canvas.parentNode.clientHeight;
 }
 
-function render() {
+function renderVideo() {
+    if (!video.paused && !video.ended) {
+        renderCurrentFrame()
+        requestAnimationFrame(renderVideo)
+    }
+}
+
+function renderCurrentFrame() {
     context.drawImage(video, 0, 0, canvas.width, canvas.height)
     let currentFrame = context.getImageData(0, 0, canvas.width, canvas.height)
     let newFrame = filterManager.apply(currentFrame)
     context.putImageData(newFrame, 0, 0)
-    requestAnimationFrame(render)
 }

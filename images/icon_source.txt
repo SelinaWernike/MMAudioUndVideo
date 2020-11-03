@@ -1,1 +1,1 @@
-'video' and 'audio' icons are from http://www.onlinewebfonts.com, used under a CC BY 3.0 license.
+All icons, except "pngkit_movie-tape-png_3163594.png" are from http://www.onlinewebfonts.com, used under a CC BY 3.0 license.
