@@ -1,18 +1,23 @@
 import FilterManager from "./filterManager.js"
 import FileManager from "./fileManager.js"
+import EditManager from "./editManager.js"
 
 let canvas = document.querySelector("canvas")
 let context = canvas.getContext("2d")
 let video = document.querySelector("video")
 let input = document.querySelector('input');
 input.style.opacity = '0';
-let listElements = document.querySelectorAll("li")
-let items = document.querySelectorAll(".item1, .item2, .item3")
 let deleteEdit = document.querySelector("#delete")
 let filterManager = new FilterManager()
 let fileManager = new FileManager()
+let videoManager = new EditManager("videogrid", "videotrack", "mp4")
+let audioManager = new EditManager("audiogrid", "audiotrack", "mp3")
+let effectManager = new EditManager("effectgrid", "effecttrack", "effect")
 resizeCanvas()
 
+videoManager.initializeTrack();
+audioManager.initializeTrack();
+effectManager.initializeTrack();
 //Add Event Listener
 video.addEventListener("play", () => {
     requestAnimationFrame(renderVideo)
@@ -29,39 +34,6 @@ window.addEventListener("resize", () => {
 input.addEventListener("change", () => {
     fileManager.addFile();
 })
-deleteEdit.addEventListener("dragover", (ev) => {
-    ev.preventDefault();
-})
-deleteEdit.addEventListener("drop", (ev) => {
-    ev.preventDefault()
-    let data = ev.dataTransfer.getData("id")
-    console.log(data);
-    if(data) {
-        let temp = document.querySelector("#" + data)
-        temp.remove()
-    }
-})
-
-listElements.forEach(element => {
-    element.setAttribute("draggable", true);
-    element.addEventListener("dragstart", (ev) => {
-        ev.dataTransfer.setData("id", ev.target.id);
-    })
-    element.addEventListener("dragend", (e) => {
-        e.preventDefault();
-    })
-});
-
-items.forEach(element => {
-    element.setAttribute("draggable", true);
-    element.addEventListener("dragstart", (ev) => {
-        console.log(ev.target.id)
-        ev.dataTransfer.setData("id", ev.target.id);
-    })
-    element.addEventListener("dragend", (e) => {
-        e.preventDefault();
-    })
-});
 
 function resizeCanvas() {
     canvas.width = canvas.parentNode.clientWidth;
