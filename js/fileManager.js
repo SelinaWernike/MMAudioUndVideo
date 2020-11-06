@@ -1,7 +1,7 @@
 export default class FileManager {
 
     constructor(){
-        this.fileMap = new Map();
+        this.fileMap = new Map(); //key: getfileKey(), value: ArrayBuffer with file data
         // Check for the various File API support.
         if (window.File && window.FileReader && window.FileList && window.Blob) {
             // Great success! All the File APIs are supported.
@@ -10,6 +10,9 @@ export default class FileManager {
         }
     }
 
+    /**
+     * adds files of html <input> element both to frontend list and to backend map
+     */
      addFile() {
         let input = document.querySelector('input');
         const fileList = input.files;
@@ -48,10 +51,19 @@ export default class FileManager {
         }
      }
 
+    /**
+     *
+     * @param file - element of html input element files list
+     * @returns {string} - value for key of fileMap
+     */
      getFileKey(file){
         return ''.concat(file.name, file.size, file.type, file.lastModified);
      }
 
+    /**
+     * adds specified file to file map, if not already added.
+     * @param file
+     */
     addToFileMap(file) {
         let fileKey = this.getFileKey(file);
         if(!this.fileMap.has(fileKey)){
@@ -66,6 +78,11 @@ export default class FileManager {
         }
     }
 
+    /**
+     *
+     * @param file - element of html input element files list
+     * @returns {string} - the right image icon according to file type
+     */
     getImageForFileType(file){
         if(file.type.includes('audio/')){
             return '/../images/audio.png';
