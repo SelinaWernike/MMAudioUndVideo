@@ -7,7 +7,6 @@ let context = canvas.getContext("2d")
 let video = document.querySelector("video")
 let input = document.querySelector("input");
 input.style.opacity = '0';
-let deleteEdit = document.querySelector("#delete")
 let filterManager = new FilterManager()
 let fileManager = new FileManager()
 let filterModal = document.querySelector("#filterModal");
@@ -62,18 +61,6 @@ window.addEventListener("click", (event) => {
         filterModal.style.display = "none";
     }
 })
-
-
-
-window.onPlayPauseClick = function(event) {
-    if (video.paused) {
-        event.target.value = "Pause"
-        video.play()
-    } else {
-        event.target.value = "Play"
-        video.pause()
-    }
-}
 
 function resizeCanvas() {
     canvas.width = canvas.parentNode.clientWidth;
