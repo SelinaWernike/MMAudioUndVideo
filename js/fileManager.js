@@ -1,7 +1,13 @@
 export default class FileManager {
 
-    openFile() {
-        // var fs = require('fs');
+    constructor(){
+        this.fileMap = new Map();
+        // Check for the various File API support.
+        if (window.File && window.FileReader && window.FileList && window.Blob) {
+            // Great success! All the File APIs are supported.
+        } else {
+            alert('The File APIs are not fully supported in this browser.');
+        }
     }
 
      addFile() {
@@ -9,6 +15,7 @@ export default class FileManager {
         const fileList = input.files;
         if (!( fileList.length === 0)){
             for(const file of fileList){
+                this.addToFileMap(file);
                 const listItem = document.createElement('li');
                 const textDiv = document.createElement("div");
                 const text = document.createTextNode(`${file.name}`);
@@ -27,8 +34,9 @@ export default class FileManager {
                 const spanText = document.createTextNode("X");
                 span.className = "close";
                 span.appendChild(spanText);
-                span.onclick = function() {
+                span.onclick = () => {
                     document.getElementById("fileList").removeChild(listItem);
+                    this.fileMap.delete(this.getFileKey(file));
                 };
                 spanDiv.appendChild(span);
                 listItem.appendChild(imgDiv);
@@ -40,9 +48,22 @@ export default class FileManager {
         }
      }
 
-    removeFile(listItem) {
-        console.log("removeFile");
-        document.getElementById("fileList").removeChild(listItem);
+     getFileKey(file){
+        return ''.concat(file.name, file.size, file.type, file.lastModified);
+     }
+
+    addToFileMap(file) {
+        let fileKey = this.getFileKey(file);
+        if(!this.fileMap.has(fileKey)){
+            const reader = new FileReader();
+            reader.onerror = (event) => {
+                console.error("File could not be read! Code " + event.target.error.code);
+            };
+            reader.onloadend = (event) => {
+                this.fileMap.set(fileKey, event.target.result);
+            }
+            reader.readAsArrayBuffer(file);
+        }
     }
 
     getImageForFileType(file){
