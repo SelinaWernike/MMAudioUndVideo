@@ -1,18 +1,17 @@
 <html>
 <head>
     <title>ViMa</title>
-    <script type="module" src="./js/videoController.js"></script>
     <script type="module" src="./js/main.js"></script>
     <link rel="stylesheet" href="./css/main.css" type="text/css">
     <link rel="stylesheet" href="./css/track.css" type="text/css">
 </head>
 <body>
-    <video id="video" src="https://www.radiantmediaplayer.com/media/big-buck-bunny-360p.mp4" crossorigin="anonymous" hidden=""></video>
+    <video id="video" crossorigin="anonymous" hidden=""></video>
     <div id="upperArea">
         <div id="fileArea">
             <div id="fileInputContainer">
                 <label for="fileInput" id="fileLabel">+ Audio/Video hinzufügen</label>
-                <input id="fileInput" name="fileInput" type="file" accept="audio/mpeg, audio/mp4, audio/mp4, video/mpeg, video/mp4">
+                <input id="fileInput" name="fileInput" type="file" accept="audio/*, video/" multiple="">
             </div>
             <ul id="fileList">
             </ul>

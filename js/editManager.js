@@ -5,6 +5,7 @@ export default class EditManager {
         this.trackNode = document.querySelector('#' + trackname);
         this.sectionNode = document.querySelector('#' + sectionname);
         this.elements = [];
+        this.fileNames = [];
     }
 
     initializeTrack() {
@@ -14,17 +15,16 @@ export default class EditManager {
         this.sectionNode.addEventListener('drop', (e) => {
             e.preventDefault();
             let childData = e.dataTransfer.getData('html');
-            if(childData) {
-
+            if (childData) {
                 let container = document.createElement('div');
                 container.classList.add('column');
                 container.innerHTML = childData;
+                this.elements.push(container)
                 let nameElement = container.querySelector(".fileNameText");
                 let name = nameElement.innerHTML;
-                console.log(name);
-                console.log(childData);
+                this.fileNames.push(name);
+                // TODO: type (audio or video) should be checked against file.type
                 if(name.includes(this.type)) {
-                    this.elements = this.sectionNode.querySelectorAll(".column");
                     var width = 100 / (this.elements.length + 1);
                     if(this.elements.length > 0 && width > 1) {
                         container.style.width = width + "%";
@@ -34,22 +34,26 @@ export default class EditManager {
                         });
                     }
                     this.trackNode.appendChild(container);
-                    this.elements = this.sectionNode.querySelectorAll(".column");
-                    this.removeElement();
+                    this.addRemoveEvent();
                     this.addDragNDrop()
-                    
                 }
             }
         });
     }
 
-    removeElement() {
-        this.elements.forEach(item => {
+    addRemoveEvent() {
+        this.elements.forEach((item, index) => {
             let close = item.querySelector("span");
-            close.onclick = function() {
-                item.parentNode.removeChild(item);
-            };
+            close.addEventListener("click", () => {
+                this.removeElement(item, index)
+            })
         });
+    }
+
+    removeElement(item, index) {
+        item.parentNode.removeChild(item);
+        this.elements.splice(index, 1)
+        this.fileNames.splice(index, 1)
     }
 
     addDragNDrop() {

@@ -1,5 +1,9 @@
 export default class FileManager {
 
+    constructor() {
+        this.files = {}
+    }
+
     openFile() {
         // var fs = require('fs');
     }
@@ -9,6 +13,7 @@ export default class FileManager {
         const fileList = input.files;
         if (!( fileList.length === 0)){
             for(const file of fileList){
+                this.files[file.name] = file
                 const listItem = document.createElement('li');
                 listItem.setAttribute("draggable", true);
                 listItem.addEventListener("dragstart", (e) => {
