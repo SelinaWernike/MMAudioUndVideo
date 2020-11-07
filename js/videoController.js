@@ -47,22 +47,26 @@ export default class VideoController {
         }
 
         window.onToStartClick = function() {
-            const wasPlaying = !video.paused
-            video.pause()
-            changeCurrentVideoSource(0)
-            video.currentTime = 0
-            if (wasPlaying) {
-                video.play()
+            if (video.src !== "") {
+                const wasPlaying = !video.paused
+                video.pause()
+                changeCurrentVideoSource(0)
+                video.currentTime = 0
+                if (wasPlaying) {
+                    video.play()
+                }
             }
         }
 
         window.onToEndClick = function() {
-            video.pause()
-            if (changeCurrentVideoSource(videoManager.fileNames.length - 1)) {
-                // metadata (duration) might not be loaded yet after change of source
-                video.addEventListener("loadedmetadata", jumpToLastFrame)
-            } else {
-                jumpToLastFrame()
+            if (video.src !== "") {
+                video.pause()
+                if (changeCurrentVideoSource(videoManager.fileNames.length - 1)) {
+                    // metadata (duration) might not be loaded yet after change of source
+                    video.addEventListener("loadedmetadata", jumpToLastFrame)
+                } else {
+                    jumpToLastFrame()
+                }
             }
         }
 
@@ -73,19 +77,21 @@ export default class VideoController {
 
         let rewindFunction;
         window.onRewindClick = function() {
-            const overhang = video.currentTime - 5
-            if (overhang < 0 && currentVideoIndex !== 0) {
-                const wasPlaying = !video.paused
-                video.pause()
-                if (changeCurrentVideoSource(currentVideoIndex - 1)) {
-                    rewindFunction = () => jumpToFrameFromEnd(overhang, wasPlaying)
-                    // metadata (duration) might not be loaded yet after change of source
-                    video.addEventListener("loadedmetadata", rewindFunction)
+            if (video.src !== "") {
+                const overhang = video.currentTime - 5
+                if (overhang < 0 && currentVideoIndex !== 0) {
+                    const wasPlaying = !video.paused
+                    video.pause()
+                    if (changeCurrentVideoSource(currentVideoIndex - 1)) {
+                        rewindFunction = () => jumpToFrameFromEnd(overhang, wasPlaying)
+                        // metadata (duration) might not be loaded yet after change of source
+                        video.addEventListener("loadedmetadata", rewindFunction)
+                    } else {
+                        jumpToFrameFromEnd(overhang, wasPlaying)
+                    }
                 } else {
-                    jumpToFrameFromEnd(overhang, wasPlaying)
+                    video.currentTime -= 5
                 }
-            } else {
-                video.currentTime -= 5
             }
         }
 
@@ -98,17 +104,19 @@ export default class VideoController {
         }
 
         window.onForwardClick = function() {
-            const overhang = video.duration - video.currentTime - 5
-            if (overhang < 0 && currentVideoIndex !== videoManager.fileNames.length - 1) {
-                const wasPlaying = !video.paused
-                video.pause()
-                changeCurrentVideoSource(currentVideoIndex + 1)
-                video.currentTime = -overhang;
-                if (wasPlaying) {
-                    video.play()
+            if (video.src !== "") {
+                const overhang = video.duration - video.currentTime - 5
+                if (overhang < 0 && currentVideoIndex !== videoManager.fileNames.length - 1) {
+                    const wasPlaying = !video.paused
+                    video.pause()
+                    changeCurrentVideoSource(currentVideoIndex + 1)
+                    video.currentTime = -overhang;
+                    if (wasPlaying) {
+                        video.play()
+                    }
+                } else {
+                    video.currentTime += 5
                 }
-            } else {
-                video.currentTime += 5
             }
         }
 
