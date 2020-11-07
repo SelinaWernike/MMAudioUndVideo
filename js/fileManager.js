@@ -80,6 +80,7 @@ export default class FileManager {
             }
             reader.readAsArrayBuffer(file);
         }
+        console.log(this.fileMap);
     }
 
     /**

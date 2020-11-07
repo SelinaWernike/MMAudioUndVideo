@@ -144,9 +144,19 @@ ul li:hover {
     width: 100%;
 }
 
+#startTime {
+    grid-area: starting;
+    float: left;
+}
+
+#endTime {
+    grid-area: ending;
+    float: right;
+}
+
 #editGrid {
     display: grid;
-    grid-template-areas: "header header header header"
+    grid-template-areas: "starting header header ending"
                          "vmenu vmenu  vmenu delete"
                          "amenu amenu amenu delete"
                          "emenu emenu emenu delete";
