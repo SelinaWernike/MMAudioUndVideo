@@ -1,14 +1,23 @@
+/**
+ * @author Selina Wernike
+ * This Class creates a Manager for File Tracks. It enabels the user 
+ * to Drag files onto the tracks and change thier sequence in the final
+ * Video. It also enables editing the Video, e.g. cutting
+ */
 export default class EditManager {
 
     
-    constructor(trackname, sectionname, type) {
+    constructor(trackname, sectionname, type, filterManager) {
         this.type = type;
         this.trackNode = document.querySelector('#' + trackname);
         this.sectionNode = document.querySelector('#' + sectionname);
+        this.filterManager = filterManager;
         this.elements = [];
         this.id = 0;
     }
-
+/**
+ * Adds event listener for draging Input Files onto the tracks
+ */
     initializeTrack() {
         this.sectionNode.addEventListener("dragover", (ev) => {
             ev.preventDefault();
@@ -44,7 +53,9 @@ export default class EditManager {
             }
         });
     }
-
+/**
+ * removes an element from the track
+ */
     removeElement() {
         this.elements.forEach(item => {
             let close = item.querySelector("span");
@@ -54,7 +65,11 @@ export default class EditManager {
 
         });
     }
-
+/**
+ * Adds Drag and Drop to the Track elements
+ * @param {Node} item Sets the Drag and Drop event for the Track Elements. This enabels
+ * the Position change on the Track. 
+ */
     addDragNDrop(item) {
             item.setAttribute("draggable", true);
             item.addEventListener("dragstart", (e) => {
@@ -75,6 +90,13 @@ export default class EditManager {
                 }
             });
         return item;    
+        
+    }
+/**
+ * gets the Length of the start- and endTime HTML element according to all the Elements on the Track.
+ */
+    getTrackLength() {
+        let map = this.filterManager.fileMap;
         
     }
 

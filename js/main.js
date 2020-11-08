@@ -12,9 +12,9 @@ input.style.opacity = '0';
 let deleteEdit = document.querySelector("#delete")
 let filterManager = new FilterManager()
 let fileManager = new FileManager()
-let videoManager = new EditManager("videogrid", "videotrack", "mp4")
-let audioManager = new EditManager("audiogrid", "audiotrack", "mp3")
-let effectManager = new EditManager("effectgrid", "effecttrack", "effect")
+let videoManager = new EditManager("videogrid", "videotrack", "mp4", filterManager)
+let audioManager = new EditManager("audiogrid", "audiotrack", "mp3", filterManager)
+let effectManager = new EditManager("effectgrid", "effecttrack", "effect", filterManager)
 resizeCanvas()
 
 videoManager.initializeTrack();

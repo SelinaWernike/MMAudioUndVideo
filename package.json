@@ -16,6 +16,7 @@
   },
   "homepage": "https://github.com/SelinaWernike/MMAudioUndVideo#readme",
   "dependencies": {
+    "jsdoc": "^3.6.6",
     "live-server": "^1.2.1"
   }
 }
