@@ -9,9 +9,6 @@ let input = document.querySelector("input");
 input.style.opacity = '0';
 let filterManager = new FilterManager()
 let fileManager = new FileManager()
-let filterModal = document.querySelector("#filterModal");
-let filterButton = document.querySelector("#filterInput");
-let filterModalClose = document.querySelector("#filterModalClose");
 let videoManager = new EditManager("videogrid", "videotrack", "mp4")
 let audioManager = new EditManager("audiogrid", "audiotrack", "mp3")
 let effectManager = new EditManager("effectgrid", "effecttrack", "effect")
@@ -35,25 +32,6 @@ window.addEventListener("resize", () => {
 
 input.addEventListener("change", () => {
     fileManager.addFile();
-})
-
-// filterButton.addEventListener("onclick", () => {
-//     console.log("add Filter");
-//     filterModal.style.display = "block";
-// })
-
-filterButton.addEventListener("click", () => {
-    console.log("add Filter");
-    let filterModalList = document.querySelector("#filterModalList");
-    if(filterModalList.childElementCount == 0){
-        FilterManager.fillHtmlFilterList(filterModalList);
-    }
-    console.log("main filterModalList: ", filterModalList);
-    filterModal.style.display = "block";
-})
-
-filterModalClose.addEventListener("click", () => {
-    filterModal.style.display = "none";
 })
 
 window.addEventListener("click", (event) => {
