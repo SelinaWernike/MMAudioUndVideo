@@ -55,10 +55,7 @@ export default class EditManager {
     }
     addRemoveEvent() {
         this.elements.forEach((item, index) => {
-            let close = item.querySelector("span");
-            close.addEventListener("click", () => {
-                this.removeElement(item, index)
-            })
+            this.removeElement(item, index)
         });
     }
 
