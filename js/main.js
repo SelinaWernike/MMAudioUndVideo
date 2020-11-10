@@ -1,3 +1,4 @@
+import VideoController from "./videoController.js"
 import FilterManager from "./filterManager.js"
 import FileManager from "./fileManager.js"
 import EditManager from "./editManager.js"
@@ -15,12 +16,14 @@ let filterModalClose = document.querySelector("#filterModalClose");
 let videoManager = new EditManager("videogrid", "videotrack", "mp4")
 let audioManager = new EditManager("audiogrid", "audiotrack", "mp3")
 let effectManager = new EditManager("effectgrid", "effecttrack", "effect")
+const videoController = new VideoController(fileManager, videoManager)
 resizeCanvas()
 
 videoManager.initializeTrack();
 audioManager.initializeTrack();
 effectManager.initializeTrack();
 //Add Event Listener
+
 video.addEventListener("play", () => {
     requestAnimationFrame(renderVideo)
 })
