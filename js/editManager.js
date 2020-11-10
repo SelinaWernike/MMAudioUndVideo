@@ -96,7 +96,9 @@ export default class EditManager {
  * gets the Length of the start- and endTime HTML element according to all the Elements on the Track.
  */
     getTrackLength() {
-        let map = this.filterManager.fileMap;
+       this.elements.forEach(element => {
+           
+       });
         
     }
 
