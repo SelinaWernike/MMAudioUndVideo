@@ -53,9 +53,14 @@ export default class EditManager {
             }
         });
     }
+
+    //TODO: only add listener for current element
     addRemoveEvent() {
         this.elements.forEach((item, index) => {
-            this.removeElement(item, index)
+            let close = item.querySelector("span")
+            close.addEventListener("click", () => {
+                this.removeElement(item, index)
+            })
         });
     }
 
@@ -65,7 +70,7 @@ export default class EditManager {
     removeElement(item, index) {
         item.parentNode.removeChild(item);
         this.elements.splice(index, 1)
-        this.fileNames.splice(index, 1)
+        this.fileKeys.splice(index, 1)
     }
 
 /**
