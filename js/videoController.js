@@ -17,7 +17,7 @@ export default class VideoController {
         let looping = false;
 
         video.addEventListener("ended", () => {
-            if (currentVideoIndex >= videoManager.fileNames.length - 1) {
+            if (currentVideoIndex >= videoManager.fileKeys.length - 1) {
                 changeCurrentVideoSource(0)
                 if (looping) {
                     video.play()
@@ -32,7 +32,7 @@ export default class VideoController {
         })
 
         window.onPlayClick = function() {
-            if (video.src === '' && videoManager.fileNames.length !== 0) {
+            if (video.src === '' && videoManager.fileKeys.length !== 0) {
                 changeCurrentVideoSource(0)
             }
             if (video.src !== '') {
@@ -63,7 +63,7 @@ export default class VideoController {
         window.onToEndClick = function() {
             if (video.src !== "") {
                 video.pause()
-                if (changeCurrentVideoSource(videoManager.fileNames.length - 1)) {
+                if (changeCurrentVideoSource(videoManager.fileKeys.length - 1)) {
                     // metadata (duration) might not be loaded yet after change of source
                     video.addEventListener("loadedmetadata", jumpToLastFrame)
                 } else {
@@ -108,7 +108,7 @@ export default class VideoController {
         window.onForwardClick = function() {
             if (video.src !== "") {
                 const overhang = video.duration - video.currentTime - VideoController.JUMP_TIME_SECONDS
-                if (overhang < 0 && currentVideoIndex !== videoManager.fileNames.length - 1) {
+                if (overhang < 0 && currentVideoIndex !== videoManager.fileKeys.length - 1) {
                     const wasPlaying = !video.paused
                     video.pause()
                     changeCurrentVideoSource(currentVideoIndex + 1)
@@ -151,9 +151,8 @@ export default class VideoController {
         function changeCurrentVideoSource(index) {
             if (currentVideoIndex != index) {
                 currentVideoIndex = index
-                const fileName = videoManager.fileNames[currentVideoIndex]
-                const file = fileManager.files[fileName]
-                video.src = URL.createObjectURL(file)
+                const fileKey = videoManager.fileKeys[currentVideoIndex]
+                video.src = fileManager.fileMap.get(fileKey)
                 video.load()
                 return true
             }

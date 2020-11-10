@@ -5,7 +5,7 @@ export default class EditManager {
         this.trackNode = document.querySelector('#' + trackname);
         this.sectionNode = document.querySelector('#' + sectionname);
         this.elements = [];
-        this.fileNames = [];
+        this.fileKeys = [];
     }
 
     initializeTrack() {
@@ -20,9 +20,10 @@ export default class EditManager {
                 container.classList.add('column');
                 container.innerHTML = childData;
                 this.elements.push(container)
+                const fileKey = container.children[0].getAttribute("fileKey")
+                this.fileKeys.push(fileKey)
                 let nameElement = container.querySelector(".fileNameText");
                 let name = nameElement.innerHTML;
-                this.fileNames.push(name);
                 // TODO: type (audio or video) should be checked against file.type
                 if(name.includes(this.type)) {
                     var width = 100 / (this.elements.length + 1);

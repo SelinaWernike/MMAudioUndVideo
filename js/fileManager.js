@@ -20,9 +20,10 @@ export default class FileManager {
             for(const file of fileList){
                 this.addToFileMap(file);
                 const listItem = document.createElement('li');
+                listItem.setAttribute('fileKey', this.getFileKey(file));
                 listItem.setAttribute("draggable", true);
                 listItem.addEventListener("dragstart", (e) => {
-                    e.dataTransfer.setData("html", e.target.innerHTML)
+                    e.dataTransfer.setData("html", e.target.outerHTML)
                 })
                 const textDiv = document.createElement("div");
                 const text = document.createTextNode(`${file.name}`);
@@ -61,7 +62,7 @@ export default class FileManager {
      * @returns {string} - value for key of fileMap
      */
      getFileKey(file){
-        return ''.concat(file.name, file.size, file.type, file.lastModified);
+        return file.name.concat(file.size, file.type, file.lastModified);
      }
 
     /**
@@ -69,7 +70,7 @@ export default class FileManager {
      * @param file
      */
     addToFileMap(file) {
-        let fileKey = this.getFileKey(file);
+        const fileKey = this.getFileKey(file);
         if(!this.fileMap.has(fileKey)){
             const reader = new FileReader();
             reader.onerror = (event) => {
