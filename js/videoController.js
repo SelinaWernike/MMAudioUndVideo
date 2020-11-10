@@ -1,5 +1,7 @@
 export default class VideoController {
 
+    static JUMP_TIME_SECONDS = 5
+
     constructor(fileManager, videoManager) {
         const video = document.querySelector("#video")
         const playIcon = document.querySelector("#playIcon")
@@ -78,7 +80,7 @@ export default class VideoController {
         let rewindFunction;
         window.onRewindClick = function() {
             if (video.src !== "") {
-                const overhang = video.currentTime - 5
+                const overhang = video.currentTime - VideoController.JUMP_TIME_SECONDS
                 if (overhang < 0 && currentVideoIndex !== 0) {
                     const wasPlaying = !video.paused
                     video.pause()
@@ -90,7 +92,7 @@ export default class VideoController {
                         jumpToFrameFromEnd(overhang, wasPlaying)
                     }
                 } else {
-                    video.currentTime -= 5
+                    video.currentTime = overhang
                 }
             }
         }
@@ -105,7 +107,7 @@ export default class VideoController {
 
         window.onForwardClick = function() {
             if (video.src !== "") {
-                const overhang = video.duration - video.currentTime - 5
+                const overhang = video.duration - video.currentTime - VideoController.JUMP_TIME_SECONDS
                 if (overhang < 0 && currentVideoIndex !== videoManager.fileNames.length - 1) {
                     const wasPlaying = !video.paused
                     video.pause()
@@ -115,7 +117,7 @@ export default class VideoController {
                         video.play()
                     }
                 } else {
-                    video.currentTime += 5
+                    video.currentTime += VideoController.JUMP_TIME_SECONDS
                 }
             }
         }
