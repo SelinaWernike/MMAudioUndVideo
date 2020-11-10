@@ -84,6 +84,10 @@ li {
     height: 100%;
 }
 
+img {
+    pointer-events: none;
+}
+
 ul li {
     cursor: pointer;
     position: relative;
@@ -140,4 +144,16 @@ ul li:hover {
 
 .pointer {
     cursor: pointer;    
+}
+
+#time {
+    display: inline;
+}
+
+#startTime {
+    float: left;
+}
+
+#endTime {
+    float: right;
 }
