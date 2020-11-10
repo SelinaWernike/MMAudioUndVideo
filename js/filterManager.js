@@ -2,6 +2,8 @@ export default class FilterManager {
 
     constructor() {
         this.filters = []
+        const filterList = document.getElementById("filterList");
+        this.fillHtmlFilterList(filterList);
     }
 
     apply(currentFrame) {
@@ -12,48 +14,23 @@ export default class FilterManager {
         return current
     }
 
-    static fillHtmlFilterList(ul){
+    fillHtmlFilterList(ul){
         const filterArray = ["Rotfilter", "Blaufilter", "Grünfilter", "Sepiafilter", "Chroma-Keying"];
 
         for (const filterName of filterArray) {
             const listItem = document.createElement('li');
-            const button = document.createElement('button');
 
             let text = document.createTextNode(filterName);
-            button.style.margin = "2% auto";
-            button.style.display = "block";
-            button.appendChild(text);
-            button.addEventListener("click", () => {
-                appendItemToFilterList(button);
-            });
-            listItem.appendChild(button);
+            listItem.appendChild(text);
+
+            listItem.setAttribute("draggable", true);
+            listItem.addEventListener("dragstart", (e) => {
+                e.dataTransfer.setData("html", e.target.innerHTML)
+            })
 
             ul.appendChild(listItem);
         }
 
     }
-}
-
-function appendItemToFilterList(button) {
-    const filterList = document.getElementById("filterList");
-    const listItem = document.createElement('li');
-    const textDiv = document.createElement("div");
-    const text = document.createTextNode(button.textContent);
-    const spanDiv = document.createElement("div");
-    const span = document.createElement("SPAN");
-    const spanText = document.createTextNode("X");
-    textDiv.appendChild(text);
-    listItem.appendChild(textDiv);
-    // span.className = "close";
-    span.appendChild(spanText);
-    span.onclick = function() {
-        document.getElementById("filterList").removeChild(listItem);
-    };
-    spanDiv.appendChild(span);
-    listItem.appendChild(spanDiv);
-    filterList.appendChild(listItem);
-
-    let filterModal = document.querySelector("#filterModal");
-    filterModal.style.display = "none";
 }
 
