@@ -84,10 +84,6 @@ li {
     height: 100%;
 }
 
-img {
-    pointer-events: none;
-}
-
 ul li {
     cursor: pointer;
     position: relative;
