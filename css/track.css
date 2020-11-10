@@ -1,0 +1,24 @@
+.trackContainer {
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+.track {
+    background-image: url(/images/pngkit_movie-tape-png_3163594.png);
+    background-size: contain;
+    height: 100%;
+}
+
+.track:after {
+    content: "";
+    display: table;
+    clear: both;
+}
+
+.column {
+    float: left;
+    width: 99%;
+    padding: 2px;
+    background-color: white;
+}
