@@ -33,6 +33,7 @@ export default class EditManager {
                 this.id++;
                 container.innerHTML = childData;
                 this.elements.push(container)
+                container.children[0].removeAttribute("draggable")
                 const fileKey = container.children[0].getAttribute("fileKey")
                 this.fileKeys.push(fileKey)
                 let nameElement = container.querySelector(".fileNameText");
