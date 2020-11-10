@@ -1,19 +1,24 @@
 export default class FileManager {
 
-    constructor() {
-        this.files = {}
+    constructor(){
+        this.fileMap = new Map(); //key: getfileKey(), value: ArrayBuffer with file data
+        // Check for the various File API support.
+        if (window.File && window.FileReader && window.FileList && window.Blob) {
+            // Great success! All the File APIs are supported.
+        } else {
+            alert('The File APIs are not fully supported in this browser.');
+        }
     }
 
-    openFile() {
-        // var fs = require('fs');
-    }
-
+    /**
+     * adds files of html <input> element both to frontend list and to backend map
+     */
      addFile() {
         let input = document.querySelector('input');
         const fileList = input.files;
         if (!( fileList.length === 0)){
             for(const file of fileList){
-                this.files[file.name] = file
+                this.addToFileMap(file);
                 const listItem = document.createElement('li');
                 listItem.setAttribute("draggable", true);
                 listItem.addEventListener("dragstart", (e) => {
@@ -36,8 +41,9 @@ export default class FileManager {
                 const spanText = document.createTextNode("X");
                 span.className = "close";
                 span.appendChild(spanText);
-                span.onclick = function() {
+                span.onclick = () => {
                     document.getElementById("fileList").removeChild(listItem);
+                    this.fileMap.delete(this.getFileKey(file));
                 };
                 spanDiv.appendChild(span);
                 listItem.appendChild(imgDiv);
@@ -49,11 +55,38 @@ export default class FileManager {
         }
      }
 
-    removeFile(listItem) {
-        console.log("removeFile");
-        document.getElementById("fileList").removeChild(listItem);
+    /**
+     *
+     * @param file - element of html input element files list
+     * @returns {string} - value for key of fileMap
+     */
+     getFileKey(file){
+        return ''.concat(file.name, file.size, file.type, file.lastModified);
+     }
+
+    /**
+     * adds specified file to file map, if not already added.
+     * @param file
+     */
+    addToFileMap(file) {
+        let fileKey = this.getFileKey(file);
+        if(!this.fileMap.has(fileKey)){
+            const reader = new FileReader();
+            reader.onerror = (event) => {
+                console.error("File could not be read! Code " + event.target.error.code);
+            };
+            reader.onloadend = (event) => {
+                this.fileMap.set(fileKey, event.target.result);
+            }
+            reader.readAsDataURL(file);
+        }
     }
 
+    /**
+     *
+     * @param file - element of html input element files list
+     * @returns {string} - the right image icon according to file type
+     */
     getImageForFileType(file){
         if(file.type.includes('audio/')){
             return '/../images/audio.png';
