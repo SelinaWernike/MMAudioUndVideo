@@ -141,3 +141,15 @@ ul li:hover {
 .pointer {
     cursor: pointer;    
 }
+
+#time {
+    display: inline;
+}
+
+#startTime {
+    float: left;
+}
+
+#endTime {
+    float: right;
+}

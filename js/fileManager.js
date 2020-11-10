@@ -81,6 +81,7 @@ export default class FileManager {
             }
             reader.readAsDataURL(file);
         }
+        console.log(this.fileMap);
     }
 
     /**
