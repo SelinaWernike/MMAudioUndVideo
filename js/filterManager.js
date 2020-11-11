@@ -6,10 +6,9 @@ export default class FilterManager {
 
     apply(currentFrame) {
         let current = currentFrame
-        for (let filter in this.filters) {
-            current = filter.apply(current)
+        for (let filter of this.filters) {
+            filter.apply(current)
         }
-        return current
     }
 
     static fillHtmlFilterList(ul){
@@ -56,4 +55,3 @@ function appendItemToFilterList(button) {
     let filterModal = document.querySelector("#filterModal");
     filterModal.style.display = "none";
 }
-
