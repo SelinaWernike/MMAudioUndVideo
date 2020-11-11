@@ -1,7 +1,12 @@
+import ChromaKeyFilter from "./filter/ChromaKeyFilter.js"
+import BWFilter from "./filter/BWFilter.js"
+
 export default class FilterManager {
 
     constructor() {
         this.filters = []
+        this.filters.push(new ChromaKeyFilter())
+        this.filters.push(new BWFilter())
     }
 
     apply(currentFrame) {
