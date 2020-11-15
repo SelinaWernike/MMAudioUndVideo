@@ -7,8 +7,7 @@
 export default class EditManager {
 
 
-    constructor(trackname, sectionname, type, loader) {
-        this.type = type;
+    constructor(trackname, sectionname, loader) {
         this.trackNode = document.querySelector('#' + trackname);
         this.sectionNode = document.querySelector('#' + sectionname);
         this.loader = loader;
