@@ -2,6 +2,10 @@ import VideoController from "./videoController.js"
 import FilterManager from "./filterManager.js"
 import FileManager from "./fileManager.js"
 import EditManager from "./editManager.js"
+import AudioLoader from "./audioloader.js"
+import VideoLoader from "./videoloader.js"
+import EffectLoader from "./effectLoader.js"
+import TrackController from "./trackController.js"
 
 let canvas = document.querySelector("canvas")
 let context = canvas.getContext("2d")
@@ -10,9 +14,10 @@ let input = document.querySelector("input");
 input.style.opacity = '0';
 let filterManager = new FilterManager()
 let fileManager = new FileManager()
-let videoManager = new EditManager("videogrid", "videotrack", "mp4")
-let audioManager = new EditManager("audiogrid", "audiotrack", "mp3")
-let effectManager = new EditManager("effectgrid", "effecttrack", "effect")
+let videoManager = new EditManager("videogrid", "videotrack", new VideoLoader(fileManager))
+let audioManager = new EditManager("audiogrid", "audiotrack", new AudioLoader(fileManager))
+let effectManager = new EditManager("effectgrid", "effecttrack", new EffectLoader)
+const trackController = new TrackController(videoManager, [audioManager, effectManager]);
 const videoController = new VideoController(fileManager, videoManager)
 resizeCanvas()
 
@@ -37,11 +42,11 @@ input.addEventListener("change", () => {
     fileManager.addFile();
 })
 
-window.addEventListener("click", (event) => {
+/*window.addEventListener("click", (event) => {
     if (event.target == filterModal) {
         filterModal.style.display = "none";
     }
-})
+}) */
 
 function resizeCanvas() {
     canvas.width = canvas.parentNode.clientWidth;

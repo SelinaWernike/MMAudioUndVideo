@@ -1,7 +1,20 @@
 export default class VideoLoader {
-    loadVideo(file) {
+constructor(fileManager) {
+    this.fileManager = fileManager;
+}
+
+    load(fileKey) {
         let video = document.createElement("video");
-        video.src = file;
-        return video;
+        let src = this.fileManager.fileMap.get(fileKey);
+        if(src.startsWith("data:video")) {
+            video.src = src;
+            return video;
+        } else {
+            return null;
+        }
+    }
+
+    getDuration(video) {
+        return video.duration;
     }
 }
