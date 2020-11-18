@@ -1,17 +1,34 @@
+import ChromaKeyFilter from "./filter/ChromaKeyFilter.js"
+import BWFilter from "./filter/BWFilter.js"
+import InvertFilter from "./filter/InvertFilter.js"
+import SepiaFilter from "./filter/SepiaFilter.js"
+import RedFilter from "./filter/RedFilter.js"
+import GreenFilter from "./filter/GreenFilter.js"
+import BlueFilter from "./filter/BlueFilter.js"
+
 export default class FilterManager {
 
     constructor() {
         this.filters = []
+<<<<<<< HEAD
         const filterList = document.getElementById("filterList");
         this.fillHtmlFilterList(filterList);
+=======
+        //this.filters.push(new ChromaKeyFilter())
+        //this.filters.push(new BWFilter())
+        //this.filters.push(new InvertFilter())
+        //this.filters.push(new SepiaFilter())
+        //this.filters.push(new RedFilter())
+        //this.filters.push(new GreenFilter())
+        //this.filters.push(new BlueFilter())
+>>>>>>> remotes/origin/filterImpl
     }
 
     apply(currentFrame) {
         let current = currentFrame
-        for (let filter in this.filters) {
-            current = filter.apply(current)
+        for (let filter of this.filters) {
+            filter.apply(current)
         }
-        return current
     }
 
     fillHtmlFilterList(ul){
@@ -34,3 +51,28 @@ export default class FilterManager {
     }
 }
 
+<<<<<<< HEAD
+=======
+function appendItemToFilterList(button) {
+    const filterList = document.getElementById("filterList");
+    const listItem = document.createElement('li');
+    const textDiv = document.createElement("div");
+    const text = document.createTextNode(button.textContent);
+    const spanDiv = document.createElement("div");
+    const span = document.createElement("SPAN");
+    const spanText = document.createTextNode("X");
+    textDiv.appendChild(text);
+    listItem.appendChild(textDiv);
+    // span.className = "close";
+    span.appendChild(spanText);
+    span.onclick = function() {
+        document.getElementById("filterList").removeChild(listItem);
+    };
+    spanDiv.appendChild(span);
+    listItem.appendChild(spanDiv);
+    filterList.appendChild(listItem);
+
+    let filterModal = document.querySelector("#filterModal");
+    filterModal.style.display = "none";
+}
+>>>>>>> remotes/origin/filterImpl

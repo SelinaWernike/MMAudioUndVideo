@@ -63,6 +63,6 @@ function renderVideo() {
 function renderCurrentFrame() {
     context.drawImage(video, 0, 0, canvas.width, canvas.height)
     let currentFrame = context.getImageData(0, 0, canvas.width, canvas.height)
-    let newFrame = filterManager.apply(currentFrame)
-    context.putImageData(newFrame, 0, 0)
+    filterManager.apply(currentFrame)
+    context.putImageData(currentFrame, 0, 0)
 }
