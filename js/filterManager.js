@@ -10,10 +10,6 @@ export default class FilterManager {
 
     constructor() {
         this.filters = []
-<<<<<<< HEAD
-        const filterList = document.getElementById("filterList");
-        this.fillHtmlFilterList(filterList);
-=======
         //this.filters.push(new ChromaKeyFilter())
         //this.filters.push(new BWFilter())
         //this.filters.push(new InvertFilter())
@@ -21,7 +17,6 @@ export default class FilterManager {
         //this.filters.push(new RedFilter())
         //this.filters.push(new GreenFilter())
         //this.filters.push(new BlueFilter())
->>>>>>> remotes/origin/filterImpl
     }
 
     apply(currentFrame) {
@@ -51,8 +46,6 @@ export default class FilterManager {
     }
 }
 
-<<<<<<< HEAD
-=======
 function appendItemToFilterList(button) {
     const filterList = document.getElementById("filterList");
     const listItem = document.createElement('li');
@@ -75,4 +68,3 @@ function appendItemToFilterList(button) {
     let filterModal = document.querySelector("#filterModal");
     filterModal.style.display = "none";
 }
->>>>>>> remotes/origin/filterImpl
