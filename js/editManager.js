@@ -8,14 +8,15 @@ export default class EditManager {
 
     
     constructor(trackname, sectionname, type, filterManager) {
+        this.filterManager = filterManager;
         this.type = type;
         this.trackNode = document.querySelector('#' + trackname);
         this.sectionNode = document.querySelector('#' + sectionname);
-        this.filterManager = filterManager;
         this.elements = [];
         this.fileKeys = [];
         this.id = 0;
     }
+
 /**
  * Adds event listener for draging Input Files onto the tracks
  */
@@ -108,5 +109,9 @@ export default class EditManager {
            
        });
         
+    }
+
+    getFileKeys(){
+        return this.fileKeys;
     }
 }

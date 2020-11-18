@@ -2,6 +2,7 @@ import VideoController from "./videoController.js"
 import FilterManager from "./filterManager.js"
 import FileManager from "./fileManager.js"
 import EditManager from "./editManager.js"
+import DownloadManager from "./downloadManager.js";
 
 let canvas = document.querySelector("canvas")
 let context = canvas.getContext("2d")
@@ -14,6 +15,7 @@ let videoManager = new EditManager("videogrid", "videotrack", "mp4")
 let audioManager = new EditManager("audiogrid", "audiotrack", "mp3")
 let effectManager = new EditManager("effectgrid", "effecttrack", "effect")
 const videoController = new VideoController(fileManager, videoManager)
+const downloadManager = new DownloadManager(videoController);
 resizeCanvas()
 
 videoManager.initializeTrack();
@@ -35,12 +37,6 @@ window.addEventListener("resize", () => {
 
 input.addEventListener("change", () => {
     fileManager.addFile();
-})
-
-window.addEventListener("click", (event) => {
-    if (event.target == filterModal) {
-        filterModal.style.display = "none";
-    }
 })
 
 function resizeCanvas() {
