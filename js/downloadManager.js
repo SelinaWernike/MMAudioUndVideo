@@ -1,8 +1,6 @@
 export default class DownloadManager {
     constructor(videoController) {
         window.onSaveClick = function(){
-            let track = videoController.assembleTrack(videoController.videoManager);
-            console.log(track);
             let fileKeys = videoController.videoManager.getFileKeys();
             if (fileKeys.length > 0){
                 saveClick(videoController.fileManager.fileMap.get(fileKeys[0]));
