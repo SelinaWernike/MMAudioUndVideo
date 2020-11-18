@@ -26,19 +26,21 @@ export default class FilterManager {
         }
     }
 
-    fillHtmlFilterList(ul){
+    static fillHtmlFilterList(ul){
         const filterArray = ["Rotfilter", "Blaufilter", "Grünfilter", "Sepiafilter", "Chroma-Keying"];
 
         for (const filterName of filterArray) {
             const listItem = document.createElement('li');
+            const button = document.createElement('button');
 
             let text = document.createTextNode(filterName);
-            listItem.appendChild(text);
-
-            listItem.setAttribute("draggable", true);
-            listItem.addEventListener("dragstart", (e) => {
-                e.dataTransfer.setData("html", e.target.innerHTML)
-            })
+            button.style.margin = "2% auto";
+            button.style.display = "block";
+            button.appendChild(text);
+            button.addEventListener("click", () => {
+                appendItemToFilterList(button);
+            });
+            listItem.appendChild(button);
 
             ul.appendChild(listItem);
         }
