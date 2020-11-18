@@ -3,6 +3,10 @@ import FilterManager from "./filterManager.js"
 import FileManager from "./fileManager.js"
 import EditManager from "./editManager.js"
 import DownloadManager from "./downloadManager.js";
+import AudioLoader from "./audioloader.js"
+import VideoLoader from "./videoloader.js"
+import EffectLoader from "./effectLoader.js"
+import TrackController from "./trackController.js"
 
 let canvas = document.querySelector("canvas")
 let context = canvas.getContext("2d")
@@ -11,9 +15,10 @@ let input = document.querySelector("input");
 input.style.opacity = '0';
 let filterManager = new FilterManager()
 let fileManager = new FileManager()
-let videoManager = new EditManager("videogrid", "videotrack", "mp4")
-let audioManager = new EditManager("audiogrid", "audiotrack", "mp3")
-let effectManager = new EditManager("effectgrid", "effecttrack", "effect")
+let videoManager = new EditManager("videogrid", "videotrack", new VideoLoader(fileManager))
+let audioManager = new EditManager("audiogrid", "audiotrack", new AudioLoader(fileManager))
+let effectManager = new EditManager("effectgrid", "effecttrack", new EffectLoader)
+const trackController = new TrackController(videoManager, [audioManager, effectManager]);
 const videoController = new VideoController(fileManager, videoManager)
 const downloadManager = new DownloadManager(videoController);
 resizeCanvas()
@@ -54,6 +59,6 @@ function renderVideo() {
 function renderCurrentFrame() {
     context.drawImage(video, 0, 0, canvas.width, canvas.height)
     let currentFrame = context.getImageData(0, 0, canvas.width, canvas.height)
-    let newFrame = filterManager.apply(currentFrame)
-    context.putImageData(newFrame, 0, 0)
+    filterManager.apply(currentFrame)
+    context.putImageData(currentFrame, 0, 0)
 }
