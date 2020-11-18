@@ -2,6 +2,7 @@ import VideoController from "./videoController.js"
 import FilterManager from "./filterManager.js"
 import FileManager from "./fileManager.js"
 import EditManager from "./editManager.js"
+import DownloadManager from "./downloadManager.js";
 import AudioLoader from "./audioloader.js"
 import VideoLoader from "./videoloader.js"
 import EffectLoader from "./effectLoader.js"
@@ -19,6 +20,7 @@ let audioManager = new EditManager("audiogrid", "audiotrack", new AudioLoader(fi
 let effectManager = new EditManager("effectgrid", "effecttrack", new EffectLoader)
 const trackController = new TrackController(videoManager, [audioManager, effectManager]);
 const videoController = new VideoController(fileManager, videoManager)
+const downloadManager = new DownloadManager(videoController);
 resizeCanvas()
 
 videoManager.initializeTrack();
@@ -41,12 +43,6 @@ window.addEventListener("resize", () => {
 input.addEventListener("change", () => {
     fileManager.addFile();
 })
-
-/*window.addEventListener("click", (event) => {
-    if (event.target == filterModal) {
-        filterModal.style.display = "none";
-    }
-}) */
 
 function resizeCanvas() {
     canvas.width = canvas.parentNode.clientWidth;

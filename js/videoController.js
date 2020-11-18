@@ -3,6 +3,8 @@ export default class VideoController {
     static JUMP_TIME_SECONDS = 5
 
     constructor(fileManager, videoManager) {
+        this.videoManager = videoManager;
+        this.fileManager = fileManager;
         const video = document.querySelector("#video")
         const playIcon = document.querySelector("#playIcon")
         const pauseIcon = document.querySelector("#pauseIcon")

@@ -6,7 +6,6 @@
  */
 export default class EditManager {
 
-
     constructor(trackname, sectionname, loader) {
         this.trackNode = document.querySelector('#' + trackname);
         this.sectionNode = document.querySelector('#' + sectionname);
@@ -17,9 +16,7 @@ export default class EditManager {
         this.id = 0;
         this.currentElement = null;
     }
-    /**
-     * Adds event listener for draging Input Files onto the tracks
-     */
+
     initializeTrack() {
         this.sectionNode.addEventListener("dragover", (ev) => {
             ev.preventDefault();
@@ -113,5 +110,9 @@ export default class EditManager {
         });
         return item;
     }
-   
+
+    getFileKeys(){
+        return this.fileKeys;
+    }
 }
+
