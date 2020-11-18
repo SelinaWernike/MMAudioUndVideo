@@ -6,19 +6,20 @@
  */
 export default class EditManager {
 
-    
-    constructor(trackname, sectionname, type, filterManager) {
-        this.type = type;
+
+    constructor(trackname, sectionname, loader) {
         this.trackNode = document.querySelector('#' + trackname);
         this.sectionNode = document.querySelector('#' + sectionname);
-        this.filterManager = filterManager;
+        this.loader = loader;
         this.elements = [];
         this.fileKeys = [];
+        this.durationMap = new Map();
         this.id = 0;
+        this.currentElement = null;
     }
-/**
- * Adds event listener for draging Input Files onto the tracks
- */
+    /**
+     * Adds event listener for draging Input Files onto the tracks
+     */
     initializeTrack() {
         this.sectionNode.addEventListener("dragover", (ev) => {
             ev.preventDefault();
@@ -30,18 +31,22 @@ export default class EditManager {
                 let container = document.createElement('div');
                 container.classList.add('column');
                 container.id = "item" + this.id;
-                this.id++;
                 container.innerHTML = childData;
-                this.elements.push(container)
                 container.children[0].removeAttribute("draggable")
+
                 const fileKey = container.children[0].getAttribute("fileKey")
-                this.fileKeys.push(fileKey)
-                let nameElement = container.querySelector(".fileNameText");
-                let name = nameElement.innerHTML;
-                // TODO: type (audio or video) should be checked against file.type
-                if(name.includes(this.type)) {
-                    var width = 99 / (this.elements.length + 1);
-                    if(this.elements.length > 0 && width > 1) {
+                let trackObject = this.loader.load(fileKey);
+
+                if (trackObject !== null) {
+                    this.fileKeys.push(fileKey)
+                    this.elements.push(container)
+                    this.durationMap.set(container.id, trackObject.duration);
+                    
+                    let nameElement = container.querySelector(".fileNameText");
+                    let name = nameElement.innerHTML;
+                    
+                    var width = 99 / (this.elements.length);
+                    if (this.elements.length > 0 && width > 1) {
                         container.style.width = width + "%";
                         this.elements.forEach(col => {
                             col.style.width = width + "%";
@@ -49,47 +54,55 @@ export default class EditManager {
                     }
                     container = this.addDragNDrop(container);
                     this.trackNode.appendChild(container);
-                    this.addRemoveEvent();
+                    const childElement= this.trackNode.querySelector("#item" + this.id);
+                    this.addRemoveEvent(childElement, this.elements.length - 1);
+                    this.id++;
                 }
             }
         });
     }
 
     //TODO: only add listener for current element
-    addRemoveEvent() {
-        this.elements.forEach((item, index) => {
+    addRemoveEvent(item, index) {
             let close = item.querySelector("span")
             close.addEventListener("click", () => {
                 this.removeElement(item, index)
             })
+    }
+
+    /**
+     * removes an element from the track
+     */
+    removeElement(item, index) {
+        item.parentNode.removeChild(item);
+        this.elements.splice(index, 1);
+        this.fileKeys.splice(index, 1);
+        this.durationMap.delete(item.id);
+        this.elements.forEach(element => {
+            let width = 99 / this.elements.length;
+            element.style.width = width + "%";
         });
     }
 
     /**
-    * removes an element from the track
-    */
-    removeElement(item, index) {
-        item.parentNode.removeChild(item);
-        this.elements.splice(index, 1)
-        this.fileKeys.splice(index, 1)
-    }
-
-/**
- * Adds Drag and Drop to the Track elements
- * @param {Node} item Sets the Drag and Drop event for the Track Elements. This enabels
- * the Position change on the Track. 
- */
+     * Adds Drag and Drop to the Track elements
+     * @param {Node} item Sets the Drag and Drop event for the Track Elements. This enabels
+     * the Position change on the Track. 
+     */
     addDragNDrop(item) {
         item.setAttribute("draggable", true);
         item.addEventListener("dragstart", (e) => {
-            if(e.target.id) {
-                let obj = {id: e.target.id, html: e.target.innerHTML};
+            if (e.target.id) {
+                let obj = {
+                    id: e.target.id,
+                    html: e.target.innerHTML
+                };
                 e.dataTransfer.setData("trackItem", JSON.stringify(obj));
 
             }
-        }); 
+        });
         item.addEventListener("drop", (ev) => {
-            if(ev.dataTransfer.getData("trackItem")) {
+            if (ev.dataTransfer.getData("trackItem")) {
                 let targetObj = JSON.parse(ev.dataTransfer.getData("trackItem"));
                 console.log(targetObj);
                 let targetElement = this.sectionNode.querySelector("#" + targetObj.id);
@@ -98,15 +111,7 @@ export default class EditManager {
                 this.elements = this.sectionNode.querySelectorAll(".column");
             }
         });
-        return item;    
+        return item;
     }
-/**
- * gets the Length of the start- and endTime HTML element according to all the Elements on the Track.
- */
-    getTrackLength() {
-       this.elements.forEach(element => {
-           
-       });
-        
-    }
+   
 }
