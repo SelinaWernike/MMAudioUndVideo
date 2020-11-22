@@ -1,3 +1,4 @@
+
 /**
  * @author Selina Wernike
  * This Class creates a Manager for File Tracks. It enabels the user 
@@ -101,11 +102,33 @@ export default class EditManager {
         item.addEventListener("drop", (ev) => {
             if (ev.dataTransfer.getData("trackItem")) {
                 let targetObj = JSON.parse(ev.dataTransfer.getData("trackItem"));
-                console.log(targetObj);
                 let targetElement = this.sectionNode.querySelector("#" + targetObj.id);
+                let fileKeyThis = item.children[0].getAttribute("fileKey")
+                let fileKeyTarget = targetElement.children[0].getAttribute("fileKey")
                 targetElement.innerHTML = item.innerHTML;
                 item.innerHTML = targetObj.html;
                 this.elements = this.sectionNode.querySelectorAll(".column");
+                let indexTarget;
+                let indexThis;
+                console.log(this.fileKeys);
+                for(let i = 0; i < this.fileKeys.length;i++) {
+                    if(this.fileKeys[i] === fileKeyThis) {
+                        indexThis = i;
+                        break;
+                    }
+                }
+
+                for(let i = 0; i < this.fileKeys.length;i++) {
+                    if(this.fileKeys[i] === fileKeyTarget) {
+                        indexTarget = i;
+                        break;
+                    }
+                }
+                let temp = this.fileKeys[indexThis];
+                this.fileKeys[indexThis] = this.fileKeys[indexTarget];
+                this.fileKeys[indexTarget] = temp;
+                console.log(this.fileKeys);
+
             }
         });
         return item;
