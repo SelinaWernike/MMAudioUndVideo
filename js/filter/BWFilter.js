@@ -7,6 +7,7 @@ export default class BWFilter {
             let g = frame.data[i * 4 + 1];
             let b = frame.data[i * 4 + 2];
     
+            //change brightness of each pixel
             var brightness = (3 * r + 4 * g + b) >>> 3;
             frame.data[i * 4 + 0] = brightness;
             frame.data[i * 4 + 1] = brightness;

@@ -6,7 +6,8 @@ export default class ChromaKeyFilter {
             let r = frame.data[i * 4 + 0];
             let g = frame.data[i * 4 + 1];
             let b = frame.data[i * 4 + 2];
-    
+
+            // change all greens to white
             if (g > 100) frame.data[i * 4 + 3] = 0;
         }
     }
