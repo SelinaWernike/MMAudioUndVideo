@@ -81,16 +81,17 @@ export default class VideoController {
         window.onRewindClick = function() {
             if (video.src !== "") {
                 const overhang = video.currentTime - VideoController.JUMP_TIME_SECONDS
-                const url = trackController.getPreviousVideo()
-                if (overhang < 0 && url) {
-                    const wasPlaying = !video.paused
-                    video.pause()
-                    if (changeVideoSource(url)) {
+                if (overhang < 0) {
+                    const previousUrl = trackController.getPreviousVideo()
+                    if (previousUrl) {
+                        const wasPlaying = !video.paused
+                        video.pause()
+                        changeVideoSource(previousUrl)
                         rewindFunction = () => jumpToFrameFromEnd(overhang, wasPlaying)
                         // metadata (duration) might not be loaded yet after change of source
                         video.addEventListener("loadedmetadata", rewindFunction)
                     } else {
-                        jumpToFrameFromEnd(overhang, wasPlaying)
+                        video.currentTime = 0
                     }
                 } else {
                     video.currentTime = overhang
@@ -109,14 +110,18 @@ export default class VideoController {
         window.onForwardClick = function() {
             if (video.src !== "") {
                 const overhang = video.duration - video.currentTime - VideoController.JUMP_TIME_SECONDS
-                const url = trackController.getNextVideo()
-                if (overhang < 0 && url) {
-                    const wasPlaying = !video.paused
-                    video.pause()
-                    changeVideoSource(url)
-                    video.currentTime = -overhang
-                    if (wasPlaying) {
-                        video.play()
+                if (overhang < 0) {
+                    const nextUrl = trackController.getNextVideo();
+                    if (nextUrl) {
+                        const wasPlaying = !video.paused
+                        video.pause()
+                        changeVideoSource(nextUrl)
+                        video.currentTime = -overhang
+                        if (wasPlaying) {
+                            video.play()
+                        }
+                    } else {
+                        video.currentTime = video.duration;
                     }
                 } else {
                     video.currentTime += VideoController.JUMP_TIME_SECONDS
