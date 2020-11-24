@@ -7,6 +7,7 @@ export default class SepiaFilter {
             let g = frame.data[i * 4 + 1];
             let b = frame.data[i * 4 + 2];
 
+            // math for transformative rgb values
             let tr = 0.393 * r + 0.769 * g + 0.189 * b;
             let tg = 0.349 * r + 0.686 * g + 0.168 * b;
             let tb = 0.272 * r + 0.534 * g + 0.131 * b;

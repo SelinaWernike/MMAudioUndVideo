@@ -26,8 +26,8 @@ export default class FilterManager {
         }
     }
 
-    static fillHtmlFilterList(ul){
-        const filterArray = ["Rotfilter", "Blaufilter", "Grünfilter", "Sepiafilter", "Chroma-Keying"];
+    static fillHtmlFilterList(ul) {
+        const filterArray = ["Rotfilter", "Blaufilter", "Grünfilter", "Greyscale Filter", "Negativ Filter", "Sepiafilter", "Chroma-Keying"];
 
         for (const filterName of filterArray) {
             const listItem = document.createElement('li');
@@ -60,7 +60,7 @@ function appendItemToFilterList(button) {
     listItem.appendChild(textDiv);
     // span.className = "close";
     span.appendChild(spanText);
-    span.onclick = function() {
+    span.onclick = function () {
         document.getElementById("filterList").removeChild(listItem);
     };
     spanDiv.appendChild(span);

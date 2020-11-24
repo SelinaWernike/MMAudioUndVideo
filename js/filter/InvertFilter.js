@@ -8,6 +8,7 @@ export default class InvertFilter {
             let g = frame.data[i * 4 + 1];
             let b = frame.data[i * 4 + 2];
 
+            // invert rgb values
             frame.data[i * 4 + 0] = r ^ 255;
             frame.data[i * 4 + 1] = g ^ 255;
             frame.data[i * 4 + 2] = b ^ 255;
