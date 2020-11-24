@@ -31,28 +31,16 @@ export default class EditManager {
                 container.id = "item" + this.id;
                 container.innerHTML = childData;
                 container.children[0].removeAttribute("draggable")
-
                 const fileKey = container.children[0].getAttribute("fileKey")
                 let trackObject = this.loader.load(fileKey);
-
                 if (trackObject !== null) {
                     this.fileKeys.push(fileKey)
                     this.elements.push(container)
                     this.durationMap.set(container.id, trackObject.duration);
-                    
-                    let nameElement = container.querySelector(".fileNameText");
-                    let name = nameElement.innerHTML;
-                    
-                    var width = 99 / (this.elements.length);
-                    if (this.elements.length > 0 && width > 1) {
-                        container.style.width = width + "%";
-                        this.elements.forEach(col => {
-                            col.style.width = width + "%";
-                        });
-                    }
-                    container = this.addDragNDrop(container);
+                    this.resizeElements()
+                    this.addDragNDrop(container);
                     this.trackNode.appendChild(container);
-                    const childElement= this.trackNode.querySelector("#item" + this.id);
+                    const childElement = this.trackNode.querySelector("#item" + this.id);
                     this.addRemoveEvent(childElement, this.elements.length - 1);
                     this.id++;
                 }
@@ -60,12 +48,11 @@ export default class EditManager {
         });
     }
 
-    //TODO: only add listener for current element
     addRemoveEvent(item, index) {
-            let close = item.querySelector("span")
-            close.addEventListener("click", () => {
-                this.removeElement(item, index)
-            })
+        let close = item.querySelector("span")
+        close.addEventListener("click", () => {
+            this.removeElement(item, index)
+        })
     }
 
     /**
@@ -76,8 +63,12 @@ export default class EditManager {
         this.elements.splice(index, 1);
         this.fileKeys.splice(index, 1);
         this.durationMap.delete(item.id);
+        this.resizeElements();
+    }
+
+    resizeElements() {
+        let width = 99 / this.elements.length;
         this.elements.forEach(element => {
-            let width = 99 / this.elements.length;
             element.style.width = width + "%";
         });
     }
@@ -131,11 +122,6 @@ export default class EditManager {
 
             }
         });
-        return item;
-    }
-
-    getFileKeys(){
-        return this.fileKeys;
     }
 }
 
