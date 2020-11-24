@@ -2,9 +2,7 @@ export default class VideoController {
 
     static JUMP_TIME_SECONDS = 5
 
-    constructor(fileManager, videoManager) {
-        this.videoManager = videoManager;
-        this.fileManager = fileManager;
+    constructor(trackController) {
         const video = document.querySelector("#video")
         const playIcon = document.querySelector("#playIcon")
         const pauseIcon = document.querySelector("#pauseIcon")
@@ -15,27 +13,27 @@ export default class VideoController {
         const noLoopIcon = document.querySelector("#noLoopIcon")
         changeVolume(volumeSlider.value)
         let previousVolume = video.volume
-        let currentVideoIndex = -1
-        let looping = false;
+        let looping = false
 
         video.addEventListener("ended", () => {
-            if (currentVideoIndex >= videoManager.fileKeys.length - 1) {
-                changeCurrentVideoSource(0)
+            const nextUrl = trackController.getNextVideo()
+            if (nextUrl) {
+                changeVideoSource(nextUrl)
+                video.play()
+            } else {
+                changeVideoSource(trackController.getFirstVideo())
                 if (looping) {
                     video.play()
                 } else {
                     pauseIcon.setAttribute("hidden", "")
                     playIcon.removeAttribute("hidden")
                 }
-            } else {
-                changeCurrentVideoSource(currentVideoIndex + 1)
-                video.play()
             }
         })
 
         window.onPlayClick = function() {
-            if (video.src === '' && videoManager.fileKeys.length !== 0) {
-                changeCurrentVideoSource(0)
+            if (video.src === '') {
+                changeVideoSource(trackController.getNextVideo())
             }
             if (video.src !== '') {
                 video.play()
@@ -54,7 +52,7 @@ export default class VideoController {
             if (video.src !== "") {
                 const wasPlaying = !video.paused
                 video.pause()
-                changeCurrentVideoSource(0)
+                changeVideoSource(trackController.getFirstVideo())
                 video.currentTime = 0
                 if (wasPlaying) {
                     video.play()
@@ -65,7 +63,7 @@ export default class VideoController {
         window.onToEndClick = function() {
             if (video.src !== "") {
                 video.pause()
-                if (changeCurrentVideoSource(videoManager.fileKeys.length - 1)) {
+                if (changeVideoSource(trackController.getLastVideo())) {
                     // metadata (duration) might not be loaded yet after change of source
                     video.addEventListener("loadedmetadata", jumpToLastFrame)
                 } else {
@@ -76,17 +74,18 @@ export default class VideoController {
 
         function jumpToLastFrame() {
             video.removeEventListener("loadedmetadata", jumpToLastFrame)
-            video.currentTime = video.duration;
+            video.currentTime = video.duration
         }
 
-        let rewindFunction;
+        let rewindFunction
         window.onRewindClick = function() {
             if (video.src !== "") {
                 const overhang = video.currentTime - VideoController.JUMP_TIME_SECONDS
-                if (overhang < 0 && currentVideoIndex !== 0) {
+                const url = trackController.getPreviousVideo()
+                if (overhang < 0 && url) {
                     const wasPlaying = !video.paused
                     video.pause()
-                    if (changeCurrentVideoSource(currentVideoIndex - 1)) {
+                    if (changeVideoSource(url)) {
                         rewindFunction = () => jumpToFrameFromEnd(overhang, wasPlaying)
                         // metadata (duration) might not be loaded yet after change of source
                         video.addEventListener("loadedmetadata", rewindFunction)
@@ -101,7 +100,7 @@ export default class VideoController {
 
         function jumpToFrameFromEnd(overhang, wasPlaying) {
             video.removeEventListener("loadedmetadata", rewindFunction)
-            video.currentTime = video.duration + overhang;
+            video.currentTime = video.duration + overhang
             if (wasPlaying) {
                 video.play()
             }
@@ -110,11 +109,12 @@ export default class VideoController {
         window.onForwardClick = function() {
             if (video.src !== "") {
                 const overhang = video.duration - video.currentTime - VideoController.JUMP_TIME_SECONDS
-                if (overhang < 0 && currentVideoIndex !== videoManager.fileKeys.length - 1) {
+                const url = trackController.getNextVideo()
+                if (overhang < 0 && url) {
                     const wasPlaying = !video.paused
                     video.pause()
-                    changeCurrentVideoSource(currentVideoIndex + 1)
-                    video.currentTime = -overhang;
+                    changeVideoSource(url)
+                    video.currentTime = -overhang
                     if (wasPlaying) {
                         video.play()
                     }
@@ -150,11 +150,9 @@ export default class VideoController {
             changeVolume(event.target.value)
         }
 
-        function changeCurrentVideoSource(index) {
-            if (currentVideoIndex != index) {
-                currentVideoIndex = index
-                const fileKey = videoManager.fileKeys[currentVideoIndex]
-                video.src = fileManager.fileMap.get(fileKey)
+        function changeVideoSource(url) {
+            if (video.src !== url) {
+                video.src = url
                 video.load()
                 return true
             }

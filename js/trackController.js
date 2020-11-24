@@ -5,7 +5,6 @@
  */
 export default class TrackController {
 
-
     constructor(maintrack, audiotrack, effecttrack) {
         this.maintrack = maintrack;
         this.audiotrack = audiotrack;
@@ -43,31 +42,10 @@ export default class TrackController {
     }
 
     setTrackLength() {
-        for (const[key, value] of this.maintrack.durationMap) {
-            if(value >= 0) {
-               let element = this.maintrack.trackNode.querySelector("#" + key);
-               element.style.width = Math.floor(value / this.endTime * 100) + "%"
-
-            }
-        }
-
-        for (const[key, value] of this.audiotrack.durationMap) {
-            if(value >= 0) {
-               let element = this.audiotrack.trackNode.querySelector("#" + key);
-               element.style.width = Math.floor(value / this.endTime * 100) + "%"
-
-            }
-        }
-
-        for (const[key, value] of this.effecttrack.durationMap) {
-            if(value >= 0) {
-               let element = this.effecttrack.trackNode.querySelector("#" + key);
-               element.style.width = Math.floor(value / this.endTime * 100) + "%"
-
-            }
-        }
+        setTrackLength(this.maintrack)
+        setTrackLength(this.audiotrack)
+        setTrackLength(this.effecttrack)
     }
-
 
     getNextVideo() {
         return this.maintrack.next();
@@ -81,7 +59,6 @@ export default class TrackController {
         else {return null;}
     }
 
-
     getLastVideo() {
         let index = this.maintrack.setCurrentElement(this.maintrack.fileKeys.length - 1);
         if(index) {
@@ -93,7 +70,7 @@ export default class TrackController {
     getNextAudio() {
         return this.audiotrack.next();
     }
-    // Audio that fits with video.
+
     getCurrentAudio() {
         const video = document.querySelector("#video")
         let currentTime = getCurrentTime(this.maintrack, video.currentTime);
@@ -105,9 +82,6 @@ export default class TrackController {
         return null;
     }
 
-    getNextFilter() {
-        return this.effecttrack.next();
-    }
     getCurrentFilter() {
         const video = document.querySelector("#video")
         let currentTime = getCurrentTime(this.maintrack, video.currentTime);
@@ -120,7 +94,16 @@ export default class TrackController {
     }
 }
 
- function getCurrentTime(maintrack, delay) {
+function setTrackLength(track) {
+    for (const[key, value] of track.durationMap) {
+        if(value >= 0) {
+           let element = track.trackNode.querySelector("#" + key);
+           element.style.width = Math.floor(value / this.endTime * 100) + "%"
+        }
+    }
+}
+
+function getCurrentTime(maintrack, delay) {
     let currentIndex = maintrack.currentElement;
     let time = delay;    
     for (let i = 0; i < currentIndex; i++) {
