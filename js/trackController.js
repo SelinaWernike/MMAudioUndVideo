@@ -21,7 +21,7 @@ export default class TrackController {
             this.endTime = this.endTime + value;
         }
         let endTime = document.querySelector("#endTime");
-        endTime.innerHTML = this.endTime;
+        endTime.textContent = this.endTime;
     }
 
     /**

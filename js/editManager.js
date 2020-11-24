@@ -1,3 +1,4 @@
+import FunctionMap from "./util/functionMap.js"
 
 /**
  * @author Selina Wernike
@@ -13,7 +14,7 @@ export default class EditManager {
         this.loader = loader;
         this.elements = [];
         this.fileKeys = [];
-        this.durationMap = new Map();
+        this.durationMap = new FunctionMap();
         this.id = 0;
         this.currentElement = null;
     }
@@ -32,7 +33,7 @@ export default class EditManager {
                 container.innerHTML = childData;
                 container.children[0].removeAttribute("draggable")
                 const fileKey = container.children[0].getAttribute("fileKey")
-                let trackObject = this.loader.load(fileKey);
+                let trackObject = this.loader.load(fileKey, container);
                 if (trackObject !== null) {
                     this.fileKeys.push(fileKey)
                     this.elements.push(container)
@@ -50,9 +51,11 @@ export default class EditManager {
 
     addRemoveEvent(item, index) {
         let close = item.querySelector("span")
-        close.addEventListener("click", () => {
-            this.removeElement(item, index)
-        })
+        if (close) {
+            close.addEventListener("click", () => {
+                this.removeElement(item, index)
+            })
+        }
     }
 
     /**
