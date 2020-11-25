@@ -1,0 +1,17 @@
+.fileListItem {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    padding: 5px;
+}
+
+.fileImageContainer {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+}
+
+.fileImageContainer > * {
+    padding-right: 5px;
+}

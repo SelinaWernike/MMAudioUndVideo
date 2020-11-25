@@ -64,12 +64,16 @@ export default class EditManager {
     }
 
     addRemoveEvent(item, index) {
-        let close = item.querySelector("span")
-        if (close) {
-            close.addEventListener("click", () => {
-                this.removeElement(item, index)
-            })
+        let close = item.querySelector(".close")
+        if (!close) {
+            close = document.createElement("div");
+            close.textContent = "X"
+            close.className = "pointer close"
+            item.children[0].appendChild(close)
         }
+        close.addEventListener("click", () => {
+            this.removeElement(item, index)
+        })
     }
 
     /**
