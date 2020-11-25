@@ -16,7 +16,6 @@ export default class EditManager {
         this.fileKeys = [];
         this.durationMap = new FunctionMap();
         this.id = 0;
-        this.currentElement = null;
     }
 
     initializeTrack() {
@@ -35,18 +34,33 @@ export default class EditManager {
                 const fileKey = container.children[0].getAttribute("fileKey")
                 let trackObject = this.loader.load(fileKey, container);
                 if (trackObject !== null) {
-                    this.fileKeys.push(fileKey)
-                    this.elements.push(container)
+                    const dropIndex = this.determineDropIndex(e);
+                    this.fileKeys.splice(dropIndex, 0, fileKey);
+                    this.elements.push(container);
                     this.durationMap.set(container.id, trackObject.duration);
                     this.resizeElements()
                     this.addDragNDrop(container);
-                    this.trackNode.appendChild(container);
-                    const childElement = this.trackNode.querySelector("#item" + this.id);
-                    this.addRemoveEvent(childElement, this.elements.length - 1);
+                    if (this.elements.length <= dropIndex + 1) {
+                        this.trackNode.appendChild(container)
+                    } else {
+                        this.trackNode.insertBefore(container, this.elements[dropIndex])
+                    }
+                    this.addRemoveEvent(container, this.elements.length - 1);
                     this.id++;
                 }
             }
         });
+    }
+
+    determineDropIndex(event) {
+        let totalWidth = 0;
+        for (let i = 0; i < this.elements.length; i++) {
+            if (totalWidth > event.clientX) {
+                return i;
+            }
+            totalWidth += this.elements[i].offsetWidth;
+        }
+        return this.elements.length;
     }
 
     addRemoveEvent(item, index) {
