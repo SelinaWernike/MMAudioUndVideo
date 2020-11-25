@@ -32,6 +32,7 @@ export default class FileManager {
                 image.src = this.getImageForFileType(file);
                 image.width = 50;
                 image.className = 'fileListImage';
+                image.setAttribute("draggable", false);
                 imageAndTextWrapper.appendChild(image);
                 const textDiv = document.createElement("div");
                 textDiv.textContent = file.name;
