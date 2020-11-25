@@ -22,3 +22,8 @@
     padding: 2px;
     background-color: white;
 }
+
+#effectgrid .column {
+    resize: horizontal;
+    overflow: hidden;
+}
