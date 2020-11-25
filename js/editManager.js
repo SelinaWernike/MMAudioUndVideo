@@ -107,35 +107,48 @@ export default class EditManager {
                 let fileKeyTarget = targetElement.children[0].getAttribute("fileKey")
                 targetElement.innerHTML = item.innerHTML;
                 item.innerHTML = targetObj.html;
-                this.elements = this.sectionNode.querySelectorAll(".column");
-                let indexTarget;
-                let indexThis;
-                console.log(this.fileKeys);
-                for(let i = 0; i < this.fileKeys.length;i++) {
-                    if(this.fileKeys[i] === fileKeyThis) {
-                        indexThis = i;
-                        break;
-                    }
-                }
-
-                for(let i = 0; i < this.fileKeys.length;i++) {
-                    if(this.fileKeys[i] === fileKeyTarget) {
-                        indexTarget = i;
-                        break;
-                    }
-                }
-                let temp = this.fileKeys[indexThis];
-                this.fileKeys[indexThis] = this.fileKeys[indexTarget];
-                this.fileKeys[indexTarget] = temp;
-                console.log(this.fileKeys);
+                this.elements = this.changePosition(this.elements,targetObj, item, compareHTML);
+                this.fileKeys = this.changePosition(this.fileKeys, fileKeyThis, fileKeyTarget,compareKeys);
+              
 
             }
         });
         return item;
     }
 
+    changePosition(array, item1, item2,comperator) {
+        let indexTarget;
+        let indexThis;
+        for(let i = 0; i < array.length;i++) {
+            if(comperator(array[i],item1)) {
+                console.log(array + ", index= " + i);
+                indexThis = i;
+                break;
+            }
+        }
+
+        for(let i = 0; i < array.length;i++) {
+            if(comperator(array[i], item2)) {
+                indexTarget = i;
+                break;
+            }
+        }
+        let temp = array[indexThis];
+        array[indexThis] = array[indexTarget];
+        array[indexTarget] = temp;
+        return array;
+    }
+
     getFileKeys(){
         return this.fileKeys;
     }
+}
+
+function compareHTML(item1, item2) {
+    return item1.id == item2.id;
+}
+
+function compareKeys(item1, item2) {
+    return item1 == item2;
 }
 
