@@ -7,7 +7,7 @@ export default class AudioLoader {
     load(fileKey) {
         let audio = document.createElement("audio")
         let src = this.fileManager.fileMap.get(fileKey);
-        if (src.startsWith("data:audio")) {
+        if (src && src.startsWith("data:audio")) {
             audio.src = src;
             return audio;
         } else {

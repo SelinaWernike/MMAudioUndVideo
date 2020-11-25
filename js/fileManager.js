@@ -37,15 +37,15 @@ export default class FileManager {
                 const textDiv = document.createElement("div");
                 textDiv.textContent = file.name;
                 imageAndTextWrapper.appendChild(textDiv)
-                const closeDiv = document.createElement("div");
-                closeDiv.textContent = "X"
-                closeDiv.className = "pointer close"
-                closeDiv.onclick = () => {
+                const close = document.createElement("span");
+                close.textContent = "X"
+                close.className = "pointer close"
+                close.onclick = () => {
                     document.getElementById("fileList").removeChild(listItem);
                     this.fileMap.delete(this.getFileKey(file));
                 };
                 listItem.appendChild(imageAndTextWrapper);
-                listItem.appendChild(closeDiv);
+                listItem.appendChild(close);
 
                 document.getElementById("fileList").appendChild(listItem);
             }

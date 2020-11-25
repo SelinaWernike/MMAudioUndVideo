@@ -8,9 +8,8 @@ import FunctionMap from "./util/functionMap.js"
  */
 export default class EditManager {
 
-    constructor(trackname, sectionname, loader) {
+    constructor(trackname, loader) {
         this.trackNode = document.querySelector('#' + trackname);
-        this.sectionNode = document.querySelector('#' + sectionname);
         this.loader = loader;
         this.elements = [];
         this.fileKeys = [];
@@ -19,10 +18,10 @@ export default class EditManager {
     }
 
     initializeTrack() {
-        this.sectionNode.addEventListener("dragover", (ev) => {
+        this.trackNode.addEventListener("dragover", (ev) => {
             ev.preventDefault();
         })
-        this.sectionNode.addEventListener('drop', (e) => {
+        this.trackNode.addEventListener('drop', (e) => {
             e.preventDefault();
             let childData = e.dataTransfer.getData('html');
             if (childData) {
@@ -66,7 +65,7 @@ export default class EditManager {
     addRemoveEvent(item, index) {
         let close = item.querySelector(".close")
         if (!close) {
-            close = document.createElement("div");
+            close = document.createElement("span");
             close.textContent = "X"
             close.className = "pointer close"
             item.children[0].appendChild(close)
@@ -88,7 +87,7 @@ export default class EditManager {
     }
 
     resizeElements() {
-        let width = 99 / this.elements.length;
+        let width = 100 / this.elements.length;
         this.elements.forEach(element => {
             element.style.width = width + "%";
         });
@@ -108,18 +107,17 @@ export default class EditManager {
                     html: e.target.innerHTML
                 };
                 e.dataTransfer.setData("trackItem", JSON.stringify(obj));
-
             }
         });
         item.addEventListener("drop", (ev) => {
             if (ev.dataTransfer.getData("trackItem")) {
                 let targetObj = JSON.parse(ev.dataTransfer.getData("trackItem"));
-                let targetElement = this.sectionNode.querySelector("#" + targetObj.id);
+                let targetElement = this.trackNode.querySelector("#" + targetObj.id);
                 let fileKeyThis = item.children[0].getAttribute("fileKey")
                 let fileKeyTarget = targetElement.children[0].getAttribute("fileKey")
                 targetElement.innerHTML = item.innerHTML;
                 item.innerHTML = targetObj.html;
-                this.elements = this.sectionNode.querySelectorAll(".column");
+                this.elements = this.trackNode.querySelectorAll(".column");
                 let indexTarget;
                 let indexThis;
                 console.log(this.fileKeys);
