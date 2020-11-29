@@ -15,6 +15,7 @@ constructor(fileManager) {
     }
 
     getDuration(video) {
+        video.load();
         return video.duration;
     }
 }
