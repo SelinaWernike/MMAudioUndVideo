@@ -15,7 +15,7 @@ export default class EditManager {
         this.fileKeys = [];
         this.durationMap = new Map();
         this.id = 0;
-        this.currentElement = null;
+        this.currentElement = -1;
     }
 
     initializeTrack() {
@@ -31,14 +31,14 @@ export default class EditManager {
                 container.id = "item" + this.id;
                 container.innerHTML = childData;
                 container.children[0].removeAttribute("draggable")
-
-                const fileKey = container.children[0].getAttribute("fileKey")
+                
+                const fileKey = container.children[0].getAttribute("fileKey");
                 let trackObject = this.loader.load(fileKey);
-
+                
                 if (trackObject !== null) {
                     this.fileKeys.push(fileKey)
                     this.elements.push(container)
-                    this.durationMap.set(container.id, trackObject.duration);
+                    this.durationMap.set(container.id, this.loader.getDuration(trackObject, this, container.id));
                     
                     let nameElement = container.querySelector(".fileNameText");
                     let name = nameElement.innerHTML;
@@ -55,6 +55,7 @@ export default class EditManager {
                     const childElement= this.trackNode.querySelector("#item" + this.id);
                     this.addRemoveEvent(childElement, this.elements.length - 1);
                     this.id++;
+                    this.sectionNode.dispatchEvent(TrackChange);
                 }
             }
         });
@@ -80,6 +81,7 @@ export default class EditManager {
             let width = 99 / this.elements.length;
             element.style.width = width + "%";
         });
+        this.sectionNode.dispatchEvent(TrackChange);
     }
 
     /**
@@ -116,6 +118,15 @@ export default class EditManager {
         return item;
     }
 
+    setItemDuration(element, id) {
+                this.durationMap.set(id,element.duration)
+                console.log(this.durationMap);
+                this.sectionNode.dispatchEvent(TrackChange);
+            
+            
+        
+    } 
+
     changePosition(array, item1, item2,comperator) {
         let indexTarget;
         let indexThis;
@@ -136,13 +147,40 @@ export default class EditManager {
         let temp = array[indexThis];
         array[indexThis] = array[indexTarget];
         array[indexTarget] = temp;
+        this.sectionNode.dispatchEvent(TrackChange);
         return array;
     }
 
-    getFileKeys(){
-        return this.fileKeys;
+
+    next() {
+        if(this.currentElement < this.elements.length - 1) {
+            this.currentElement++;
+            return fileKey[this.currentElement]
+        }
+        return null;
     }
+
+    next(time) {
+        let duration = this.durationMap.get("item" + this.currentElement);
+        let difference = duration - time;
+        if(difference <= 0) {
+            this.currentElement++;
+            this.next(Math.abs(difference));
+        } else {
+            return {url: this.fileKeys[this.currentElement], time: Math.abs(difference)};
+        }
+
+        
+    }
+            setCurrentElement(index) {
+                if(this.elements.length >= index) {
+                    this.currentElement = index;
+                    return this.currentElement;
+                }
+                else{ return null;}
+            }
 }
+let TrackChange = new Event("trackChange", {bubbles: true});
 
 function compareHTML(item1, item2) {
     return item1.id == item2.id;

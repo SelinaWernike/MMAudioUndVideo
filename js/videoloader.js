@@ -1,6 +1,7 @@
 export default class VideoLoader {
 constructor(fileManager) {
     this.fileManager = fileManager;
+    
 }
 
     load(fileKey) {
@@ -14,7 +15,10 @@ constructor(fileManager) {
         }
     }
 
-    getDuration(video) {
+    getDuration(video, editManager,id) {
+        video.load();
+        console.log(video);
+        video.addEventListener("loadedmetadata", function(event) {editManager.setItemDuration(video,id);});
         return video.duration;
     }
 }
