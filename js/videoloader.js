@@ -1,24 +1,19 @@
 export default class VideoLoader {
-constructor(fileManager) {
-    this.fileManager = fileManager;
     
-}
+    constructor(fileManager) {
+        this.fileManager = fileManager;
+    }
 
-    load(fileKey) {
+    load(fileKey, element, editManager) {
         let video = document.createElement("video");
         let src = this.fileManager.fileMap.get(fileKey);
-        if(src.startsWith("data:video")) {
+        if (src && src.startsWith("data:video")) {
             video.src = src;
+            video.load();
+            video.addEventListener("loadedmetadata", function(event) {editManager.setItemDuration(video,element.id);});
             return video;
         } else {
             return null;
         }
-    }
-
-    getDuration(video, editManager,id) {
-        video.load();
-        console.log(video);
-        video.addEventListener("loadedmetadata", function(event) {editManager.setItemDuration(video,id);});
-        return video.duration;
     }
 }

@@ -11,13 +11,12 @@ import TrackController from "./trackController.js"
 let canvas = document.querySelector("canvas")
 let context = canvas.getContext("2d")
 let video = document.querySelector("video")
-let input = document.querySelector("input");
-input.style.opacity = '0';
+let fileInput = document.querySelector("#fileInput");
 let filterManager = new FilterManager()
 let fileManager = new FileManager()
-let videoManager = new EditManager("videogrid", "videotrack", new VideoLoader(fileManager))
-let audioManager = new EditManager("audiogrid", "audiotrack", new AudioLoader(fileManager))
-let effectManager = new EditManager("effectgrid", "effecttrack", new EffectLoader)
+let videoManager = new EditManager("videotrack", new VideoLoader(fileManager))
+let audioManager = new EditManager("audiotrack", new AudioLoader(fileManager))
+let effectManager = new EditManager("effecttrack", new EffectLoader(filterManager))
 const trackController = new TrackController(videoManager, audioManager, effectManager);
 const videoController = new VideoController(fileManager, videoManager)
 const downloadManager = new DownloadManager(videoController);
@@ -48,7 +47,7 @@ window.addEventListener("resize", () => {
     resizeCanvas()
 })
 
-input.addEventListener("change", () => {
+fileInput.addEventListener("change", () => {
     fileManager.addFile();
 })
 

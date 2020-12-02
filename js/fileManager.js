@@ -1,7 +1,7 @@
 export default class FileManager {
 
     constructor(){
-        this.fileMap = new Map(); //key: getfileKey(), value: ArrayBuffer with file data
+        this.fileMap = new Map(); //key: getfileKey(), value: Data URLs for the file data
         // Check for the various File API support.
         if (window.File && window.FileReader && window.FileList && window.Blob) {
             // Great success! All the File APIs are supported.
@@ -20,36 +20,32 @@ export default class FileManager {
             for(const file of fileList){
                 this.addToFileMap(file);
                 const listItem = document.createElement('li');
+                listItem.className = "fileListItem"
                 listItem.setAttribute('fileKey', this.getFileKey(file));
                 listItem.setAttribute("draggable", true);
                 listItem.addEventListener("dragstart", (e) => {
                     e.dataTransfer.setData("html", e.target.outerHTML)
                 })
-                const textDiv = document.createElement("div");
-                const text = document.createTextNode(`${file.name}`);
-                textDiv.appendChild(text);
-                textDiv.className = 'fileNameText';
-
-                const imgDiv = document.createElement("div");
+                const imageAndTextWrapper = document.createElement("div");
+                imageAndTextWrapper.className = "fileImageContainer"
                 const image = document.createElement('img');
                 image.src = this.getImageForFileType(file);
                 image.width = 50;
                 image.className = 'fileListImage';
-                imgDiv.appendChild(image);
-
-                const spanDiv = document.createElement("div");
-                const span = document.createElement("SPAN");
-                const spanText = document.createTextNode("X");
-                span.className = "close";
-                span.appendChild(spanText);
-                span.onclick = () => {
+                image.setAttribute("draggable", false);
+                imageAndTextWrapper.appendChild(image);
+                const textDiv = document.createElement("div");
+                textDiv.textContent = file.name;
+                imageAndTextWrapper.appendChild(textDiv)
+                const close = document.createElement("span");
+                close.textContent = "X"
+                close.className = "pointer close"
+                close.onclick = () => {
                     document.getElementById("fileList").removeChild(listItem);
                     this.fileMap.delete(this.getFileKey(file));
                 };
-                spanDiv.appendChild(span);
-                listItem.appendChild(imgDiv);
-                listItem.appendChild(textDiv);
-                listItem.appendChild(spanDiv);
+                listItem.appendChild(imageAndTextWrapper);
+                listItem.appendChild(close);
 
                 document.getElementById("fileList").appendChild(listItem);
             }

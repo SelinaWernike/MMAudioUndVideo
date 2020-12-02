@@ -4,24 +4,16 @@ export default class AudioLoader {
         this.fileManager = fileManager;
     }
     
-    load(fileKey) {
+    load(fileKey, element, editManager) {
         let audio = document.createElement("audio")
-        audio.onerror=function() {
-            return null;
-        }
         let src = this.fileManager.fileMap.get(fileKey);
-        if(src.startsWith("data:audio")) {
-        audio.src = src;
-
-        return audio;
+        if (src && src.startsWith("data:audio")) {
+            audio.src = src;
+            audio.load();
+            audio.addEventListener("loadedmetadata", function(event) {editManager.setItemDuration(audio, element.id);});
+            return audio;
         } else {
             return null;
         }
-    }
-
-    getDuration(audio, editManager,id) {
-        audio.load();
-        audio.addEventListener("loadedmetadata", function(event) {editManager.setItemDuration(audio, id);});
-        return audio.duration;
     }
 }

@@ -4,22 +4,21 @@
     <script type="module" src="./js/main.js"></script>
     <link rel="stylesheet" href="./css/main.css" type="text/css">
     <link rel="stylesheet" href="./css/track.css" type="text/css">
+    <link rel="stylesheet" href="./css/filter.css" type="text/css">
+    <link rel="stylesheet" href="./css/file.css" type="text/css">
 </head>
 <body>
     <video id="video" crossorigin="anonymous" hidden=""></video>
     <div id="upperArea">
         <div id="fileArea">
-            <div id="fileInputContainer">
-                <label for="fileInput" id="fileLabel">+ Audio/Video hinzufügen</label>
-                <input id="fileInput" multiple name="fileInput" type="file" accept="audio/*, video/*">
-            </div>
+            <label for="fileInput" id="fileLabel">+ Audio/Video hinzufügen</label>
+            <input id="fileInput" multiple="" hidden="" name="fileInput" type="file" accept="audio/*, video/*">
             <ul id="fileList">
             </ul>
         </div>
         <div id="videoArea">
             <div id="canvasContainer">
                 <canvas id="canvas"></canvas>
-                <canvas id="filtercanvas"></canvas>
             </div>
             <div id="videoControls">
                 <div>
@@ -41,9 +40,6 @@
             </div>
         </div>
         <div id="filterArea">
-            <div id="filterInputContainer">
-                <p id="filterInput">Filter</p>
-            </div>
             <ul id="filterList">
             </ul>
         </div>
@@ -51,28 +47,21 @@
     <div id="lowerArea">
         <div id="time">
             <div class="item6" id="startTime">0</div>
-            <div class="item7" id="endTime">0</div> 
-
+            <div class="item7" id="endTime">0</div>
         </div>
         <div class="trackContainer">
             <h3>Videotrack</h3>
             <div class="track" id="videotrack">
-                <div id="videogrid">
-                </div>
             </div>
         </div>
         <div class="trackContainer">
             <h3>Audiotrack</h3>
             <div class="track" id="audiotrack">
-                <div id="audiogrid">
-                </div>
             </div>
         </div>
         <div class="trackContainer">
             <h3>Effecttrack</h3>
             <div class="track" id="effecttrack">
-                <div id="effectgrid">
-                </div>
             </div>
         </div>
     </div>

@@ -1,3 +1,4 @@
+import FunctionMap from "./util/functionMap.js"
 
 /**
  * @author Selina Wernike
@@ -7,22 +8,21 @@
  */
 export default class EditManager {
 
-    constructor(trackname, sectionname, loader) {
+    constructor(trackname, loader) {
         this.trackNode = document.querySelector('#' + trackname);
-        this.sectionNode = document.querySelector('#' + sectionname);
         this.loader = loader;
         this.elements = [];
         this.fileKeys = [];
-        this.durationMap = new Map();
+        this.durationMap = new FunctionMap();
         this.id = 0;
         this.currentElement = -1;
     }
 
     initializeTrack() {
-        this.sectionNode.addEventListener("dragover", (ev) => {
+        this.trackNode.addEventListener("dragover", (ev) => {
             ev.preventDefault();
         })
-        this.sectionNode.addEventListener('drop', (e) => {
+        this.trackNode.addEventListener('drop', (e) => {
             e.preventDefault();
             let childData = e.dataTransfer.getData('html');
             if (childData) {
@@ -31,42 +31,50 @@ export default class EditManager {
                 container.id = "item" + this.id;
                 container.innerHTML = childData;
                 container.children[0].removeAttribute("draggable")
-                
-                const fileKey = container.children[0].getAttribute("fileKey");
-                let trackObject = this.loader.load(fileKey);
-                
+                const fileKey = container.children[0].getAttribute("fileKey")
+                let trackObject = this.loader.load(fileKey, container, this);
                 if (trackObject !== null) {
-                    this.fileKeys.push(fileKey)
-                    this.elements.push(container)
-                    this.durationMap.set(container.id, this.loader.getDuration(trackObject, this, container.id));
-                    
-                    let nameElement = container.querySelector(".fileNameText");
-                    let name = nameElement.innerHTML;
-                    
-                    var width = 99 / (this.elements.length);
-                    if (this.elements.length > 0 && width > 1) {
-                        container.style.width = width + "%";
-                        this.elements.forEach(col => {
-                            col.style.width = width + "%";
-                        });
+                    const dropIndex = this.determineDropIndex(e);
+                    this.fileKeys.splice(dropIndex, 0, fileKey);
+                    this.elements.push(container);
+                    this.durationMap.set(container.id, trackObject.duration);
+                    this.resizeElements()
+                    this.addDragNDrop(container);
+                    if (this.elements.length <= dropIndex + 1) {
+                        this.trackNode.appendChild(container)
+                    } else {
+                        this.trackNode.insertBefore(container, this.elements[dropIndex])
                     }
-                    container = this.addDragNDrop(container);
-                    this.trackNode.appendChild(container);
-                    const childElement= this.trackNode.querySelector("#item" + this.id);
-                    this.addRemoveEvent(childElement, this.elements.length - 1);
+                    this.addRemoveEvent(container, this.elements.length - 1);
                     this.id++;
-                    this.sectionNode.dispatchEvent(TrackChange);
+                    this.trackNode.dispatchEvent(TrackChange);
                 }
             }
         });
     }
 
-    //TODO: only add listener for current element
+    determineDropIndex(event) {
+        let totalWidth = 0;
+        for (let i = 0; i < this.elements.length; i++) {
+            if (totalWidth > event.clientX) {
+                return i;
+            }
+            totalWidth += this.elements[i].offsetWidth;
+        }
+        return this.elements.length;
+    }
+
     addRemoveEvent(item, index) {
-            let close = item.querySelector("span")
-            close.addEventListener("click", () => {
-                this.removeElement(item, index)
-            })
+        let close = item.querySelector(".close")
+        if (!close) {
+            close = document.createElement("span");
+            close.textContent = "X"
+            close.className = "pointer close"
+            item.children[0].appendChild(close)
+        }
+        close.addEventListener("click", () => {
+            this.removeElement(item, index)
+        })
     }
 
     /**
@@ -77,11 +85,15 @@ export default class EditManager {
         this.elements.splice(index, 1);
         this.fileKeys.splice(index, 1);
         this.durationMap.delete(item.id);
+        this.resizeElements();
+    }
+
+    resizeElements() {
+        let width = 100 / this.elements.length;
         this.elements.forEach(element => {
-            let width = 99 / this.elements.length;
             element.style.width = width + "%";
         });
-        this.sectionNode.dispatchEvent(TrackChange);
+        this.trackNode.dispatchEvent(TrackChange);
     }
 
     /**
@@ -98,33 +110,27 @@ export default class EditManager {
                     html: e.target.innerHTML
                 };
                 e.dataTransfer.setData("trackItem", JSON.stringify(obj));
-
             }
         });
         item.addEventListener("drop", (ev) => {
             if (ev.dataTransfer.getData("trackItem")) {
                 let targetObj = JSON.parse(ev.dataTransfer.getData("trackItem"));
-                let targetElement = this.sectionNode.querySelector("#" + targetObj.id);
+                let targetElement = this.trackNode.querySelector("#" + targetObj.id);
                 let fileKeyThis = item.children[0].getAttribute("fileKey")
                 let fileKeyTarget = targetElement.children[0].getAttribute("fileKey")
                 targetElement.innerHTML = item.innerHTML;
                 item.innerHTML = targetObj.html;
                 this.elements = this.changePosition(this.elements,targetObj, item, compareHTML);
                 this.fileKeys = this.changePosition(this.fileKeys, fileKeyThis, fileKeyTarget,compareKeys);
-              
-
             }
         });
         return item;
     }
 
     setItemDuration(element, id) {
-                this.durationMap.set(id,element.duration)
-                console.log(this.durationMap);
-                this.sectionNode.dispatchEvent(TrackChange);
-            
-            
-        
+        this.durationMap.set(id,element.duration)
+        console.log(this.durationMap);
+        this.trackNode.dispatchEvent(TrackChange);       
     } 
 
     changePosition(array, item1, item2,comperator) {
@@ -169,16 +175,15 @@ export default class EditManager {
         } else {
             return {url: this.fileKeys[this.currentElement], time: Math.abs(difference)};
         }
-
-        
     }
-            setCurrentElement(index) {
-                if(this.elements.length >= index) {
-                    this.currentElement = index;
-                    return this.currentElement;
-                }
-                else{ return null;}
-            }
+
+    setCurrentElement(index) {
+        if(this.elements.length >= index) {
+            this.currentElement = index;
+            return this.currentElement;
+        }
+        else{ return null;}
+    }
 }
 let TrackChange = new Event("trackChange", {bubbles: true});
 
