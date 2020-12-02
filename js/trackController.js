@@ -6,30 +6,66 @@
 export default class TrackController {
 
 
-    constructor(maintrack, tracklist) {
+    constructor(maintrack, audiotrack, effecttrack) {
         this.maintrack = maintrack;
-        this.tracklist = tracklist;
-        this.endTime = 0;
-        this.currentTime = 0; 
+        this.audiotrack = audiotrack;
+        this.effecttrack = effecttrack;
+        this.endTime = 0.0;
+        this.currentTime = 0.0; 
     }
 
     /**
      * Sets the Time of the Time Bar. By calling the Videomanager.
      */
     setEndTime() {
-        for (const[key, value] of this.maintrack.durationMap.entries()) {
-            this.endTime = this.endTime + value;
+        let time = 0;
+        for (const[key, value] of this.maintrack.durationMap) {
+            if(value >= 0) {
+                console.log(this.maintrack.durationMap);
+                time = time + value;
+
+            }
         }
+        this.endTime = time;
         let endTime = document.querySelector("#endTime");
         endTime.textContent = this.endTime;
     }
 
-    /**
-     * Sets the current Elements in the Track lists and returns the intersting Informations(effect and file) to the VideoManager
-     * @param {int} time The time in sconds from the videoManager. 
-     * @returns {obj} information Important Information for Video Controller
-     */
-    syncVideoController(time) {
-        return null;
+
+    getNextVideo() {
+        return this.maintrack.next();
+    }
+
+    getFirstVideo() {
+        let index = this.maintrack.setCurrentElement(0);
+        if (index) {
+            this.audiotrack.setCurrentElement(0);
+            this.effecttrack.setCurrentElement(0);
+            return this.maintrack.fileKeys[0];
+        }
+        else {return null;}
+    }
+
+    getLastVideo() {
+        let index = this.maintrack.setCurrentElement(this.maintrack.fileKeys.length - 1);
+        if(index) {
+            return this.maintrack.fileKeys[index];
+        }
+        else {return null;}
+    }
+
+    getNextAudio() {
+        return this.audiotrack.next();
+    }
+
+    getCurrentAudio() {
+        return { url: this.audiotrack.fileKeys[this.audiotrack.currentElement], time: 0 }
+    }
+
+    getNextFilter() {
+        return this.effecttrack.next();
+    }
+    getCurrentFilter() {
+        return this.effecttrack.fileKeys[this.effecttrack.currentElement];
     }
 }

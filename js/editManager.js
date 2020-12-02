@@ -15,6 +15,7 @@ export default class EditManager {
         this.fileKeys = [];
         this.durationMap = new FunctionMap();
         this.id = 0;
+        this.currentElement = -1;
     }
 
     initializeTrack() {
@@ -31,7 +32,7 @@ export default class EditManager {
                 container.innerHTML = childData;
                 container.children[0].removeAttribute("draggable")
                 const fileKey = container.children[0].getAttribute("fileKey")
-                let trackObject = this.loader.load(fileKey, container);
+                let trackObject = this.loader.load(fileKey, container, this);
                 if (trackObject !== null) {
                     const dropIndex = this.determineDropIndex(e);
                     this.fileKeys.splice(dropIndex, 0, fileKey);
@@ -46,6 +47,7 @@ export default class EditManager {
                     }
                     this.addRemoveEvent(container, this.elements.length - 1);
                     this.id++;
+                    this.trackNode.dispatchEvent(TrackChange);
                 }
             }
         });
@@ -91,6 +93,7 @@ export default class EditManager {
         this.elements.forEach(element => {
             element.style.width = width + "%";
         });
+        this.trackNode.dispatchEvent(TrackChange);
     }
 
     /**
@@ -117,30 +120,78 @@ export default class EditManager {
                 let fileKeyTarget = targetElement.children[0].getAttribute("fileKey")
                 targetElement.innerHTML = item.innerHTML;
                 item.innerHTML = targetObj.html;
-                this.elements = this.trackNode.querySelectorAll(".column");
-                let indexTarget;
-                let indexThis;
-                console.log(this.fileKeys);
-                for(let i = 0; i < this.fileKeys.length;i++) {
-                    if(this.fileKeys[i] === fileKeyThis) {
-                        indexThis = i;
-                        break;
-                    }
-                }
-
-                for(let i = 0; i < this.fileKeys.length;i++) {
-                    if(this.fileKeys[i] === fileKeyTarget) {
-                        indexTarget = i;
-                        break;
-                    }
-                }
-                let temp = this.fileKeys[indexThis];
-                this.fileKeys[indexThis] = this.fileKeys[indexTarget];
-                this.fileKeys[indexTarget] = temp;
-                console.log(this.fileKeys);
-
+                this.elements = this.changePosition(this.elements,targetObj, item, compareHTML);
+                this.fileKeys = this.changePosition(this.fileKeys, fileKeyThis, fileKeyTarget,compareKeys);
             }
         });
+        return item;
     }
+
+    setItemDuration(element, id) {
+        this.durationMap.set(id,element.duration)
+        console.log(this.durationMap);
+        this.trackNode.dispatchEvent(TrackChange);       
+    } 
+
+    changePosition(array, item1, item2,comperator) {
+        let indexTarget;
+        let indexThis;
+        for(let i = 0; i < array.length;i++) {
+            if(comperator(array[i],item1)) {
+                console.log(array + ", index= " + i);
+                indexThis = i;
+                break;
+            }
+        }
+
+        for(let i = 0; i < array.length;i++) {
+            if(comperator(array[i], item2)) {
+                indexTarget = i;
+                break;
+            }
+        }
+        let temp = array[indexThis];
+        array[indexThis] = array[indexTarget];
+        array[indexTarget] = temp;
+        this.sectionNode.dispatchEvent(TrackChange);
+        return array;
+    }
+
+
+    next() {
+        if(this.currentElement < this.elements.length - 1) {
+            this.currentElement++;
+            return fileKey[this.currentElement]
+        }
+        return null;
+    }
+
+    next(time) {
+        let duration = this.durationMap.get("item" + this.currentElement);
+        let difference = duration - time;
+        if(difference <= 0) {
+            this.currentElement++;
+            this.next(Math.abs(difference));
+        } else {
+            return {url: this.fileKeys[this.currentElement], time: Math.abs(difference)};
+        }
+    }
+
+    setCurrentElement(index) {
+        if(this.elements.length >= index) {
+            this.currentElement = index;
+            return this.currentElement;
+        }
+        else{ return null;}
+    }
+}
+let TrackChange = new Event("trackChange", {bubbles: true});
+
+function compareHTML(item1, item2) {
+    return item1.id == item2.id;
+}
+
+function compareKeys(item1, item2) {
+    return item1 == item2;
 }
 

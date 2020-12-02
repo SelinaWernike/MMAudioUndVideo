@@ -17,7 +17,7 @@ let fileManager = new FileManager()
 let videoManager = new EditManager("videotrack", new VideoLoader(fileManager))
 let audioManager = new EditManager("audiotrack", new AudioLoader(fileManager))
 let effectManager = new EditManager("effecttrack", new EffectLoader(filterManager))
-const trackController = new TrackController(videoManager, [audioManager, effectManager]);
+const trackController = new TrackController(videoManager, audioManager, effectManager);
 const videoController = new VideoController(fileManager, videoManager)
 const downloadManager = new DownloadManager(videoController);
 resizeCanvas()
@@ -26,6 +26,14 @@ videoManager.initializeTrack();
 audioManager.initializeTrack();
 effectManager.initializeTrack();
 //Add Event Listener
+document.querySelector("#audiotrack").addEventListener("trackChange", function(event) {
+    trackController.setEndTime();
+});
+
+document.querySelector("#videotrack").addEventListener("trackChange", function(event) {
+    console.log("Hello");
+    trackController.setEndTime();
+});
 
 video.addEventListener("play", () => {
     requestAnimationFrame(renderVideo)
@@ -61,3 +69,5 @@ function renderCurrentFrame() {
     filterManager.apply(currentFrame)
     context.putImageData(currentFrame, 0, 0)
 }
+
+
