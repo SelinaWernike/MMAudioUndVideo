@@ -32,13 +32,13 @@ export default class EditManager {
                 container.innerHTML = childData;
                 container.children[0].removeAttribute("draggable")
                 
-                const fileKey = container.children[0].getAttribute("fileKey")
+                const fileKey = container.children[0].getAttribute("fileKey");
                 let trackObject = this.loader.load(fileKey);
                 
                 if (trackObject !== null) {
                     this.fileKeys.push(fileKey)
                     this.elements.push(container)
-                    this.durationMap.set(container.id, this.loader.getDuration(trackObject));
+                    this.durationMap.set(container.id, this.loader.getDuration(trackObject, this, container.id));
                     
                     let nameElement = container.querySelector(".fileNameText");
                     let name = nameElement.innerHTML;
@@ -81,6 +81,7 @@ export default class EditManager {
             let width = 99 / this.elements.length;
             element.style.width = width + "%";
         });
+        this.sectionNode.dispatchEvent(TrackChange);
     }
 
     /**
@@ -117,6 +118,15 @@ export default class EditManager {
         return item;
     }
 
+    setItemDuration(element, id) {
+                this.durationMap.set(id,element.duration)
+                console.log(this.durationMap);
+                this.sectionNode.dispatchEvent(TrackChange);
+            
+            
+        
+    } 
+
     changePosition(array, item1, item2,comperator) {
         let indexTarget;
         let indexThis;
@@ -137,6 +147,7 @@ export default class EditManager {
         let temp = array[indexThis];
         array[indexThis] = array[indexTarget];
         array[indexTarget] = temp;
+        this.sectionNode.dispatchEvent(TrackChange);
         return array;
     }
 

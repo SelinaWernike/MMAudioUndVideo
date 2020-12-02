@@ -3,6 +3,7 @@ export default class AudioLoader {
     constructor(fileManager) {
         this.fileManager = fileManager;
     }
+    
     load(fileKey) {
         let audio = document.createElement("audio")
         audio.onerror=function() {
@@ -18,7 +19,9 @@ export default class AudioLoader {
         }
     }
 
-    getDuration(audio) {
+    getDuration(audio, editManager,id) {
+        audio.load();
+        audio.addEventListener("loadedmetadata", function(event) {editManager.setItemDuration(audio, id);});
         return audio.duration;
     }
 }

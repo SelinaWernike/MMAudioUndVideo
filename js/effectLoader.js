@@ -7,6 +7,7 @@ export default class EffectLoader {
     }
 
     getDuration(filter) {
+        console.log(parseInt(filter.duration));
         return filter.duration;
     }
 }

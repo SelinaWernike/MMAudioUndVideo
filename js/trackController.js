@@ -10,17 +10,20 @@ export default class TrackController {
         this.maintrack = maintrack;
         this.audiotrack = audiotrack;
         this.effecttrack = effecttrack;
-        this.endTime = 0;
-        this.currentTime = 0; 
+        this.endTime = 0.0;
+        this.currentTime = 0.0; 
     }
 
     /**
      * Sets the Time of the Time Bar. By calling the Videomanager.
      */
     setEndTime() {
-        for (const[key, value] of this.maintrack.durationMap.entries()) {
-            console.log(value);
-            this.endTime = this.endTime + value;
+        for (const[key, value] of this.maintrack.durationMap) {
+            if(value >= 0) {
+                console.log("value");
+                this.endTime = this.endTime + value;
+
+            }
         }
         let endTime = document.querySelector("#endTime");
         endTime.innerHTML = this.endTime;
