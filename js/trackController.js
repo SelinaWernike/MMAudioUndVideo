@@ -18,13 +18,15 @@ export default class TrackController {
      * Sets the Time of the Time Bar. By calling the Videomanager.
      */
     setEndTime() {
+        let time = 0;
         for (const[key, value] of this.maintrack.durationMap) {
             if(value >= 0) {
-                console.log("value");
-                this.endTime = this.endTime + value;
+                console.log(this.maintrack.durationMap);
+                time = time + value;
 
             }
         }
+        this.endTime = time;
         let endTime = document.querySelector("#endTime");
         endTime.innerHTML = this.endTime;
     }
