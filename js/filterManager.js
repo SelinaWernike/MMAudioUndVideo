@@ -30,6 +30,7 @@ export default class FilterManager {
         for (const [key, _] of this.filters) {
             const listItem = document.createElement('li');
             listItem.textContent = key;
+            listItem.className = "filterListItem"
             listItem.setAttribute("fileKey", key)
             listItem.setAttribute("draggable", true)
             listItem.addEventListener("dragstart", (e) => {

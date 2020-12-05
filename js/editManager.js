@@ -53,6 +53,12 @@ export default class EditManager {
         });
     }
 
+    /**
+     * Calculates the index at which the element is inserted based on the drop x-position.
+
+     * 
+     * @param {DragEvent} event the event from dropping a element on the track
+     */
     determineDropIndex(event) {
         let totalWidth = 0;
         for (let i = 0; i < this.elements.length; i++) {
@@ -76,7 +82,7 @@ export default class EditManager {
             close = document.createElement("span");
             close.textContent = "X"
             close.className = "pointer close"
-            item.children[0].appendChild(close)
+            item.appendChild(close)
         }
         close.addEventListener("click", () => {
             this.removeElement(item, index)
