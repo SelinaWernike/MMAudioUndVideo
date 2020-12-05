@@ -1,4 +1,5 @@
 import FunctionMap from "./util/functionMap.js"
+import makeResizable from "./util/resize.js"
 
 /**
  * @author Selina Wernike
@@ -8,12 +9,13 @@ import FunctionMap from "./util/functionMap.js"
  */
 export default class EditManager {
 
-    constructor(trackname, loader) {
+    constructor(trackname, loader, resizable) {
         this.trackNode = document.querySelector('#' + trackname);
         this.loader = loader;
         this.elements = [];
         this.fileKeys = [];
         this.durationMap = new FunctionMap();
+        this.resizable = resizable;
         this.id = 0;
         this.currentElement = -1;
     }
@@ -46,6 +48,9 @@ export default class EditManager {
                         this.trackNode.insertBefore(container, this.elements[dropIndex])
                     }
                     this.addRemoveEvent(container, this.elements.length - 1);
+                    if (this.resizable) {
+                        this.addResizeEvents(container)
+                    }
                     this.id++;
                     this.trackNode.dispatchEvent(TrackChange);
                 }
@@ -55,7 +60,6 @@ export default class EditManager {
 
     /**
      * Calculates the index at which the element is inserted based on the drop x-position.
-
      * 
      * @param {DragEvent} event the event from dropping a element on the track
      */
@@ -142,7 +146,7 @@ export default class EditManager {
     setItemDuration(element, id) {
         this.durationMap.set(id,element.duration)
         console.log(this.durationMap);
-        this.trackNode.dispatchEvent(TrackChange);       
+        this.trackNode.dispatchEvent(TrackChange);
     } 
 
     changePosition(array, item1, item2,comperator) {
@@ -165,10 +169,19 @@ export default class EditManager {
         let temp = array[indexThis];
         array[indexThis] = array[indexTarget];
         array[indexTarget] = temp;
-        this.sectionNode.dispatchEvent(TrackChange);
+        this.trackNode.dispatchEvent(TrackChange);
         return array;
     }
 
+    addResizeEvents(element) {
+        const leftResize = document.createElement("span")
+        leftResize.className = "resize"
+        element.insertBefore(leftResize, element.children[0])
+        const rightResize = document.createElement("span")
+        rightResize.className = "resize"
+        element.appendChild(rightResize)
+        makeResizable(element, leftResize, rightResize, 10)
+    }
 
     next() {
         if(this.currentElement < this.elements.length - 1) {

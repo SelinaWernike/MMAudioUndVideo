@@ -15,17 +15,20 @@
 }
 
 .column {
-    float: left;
     background-color: white;
 }
 
 #effecttrack .column {
-    resize: horizontal;
-    overflow: hidden;
     display: flex;
     flex-direction: row;
-    align-items: center;
     justify-content: space-between;
-    padding-left: 5px;
-    padding-right: 5px;
+    position: sticky;
+    min-width: 10%;
+    max-width: 100%;
+}
+
+.resize {
+    width: 5px;
+    background-color: red;
+    cursor: ew-resize;
 }
