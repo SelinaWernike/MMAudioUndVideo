@@ -26,12 +26,7 @@ videoManager.initializeTrack();
 audioManager.initializeTrack();
 effectManager.initializeTrack();
 //Add Event Listener
-document.querySelector("#audiotrack").addEventListener("trackChange", function(event) {
-    trackController.setEndTime();
-});
-
 document.querySelector("#videotrack").addEventListener("trackChange", function(event) {
-    console.log("Hello");
     trackController.setEndTime();
 });
 

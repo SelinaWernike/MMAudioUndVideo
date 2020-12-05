@@ -21,7 +21,6 @@ export default class TrackController {
         let time = 0;
         for (const[key, value] of this.maintrack.durationMap) {
             if(value >= 0) {
-                console.log(this.maintrack.durationMap);
                 time = time + value;
 
             }

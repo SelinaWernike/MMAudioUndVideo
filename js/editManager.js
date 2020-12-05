@@ -56,10 +56,16 @@ export default class EditManager {
     determineDropIndex(event) {
         let totalWidth = 0;
         for (let i = 0; i < this.elements.length; i++) {
+            const element = this.elements[i];
+            totalWidth += element.offsetWidth;
             if (totalWidth > event.clientX) {
-                return i;
+                if (element.offsetLeft + element.offsetWidth / 2 > event.clientX) {
+                    return i;
+                } else {
+                    return i + 1;
+                }
             }
-            totalWidth += this.elements[i].offsetWidth;
+
         }
         return this.elements.length;
     }
