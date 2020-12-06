@@ -8,8 +8,7 @@ import BlueFilter from "./filter/BlueFilter.js"
 
 export default class FilterManager {
 
-    constructor(trackController) {
-        this.trackController = trackController
+    constructor() {
         this.filters = new Map()
         this.filters.set("ChromaKeyFilter", new ChromaKeyFilter())
         this.filters.set("BWFilter", new BWFilter())
@@ -22,12 +21,12 @@ export default class FilterManager {
         this.fillHtmlFilterList(filterList);
     }
 
-    apply(currentFrame) {
-        // this.trackController.getCurrentFilter().apply(currentFrame)
+    apply(currentFrame, currentFilter) {
+        this.filters.get(currentFilter).apply(currentFrame);
     }
 
     fillHtmlFilterList(filterList) {
-        for (const [key, _] of this.filters) {
+        for (const key of this.filters.keys()) {
             const listItem = document.createElement('li');
             listItem.textContent = key;
             listItem.className = "filterListItem"

@@ -60,9 +60,10 @@ function renderVideo() {
 
 function renderCurrentFrame() {
     context.drawImage(video, 0, 0, canvas.width, canvas.height)
-    let currentFrame = context.getImageData(0, 0, canvas.width, canvas.height)
-    filterManager.apply(currentFrame)
-    context.putImageData(currentFrame, 0, 0)
+    const currentFilter = trackController.getCurrentFilter();
+    if (currentFilter) {
+        let currentFrame = context.getImageData(0, 0, canvas.width, canvas.height)
+        filterManager.apply(currentFrame, currentFilter)
+        context.putImageData(currentFrame, 0, 0)
+    }
 }
-
-

@@ -121,23 +121,18 @@ export default class EditManager {
         item.setAttribute("draggable", true);
         item.addEventListener("dragstart", (e) => {
             if (e.target.id) {
-                let obj = {
-                    id: e.target.id,
-                    html: e.target.innerHTML
-                };
-                e.dataTransfer.setData("trackItem", JSON.stringify(obj));
+                e.dataTransfer.setData("trackItem", e.target.id);
             }
         });
         item.addEventListener("drop", (ev) => {
             if (ev.dataTransfer.getData("trackItem")) {
-                let targetObj = JSON.parse(ev.dataTransfer.getData("trackItem"));
-                let targetElement = this.trackNode.querySelector("#" + targetObj.id);
-                let fileKeyThis = item.children[0].getAttribute("fileKey")
-                let fileKeyTarget = targetElement.children[0].getAttribute("fileKey")
-                targetElement.innerHTML = item.innerHTML;
-                item.innerHTML = targetObj.html;
-                this.elements = this.changePosition(this.elements,targetObj, item, compareHTML);
-                this.fileKeys = this.changePosition(this.fileKeys, fileKeyThis, fileKeyTarget,compareKeys);
+                let targetElement = this.trackNode.querySelector("#" + ev.dataTransfer.getData("trackItem"));
+                const childFileKeyIndex = this.resizable ? 1 : 0;
+                let fileKeyThis = item.children[childFileKeyIndex].getAttribute("fileKey")
+                let fileKeyTarget = targetElement.children[childFileKeyIndex].getAttribute("fileKey")
+                item.parentNode.insertBefore(targetElement, item);
+                this.elements = this.changePosition(this.elements, targetElement, item, compareHTML);
+                this.fileKeys = this.changePosition(this.fileKeys, fileKeyThis, fileKeyTarget, compareKeys);
             }
         });
         return item;
