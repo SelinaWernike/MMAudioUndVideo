@@ -31,6 +31,32 @@ export default class TrackController {
         endTime.innerHTML = this.endTime;
     }
 
+    setTrackLength() {
+        for (const[key, value] of this.maintrack.durationMap) {
+            if(value >= 0) {
+               let element = this.maintrack.sectionNode.querySelector("#" + key);
+               element.style.width = Math.floor(value / this.endTime * 99) + "%"
+
+            }
+        }
+
+        for (const[key, value] of this.audiotrack.durationMap) {
+            if(value >= 0) {
+               let element = this.audiotrack.sectionNode.querySelector("#" + key);
+               element.style.width = Math.floor(value / this.endTime * 99) + "%"
+
+            }
+        }
+
+        for (const[key, value] of this.effecttrack.durationMap) {
+            if(value >= 0) {
+               let element = this.effecttrack.sectionNode.querySelector("#" + key);
+               element.style.width = Math.floor(value / this.endTime * 99) + "%"
+
+            }
+        }
+    }
+
 
     getNextVideo() {
         return this.maintrack.next();
