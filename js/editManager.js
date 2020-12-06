@@ -175,10 +175,13 @@ export default class EditManager {
 
     addResizeEvents(element) {
         const leftResize = document.createElement("span")
-        leftResize.className = "resize"
+        leftResize.className = "resize resize-left"
         element.insertBefore(leftResize, element.children[0])
+        const spacer = document.createElement("div");
+        spacer.style.flexGrow = 1;
+        element.insertBefore(spacer, element.children[2])
         const rightResize = document.createElement("span")
-        rightResize.className = "resize"
+        rightResize.className = "resize resize-right"
         element.appendChild(rightResize)
         makeResizable(element, leftResize, rightResize, 10)
     }
