@@ -61,6 +61,10 @@ export default class EditManager {
         });
     }
 
+
+    setlength() {
+       
+    }
     //TODO: only add listener for current element
     addRemoveEvent(item, index) {
             let close = item.querySelector("span")
