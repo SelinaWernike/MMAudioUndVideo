@@ -6,6 +6,7 @@
     <link rel="stylesheet" href="./css/track.css" type="text/css">
     <link rel="stylesheet" href="./css/filter.css" type="text/css">
     <link rel="stylesheet" href="./css/file.css" type="text/css">
+    <link rel="stylesheet" href="./css/settings.css" type="text/css">
 </head>
 <body>
     <video id="video" crossorigin="anonymous" hidden=""></video>
@@ -34,7 +35,7 @@
                     <img src="./images/fast_forward.png" width="24" height="24" onclick="onForwardClick()" class="pointer">
                     <img src="./images/toEnd.png" width="24" height="24" onclick="onToEndClick()" class="pointer">
                 </div>
-                <img id="saveIcon" src="./images/save.png" width="24" height="24" onclick="onSaveClick()" class="pointer">
+<!--                <img id="saveIcon" src="./images/save.png" width="24" height="24" onclick="onSaveClick()" class="pointer">-->
                 <img id="loopIcon" src="./images/loop.png" width="24" height="24" onclick="onLoopClick()" class="pointer" hidden="">
                 <img id="noLoopIcon" src="./images/no_loop.png" width="24" height="24" onclick="onLoopClick()" class="pointer">
             </div>
@@ -63,6 +64,15 @@
             <h3>Effecttrack</h3>
             <div class="track" id="effecttrack">
             </div>
+        </div>
+        <div class="settingsContainer" style="display: none">
+            <h3>Settings</h3>
+            <label for="startInput">Startzeit</label>
+            <input type="time" id="startInput"/>
+            <label for="endInput">Endzeit</label>
+            <input type="time" id="endInput"/>
+
+            <br/><button id="settingsConfirm" onclick="closeSettings()" >OK</button>
         </div>
     </div>
 </body>

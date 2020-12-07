@@ -1,4 +1,5 @@
 import FunctionMap from "./util/functionMap.js"
+import settingsManager from "./settingsManager.js";
 
 /**
  * @author Selina Wernike
@@ -45,6 +46,7 @@ export default class EditManager {
                     } else {
                         this.trackNode.insertBefore(container, this.elements[dropIndex])
                     }
+                    this.addOptionsEvent(container, this.elements.length - 1);
                     this.addRemoveEvent(container, this.elements.length - 1);
                     this.id++;
                     this.trackNode.dispatchEvent(TrackChange);
@@ -75,6 +77,30 @@ export default class EditManager {
         close.addEventListener("click", () => {
             this.removeElement(item, index)
         })
+    }
+
+    addOptionsEvent(item, index){
+        let options = item.querySelector(".options");
+        if(!options && this.trackNode.id != "effecttrack") {
+            let close = item.querySelector(".close");
+            options = document.createElement("div");
+            options.className = "pointer options"
+            const image = document.createElement('img');
+            image.src = '/../images/cut.png';
+            image.width = 30;
+            image.className = 'fileListImage';
+            image.setAttribute("draggable", false);
+            options.appendChild(image);
+            console.log(item.children);
+            item.children[0].replaceChild(options, close);
+            item.children[0].appendChild(close);
+        }
+
+        if(options){
+            options.addEventListener("click", () => {
+               settingsManager.onSettingsClick(event, this.durationMap);
+            })
+        }
     }
 
     /**
