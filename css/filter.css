@@ -1,5 +1,5 @@
-#filterList li {
-    padding-top: 20px;
-    padding-bottom: 20px;
+.filterListItem {
+    padding-top: 14.5px;
+    padding-bottom: 14.5px;
     text-align: center;
 }

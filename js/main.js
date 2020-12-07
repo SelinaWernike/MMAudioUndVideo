@@ -14,9 +14,9 @@ let video = document.querySelector("video")
 let fileInput = document.querySelector("#fileInput");
 let filterManager = new FilterManager()
 let fileManager = new FileManager()
-let videoManager = new EditManager("videotrack", new VideoLoader(fileManager))
-let audioManager = new EditManager("audiotrack", new AudioLoader(fileManager))
-let effectManager = new EditManager("effecttrack", new EffectLoader(filterManager))
+let videoManager = new EditManager("videotrack", new VideoLoader(fileManager), false)
+let audioManager = new EditManager("audiotrack", new AudioLoader(fileManager), false)
+let effectManager = new EditManager("effecttrack", new EffectLoader(filterManager), true)
 const trackController = new TrackController(videoManager, audioManager, effectManager);
 const videoController = new VideoController(fileManager, videoManager)
 const downloadManager = new DownloadManager(videoController);
@@ -26,12 +26,7 @@ videoManager.initializeTrack();
 audioManager.initializeTrack();
 effectManager.initializeTrack();
 //Add Event Listener
-document.querySelector("#audiotrack").addEventListener("trackChange", function(event) {
-    trackController.setEndTime();
-});
-
 document.querySelector("#videotrack").addEventListener("trackChange", function(event) {
-    console.log("Hello");
     trackController.setEndTime();
     trackController.setTrackLength();
 });
@@ -66,9 +61,10 @@ function renderVideo() {
 
 function renderCurrentFrame() {
     context.drawImage(video, 0, 0, canvas.width, canvas.height)
-    let currentFrame = context.getImageData(0, 0, canvas.width, canvas.height)
-    filterManager.apply(currentFrame)
-    context.putImageData(currentFrame, 0, 0)
+    const currentFilter = trackController.getCurrentFilter();
+    if (currentFilter) {
+        let currentFrame = context.getImageData(0, 0, canvas.width, canvas.height)
+        filterManager.apply(currentFrame, currentFilter)
+        context.putImageData(currentFrame, 0, 0)
+    }
 }
-
-
