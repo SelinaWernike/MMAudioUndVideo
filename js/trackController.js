@@ -45,7 +45,7 @@ export default class TrackController {
     setTrackLength() {
         for (const[key, value] of this.maintrack.durationMap) {
             if(value >= 0) {
-               let element = this.maintrack.sectionNode.querySelector("#" + key);
+               let element = this.maintrack.trackNode.querySelector("#" + key);
                element.style.width = Math.floor(value / this.endTime * 100) + "%"
 
             }
@@ -53,7 +53,7 @@ export default class TrackController {
 
         for (const[key, value] of this.audiotrack.durationMap) {
             if(value >= 0) {
-               let element = this.audiotrack.sectionNode.querySelector("#" + key);
+               let element = this.audiotrack.trackNode.querySelector("#" + key);
                element.style.width = Math.floor(value / this.endTime * 100) + "%"
 
             }
@@ -61,7 +61,7 @@ export default class TrackController {
 
         for (const[key, value] of this.effecttrack.durationMap) {
             if(value >= 0) {
-               let element = this.effecttrack.sectionNode.querySelector("#" + key);
+               let element = this.effecttrack.trackNode.querySelector("#" + key);
                element.style.width = Math.floor(value / this.endTime * 100) + "%"
 
             }
@@ -98,8 +98,11 @@ export default class TrackController {
         const video = document.querySelector("#video")
         let currentTime = getCurrentTime(this.maintrack, video.currentTime);
         let current = this.audiotrack.getElementbyTime(currentTime);
-        this.audiotrack.currentElement = current.element;
-        return current;
+        if (current) {
+            this.audiotrack.currentElement = current.element;
+            return {url: this.audioTrack.fileKeys[current.element], time: current.time};
+        }
+        return null;
     }
 
     getNextFilter() {
@@ -109,8 +112,11 @@ export default class TrackController {
         const video = document.querySelector("#video")
         let currentTime = getCurrentTime(this.maintrack, video.currentTime);
         let current = this.effecttrack.getElementbyTime(currentTime);
-        this.effecttrack.currentElement = current.element;
-        return current;
+        if (current) {
+            this.effecttrack.currentElement = current.element;
+            return this.effecttrack.fileKeys[current.element];
+        }
+        return null;
     }
 }
 

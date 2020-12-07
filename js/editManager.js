@@ -206,13 +206,11 @@ export default class EditManager {
         for (let i = 0; i < this.elements.length; i++) {
             let diffrence = this.durationMap.get(this.elements[i].id) - time;
             if(diffrence > 0) {
-                return {element=i, time=time};
+                return {element:i, time:time};
             }
             time = Math.abs(diffrence);
         }
     }
-
-
 
     setCurrentElement(index) {
         if(this.elements.length >= index) {

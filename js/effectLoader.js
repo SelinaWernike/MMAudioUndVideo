@@ -19,8 +19,9 @@ export default class EffectLoader {
                     if (endTime === 0) {
                         return 0
                     }
-                    return endTime / element.offsetWidth
-                } 
+                    const effectTrack = document.querySelector("#effecttrack")
+                    return endTime * (element.offsetWidth / effectTrack.offsetWidth)
+                }
             }
         } else {
             return null;
