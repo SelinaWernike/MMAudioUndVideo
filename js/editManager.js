@@ -173,11 +173,23 @@ export default class EditManager {
         let difference = duration - time;
         if(difference <= 0) {
             this.currentElement++;
-            this.next(Math.abs(difference));
+            return this.next(Math.abs(difference));
         } else {
             return {url: this.fileKeys[this.currentElement], time: Math.abs(difference)};
         }
     }
+
+    getElementbyTime(time) {
+        for (let i = 0; i < this.elements.length; i++) {
+            let diffrence = this.durationMap.get(this.elements[i].id) - time;
+            if(diffrence > 0) {
+                return {element=i, time=time};
+            }
+            time = Math.abs(diffrence);
+        }
+    }
+
+
 
     setCurrentElement(index) {
         if(this.elements.length >= index) {

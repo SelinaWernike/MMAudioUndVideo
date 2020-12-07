@@ -77,12 +77,11 @@ export default class TrackController {
     getFirstVideo() {
         let index = this.maintrack.setCurrentElement(0);
         if (index) {
-            this.audiotrack.setCurrentElement(0);
-            this.effecttrack.setCurrentElement(0);
             return this.maintrack.fileKeys[0];
         }
         else {return null;}
     }
+
 
     getLastVideo() {
         let index = this.maintrack.setCurrentElement(this.maintrack.fileKeys.length - 1);
@@ -95,15 +94,32 @@ export default class TrackController {
     getNextAudio() {
         return this.audiotrack.next();
     }
-
+    // Audio that fits with video.
     getCurrentAudio() {
-        return { url: this.audiotrack.fileKeys[this.audiotrack.currentElement], time: 0 }
+        const video = document.querySelector("#video")
+        let currentTime = getCurrentTime(this.maintrack, video.currentTime);
+        let current = this.audiotrack.getElementbyTime(currentTime);
+        this.audiotrack.currentElement = current.element;
+        return current;
     }
 
     getNextFilter() {
         return this.effecttrack.next();
     }
     getCurrentFilter() {
-        return this.effecttrack.fileKeys[this.effecttrack.currentElement];
+        const video = document.querySelector("#video")
+        let currentTime = getCurrentTime(this.maintrack, video.currentTime);
+        let current = this.effecttrack.getElementbyTime(currentTime);
+        this.effecttrack.currentElement = current.element;
+        return current;
     }
+}
+
+ function getCurrentTime(maintrack, delay) {
+    let currentIndex = maintrack.currentElement;
+    let time = delay;    
+    for (let i = 0; i < currentIndex; i++) {
+        time += maintrack.durationMap.get(maintrack.element[i].id);
+    }
+    return time;
 }
