@@ -64,6 +64,8 @@ export default class EditManager {
         return this.elements.length;
     }
 
+
+    //TODO: only add listener for current element
     addRemoveEvent(item, index) {
         let close = item.querySelector(".close")
         if (!close) {
