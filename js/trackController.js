@@ -14,6 +14,18 @@ export default class TrackController {
         this.currentTime = 0.0; 
     }
 
+    setAudioController(audioController) {
+        this.audioController = audioController;
+    }
+
+    setVideoController(videoController) {
+        this.videoController = videoController;
+    }
+
+    setAudioController(effectController) {
+        this.effectController = effectController;
+    }
+
     /**
      * Sets the Time of the Time Bar. By calling the Videomanager.
      */
@@ -35,7 +47,7 @@ export default class TrackController {
         for (const[key, value] of this.maintrack.durationMap) {
             if(value >= 0) {
                let element = this.maintrack.sectionNode.querySelector("#" + key);
-               element.style.width = Math.floor(value / this.endTime * 99) + "%"
+               element.style.width = Math.floor(value / this.endTime * 100) + "%"
 
             }
         }
@@ -43,7 +55,7 @@ export default class TrackController {
         for (const[key, value] of this.audiotrack.durationMap) {
             if(value >= 0) {
                let element = this.audiotrack.sectionNode.querySelector("#" + key);
-               element.style.width = Math.floor(value / this.endTime * 99) + "%"
+               element.style.width = Math.floor(value / this.endTime * 100) + "%"
 
             }
         }
@@ -51,7 +63,7 @@ export default class TrackController {
         for (const[key, value] of this.effecttrack.durationMap) {
             if(value >= 0) {
                let element = this.effecttrack.sectionNode.querySelector("#" + key);
-               element.style.width = Math.floor(value / this.endTime * 99) + "%"
+               element.style.width = Math.floor(value / this.endTime * 100) + "%"
 
             }
         }
