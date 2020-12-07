@@ -16,7 +16,7 @@ export default class FilterManager {
         //this.filters.push(new SepiaFilter())
         //this.filters.push(new RedFilter())
         //this.filters.push(new GreenFilter())
-        //this.filters.push(new BlueFilter())
+        this.filters.push(new BlueFilter())
     }
 
     apply(currentFrame) {
