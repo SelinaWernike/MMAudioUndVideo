@@ -1,16 +1,13 @@
 export default class AudioController {
 
-    constructor(trackController) {
+    constructor(fileManager, trackController) {
         const audio = document.querySelector("#audio")
         const video = document.querySelector("#video")
 
         audio.addEventListener("ended", () => {
             const url = trackController.getNextAudio()
             if (url) {
-                if (audio.src !== url) {
-                    audio.src = url
-                    audio.load()
-                }
+                changeAudioSource(url)
                 audio.play()
             } else {
                 audio.removeAttribute("src")
@@ -21,8 +18,7 @@ export default class AudioController {
             if (audio.src === "") {
                 const { url, time } = trackController.getCurrentAudio()
                 if (url) {
-                    audio.src = url
-                    audio.load()
+                    changeAudioSource(url)
                     audio.currentTime = time
                 }
             }
@@ -41,8 +37,7 @@ export default class AudioController {
                 if (audio.src !== url) {
                     const wasPlaying = !audio.paused
                     audio.pause()
-                    audio.src = url
-                    audio.load()
+                    changeAudioSource(url)
                     audio.currentTime = time
                     if (wasPlaying) {
                         audio.play()
@@ -52,5 +47,15 @@ export default class AudioController {
                 }
             }
         })
+
+        function changeAudioSource(fileKey) {
+            const url = fileManager.fileMap.get(fileKey);
+            if (audio.src !== url) {
+                audio.src = url
+                audio.load()
+                return true
+            }
+            return false
+        }
     }
 }

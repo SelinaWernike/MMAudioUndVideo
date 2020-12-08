@@ -42,29 +42,27 @@ export default class TrackController {
     }
 
     setTrackLength() {
-        setTrackLength(this.maintrack)
-        setTrackLength(this.audiotrack)
-        setTrackLength(this.effecttrack)
+        setTrackLength(this.maintrack, this.endTime)
+        setTrackLength(this.audiotrack, this.endTime)
+        setTrackLength(this.effecttrack, this.endTime)
     }
 
     getNextVideo() {
         return this.maintrack.next();
     }
 
+    getPreviousVideo() {
+        return this.maintrack.previous();
+    }
+
     getFirstVideo() {
         let index = this.maintrack.setCurrentElement(0);
-        if (index) {
-            return this.maintrack.fileKeys[0];
-        }
-        else {return null;}
+        return this.maintrack.fileKeys[index];
     }
 
     getLastVideo() {
         let index = this.maintrack.setCurrentElement(this.maintrack.fileKeys.length - 1);
-        if(index) {
-            return this.maintrack.fileKeys[index];
-        }
-        else {return null;}
+        return this.maintrack.fileKeys[index];
     }
 
     getNextAudio() {
@@ -79,7 +77,7 @@ export default class TrackController {
             this.audiotrack.currentElement = current.element;
             return {url: this.audioTrack.fileKeys[current.element], time: current.time};
         }
-        return null;
+        return {url: null, time: null};
     }
 
     getCurrentFilter() {
@@ -94,20 +92,20 @@ export default class TrackController {
     }
 }
 
-function setTrackLength(track) {
+function setTrackLength(track, endTime) {
     for (const[key, value] of track.durationMap) {
         if(value >= 0) {
            let element = track.trackNode.querySelector("#" + key);
-           element.style.width = Math.floor(value / this.endTime * 100) + "%"
+           element.style.width = Math.floor(value / endTime * 100) + "%"
         }
     }
 }
 
 function getCurrentTime(maintrack, delay) {
     let currentIndex = maintrack.currentElement;
-    let time = delay;    
+    let time = delay;
     for (let i = 0; i < currentIndex; i++) {
-        time += maintrack.durationMap.get(maintrack.element[i].id);
+        time += maintrack.durationMap.get(maintrack.elements[i].id);
     }
     return time;
 }

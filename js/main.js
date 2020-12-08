@@ -19,8 +19,8 @@ let videoManager = new EditManager("videotrack", new VideoLoader(fileManager), f
 let audioManager = new EditManager("audiotrack", new AudioLoader(fileManager), false)
 let effectManager = new EditManager("effecttrack", new EffectLoader(filterManager), true)
 const trackController = new TrackController(videoManager, audioManager, effectManager);
-const videoController = new VideoController(trackController)
-const audioController = new AudioController(trackController)
+const videoController = new VideoController(fileManager, trackController)
+const audioController = new AudioController(fileManager, trackController)
 const downloadManager = new DownloadManager(videoManager, fileManager);
 resizeCanvas()
 

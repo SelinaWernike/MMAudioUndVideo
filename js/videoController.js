@@ -2,7 +2,7 @@ export default class VideoController {
 
     static JUMP_TIME_SECONDS = 5
 
-    constructor(trackController) {
+    constructor(fileManager, trackController) {
         const video = document.querySelector("#video")
         const playIcon = document.querySelector("#playIcon")
         const pauseIcon = document.querySelector("#pauseIcon")
@@ -33,7 +33,10 @@ export default class VideoController {
 
         window.onPlayClick = function() {
             if (video.src === '') {
-                changeVideoSource(trackController.getNextVideo())
+                const nextUrl = trackController.getNextVideo()
+                if (nextUrl) {
+                    changeVideoSource(nextUrl)
+                }
             }
             if (video.src !== '') {
                 video.play()
@@ -155,7 +158,11 @@ export default class VideoController {
             changeVolume(event.target.value)
         }
 
-        function changeVideoSource(url) {
+        function changeVideoSource(fileKey) {
+            if (!fileKey) {
+                debugger;
+            }
+            const url = fileManager.fileMap.get(fileKey);
             if (video.src !== url) {
                 video.src = url
                 video.load()
