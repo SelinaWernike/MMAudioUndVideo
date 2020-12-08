@@ -3,6 +3,11 @@ export default class AudioController {
     constructor(fileManager, trackController) {
         const audio = document.querySelector("#audio")
         const video = document.querySelector("#video")
+        const volumeOnIcon = document.querySelector("#volumeOnIcon")
+        const volumeOffIcon = document.querySelector("#volumeOffIcon")
+        const volumeSlider = document.querySelector("#volumeSlider")
+        changeVolume(volumeSlider.value)
+        let previousVolume = audio.volume
 
         audio.addEventListener("ended", () => {
             const nextKey = trackController.getNextAudio()
@@ -44,6 +49,21 @@ export default class AudioController {
             }
         })
 
+        window.onVolumeOnClick = function() {
+            previousVolume = audio.volume
+            volumeSlider.value = 0
+            changeVolume(0)
+        }
+
+        window.onVolumeOffClick = function() {
+            volumeSlider.value = previousVolume
+            changeVolume(previousVolume)
+        }
+
+        window.onVolumeChange = function(event) {
+            changeVolume(event.target.value)
+        }
+
         function changeAudioSource(fileKey) {
             const url = fileManager.fileMap.get(fileKey);
             if (audio.src !== url) {
@@ -52,6 +72,17 @@ export default class AudioController {
                 return true
             }
             return false
+        }
+
+        function changeVolume(volume) {
+            if (volume == 0) {
+                volumeOnIcon.setAttribute("hidden", "")
+                volumeOffIcon.removeAttribute("hidden")
+            } else {
+                volumeOffIcon.setAttribute("hidden", "")
+                volumeOnIcon.removeAttribute("hidden")
+            }
+            audio.volume = volume
         }
     }
 }

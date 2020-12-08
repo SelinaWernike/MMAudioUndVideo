@@ -6,13 +6,8 @@ export default class VideoController {
         const video = document.querySelector("#video")
         const playIcon = document.querySelector("#playIcon")
         const pauseIcon = document.querySelector("#pauseIcon")
-        const volumeOnIcon = document.querySelector("#volumeOnIcon")
-        const volumeOffIcon = document.querySelector("#volumeOffIcon")
-        const volumeSlider = document.querySelector("#volumeSlider")
         const loopIcon = document.querySelector("#loopIcon")
         const noLoopIcon = document.querySelector("#noLoopIcon")
-        changeVolume(volumeSlider.value)
-        let previousVolume = video.volume
         let looping = false
 
         video.addEventListener("ended", () => {
@@ -143,21 +138,6 @@ export default class VideoController {
             }
         }
 
-        window.onVolumeOnClick = function() {
-            previousVolume = video.volume
-            volumeSlider.value = 0
-            changeVolume(0)
-        }
-
-        window.onVolumeOffClick = function() {
-            volumeSlider.value = previousVolume
-            changeVolume(previousVolume)
-        }
-
-        window.onVolumeChange = function(event) {
-            changeVolume(event.target.value)
-        }
-
         function changeVideoSource(fileKey) {
             const url = fileManager.fileMap.get(fileKey);
             if (video.src !== url) {
@@ -166,17 +146,6 @@ export default class VideoController {
                 return true
             }
             return false
-        }
-
-        function changeVolume(volume) {
-            if (volume == 0) {
-                volumeOnIcon.setAttribute("hidden", "")
-                volumeOffIcon.removeAttribute("hidden")
-            } else {
-                volumeOffIcon.setAttribute("hidden", "")
-                volumeOnIcon.removeAttribute("hidden")
-            }
-            video.volume = volume
         }
     }
 }
