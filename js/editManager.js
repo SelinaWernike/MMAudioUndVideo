@@ -184,13 +184,22 @@ export default class EditManager {
     }
 
     next() {
-        if(this.currentElement < this.elements.length - 1) {
+        if (this.currentElement < this.elements.length - 1) {
             this.currentElement++;
-            return fileKey[this.currentElement]
+            return this.fileKeys[this.currentElement]
         }
         return null;
     }
 
+    previous() {
+        if (this.currentElement > 0) {
+            this.currentElement--;
+            return this.fileKeys[this.currentElement];
+        }
+        return null;
+    }
+
+    /**
     next(time) {
         let duration = this.durationMap.get("item" + this.currentElement);
         let difference = duration - time;
@@ -201,6 +210,7 @@ export default class EditManager {
             return {url: this.fileKeys[this.currentElement], time: Math.abs(difference)};
         }
     }
+    */
 
     getElementbyTime(time) {
         for (let i = 0; i < this.elements.length; i++) {
@@ -213,11 +223,11 @@ export default class EditManager {
     }
 
     setCurrentElement(index) {
-        if(this.elements.length >= index) {
+        if (this.elements.length > index && index >= 0) {
             this.currentElement = index;
             return this.currentElement;
         }
-        else{ return null;}
+        return null;
     }
 }
 let TrackChange = new Event("trackChange", {bubbles: true});

@@ -1,4 +1,5 @@
 import VideoController from "./videoController.js"
+import AudioController from "./audioController.js"
 import FilterManager from "./filterManager.js"
 import FileManager from "./fileManager.js"
 import EditManager from "./editManager.js"
@@ -18,15 +19,16 @@ let videoManager = new EditManager("videotrack", new VideoLoader(fileManager), f
 let audioManager = new EditManager("audiotrack", new AudioLoader(fileManager), false)
 let effectManager = new EditManager("effecttrack", new EffectLoader(filterManager), true)
 const trackController = new TrackController(videoManager, audioManager, effectManager);
-const videoController = new VideoController(fileManager, videoManager)
-const downloadManager = new DownloadManager(videoController);
+const videoController = new VideoController(fileManager, trackController)
+const audioController = new AudioController(fileManager, trackController)
+const downloadManager = new DownloadManager(videoManager, fileManager);
 resizeCanvas()
 
 videoManager.initializeTrack();
 audioManager.initializeTrack();
 effectManager.initializeTrack();
 //Add Event Listener
-document.querySelector("#videotrack").addEventListener("trackChange", function(event) {
+document.querySelector("#videotrack").addEventListener("trackChange", function() {
     trackController.setEndTime();
     trackController.setTrackLength();
 });
