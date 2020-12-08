@@ -75,9 +75,9 @@ export default class TrackController {
         let current = this.audiotrack.getElementbyTime(currentTime);
         if (current) {
             this.audiotrack.currentElement = current.element;
-            return {url: this.audioTrack.fileKeys[current.element], time: current.time};
+            return {fileKey: this.audiotrack.fileKeys[current.element], time: current.time};
         }
-        return {url: null, time: null};
+        return {fileKey: null, time: null};
     }
 
     getCurrentFilter() {

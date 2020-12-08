@@ -16,9 +16,9 @@ export default class VideoController {
         let looping = false
 
         video.addEventListener("ended", () => {
-            const nextUrl = trackController.getNextVideo()
-            if (nextUrl) {
-                changeVideoSource(nextUrl)
+            const nextKey = trackController.getNextVideo()
+            if (nextKey) {
+                changeVideoSource(nextKey)
                 video.play()
             } else {
                 changeVideoSource(trackController.getFirstVideo())
@@ -33,9 +33,9 @@ export default class VideoController {
 
         window.onPlayClick = function() {
             if (video.src === '') {
-                const nextUrl = trackController.getNextVideo()
-                if (nextUrl) {
-                    changeVideoSource(nextUrl)
+                const nextKey = trackController.getNextVideo()
+                if (nextKey) {
+                    changeVideoSource(nextKey)
                 }
             }
             if (video.src !== '') {
@@ -85,11 +85,11 @@ export default class VideoController {
             if (video.src !== "") {
                 const overhang = video.currentTime - VideoController.JUMP_TIME_SECONDS
                 if (overhang < 0) {
-                    const previousUrl = trackController.getPreviousVideo()
-                    if (previousUrl) {
+                    const previousKey = trackController.getPreviousVideo()
+                    if (previousKey) {
                         const wasPlaying = !video.paused
                         video.pause()
-                        changeVideoSource(previousUrl)
+                        changeVideoSource(previousKey)
                         rewindFunction = () => jumpToFrameFromEnd(overhang, wasPlaying)
                         // metadata (duration) might not be loaded yet after change of source
                         video.addEventListener("loadedmetadata", rewindFunction)
@@ -114,11 +114,11 @@ export default class VideoController {
             if (video.src !== "") {
                 const overhang = video.duration - video.currentTime - VideoController.JUMP_TIME_SECONDS
                 if (overhang < 0) {
-                    const nextUrl = trackController.getNextVideo();
-                    if (nextUrl) {
+                    const nextKey = trackController.getNextVideo();
+                    if (nextKey) {
                         const wasPlaying = !video.paused
                         video.pause()
-                        changeVideoSource(nextUrl)
+                        changeVideoSource(nextKey)
                         video.currentTime = -overhang
                         if (wasPlaying) {
                             video.play()
@@ -159,9 +159,6 @@ export default class VideoController {
         }
 
         function changeVideoSource(fileKey) {
-            if (!fileKey) {
-                debugger;
-            }
             const url = fileManager.fileMap.get(fileKey);
             if (video.src !== url) {
                 video.src = url

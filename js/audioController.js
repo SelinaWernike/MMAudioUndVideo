@@ -5,9 +5,9 @@ export default class AudioController {
         const video = document.querySelector("#video")
 
         audio.addEventListener("ended", () => {
-            const url = trackController.getNextAudio()
-            if (url) {
-                changeAudioSource(url)
+            const nextKey = trackController.getNextAudio()
+            if (nextKey) {
+                changeAudioSource(nextKey)
                 audio.play()
             } else {
                 audio.removeAttribute("src")
@@ -16,9 +16,9 @@ export default class AudioController {
 
         video.addEventListener("play", () => {
             if (audio.src === "") {
-                const { url, time } = trackController.getCurrentAudio()
-                if (url) {
-                    changeAudioSource(url)
+                const { fileKey, time } = trackController.getCurrentAudio()
+                if (fileKey) {
+                    changeAudioSource(fileKey)
                     audio.currentTime = time
                 }
             }
@@ -32,18 +32,14 @@ export default class AudioController {
         })
 
         video.addEventListener("seeked", () => {
-            const { url, time } = trackController.getCurrentAudio()
-            if (url) {
-                if (audio.src !== url) {
-                    const wasPlaying = !audio.paused
-                    audio.pause()
-                    changeAudioSource(url)
-                    audio.currentTime = time
-                    if (wasPlaying) {
-                        audio.play()
-                    }
-                } else {
-                    audio.currentTime = time
+            const { fileKey, time } = trackController.getCurrentAudio()
+            if (fileKey) {
+                const wasPlaying = !video.paused
+                audio.pause()
+                changeAudioSource(fileKey)
+                audio.currentTime = time
+                if (wasPlaying) {
+                    audio.play()
                 }
             }
         })
