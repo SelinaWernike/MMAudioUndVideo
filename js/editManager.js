@@ -1,5 +1,7 @@
 import FunctionMap from "./util/functionMap.js"
 import settingsManager from "./settingsManager.js";
+import makeResizable from "./util/resize.js"
+
 
 /**
  * @author Selina Wernike
@@ -9,12 +11,13 @@ import settingsManager from "./settingsManager.js";
  */
 export default class EditManager {
 
-    constructor(trackname, loader) {
+    constructor(trackname, loader, resizable) {
         this.trackNode = document.querySelector('#' + trackname);
         this.loader = loader;
         this.elements = [];
         this.fileKeys = [];
         this.durationMap = new FunctionMap();
+        this.resizable = resizable;
         this.id = 0;
         this.currentElement = -1;
     }
@@ -48,6 +51,9 @@ export default class EditManager {
                     }
                     this.addOptionsEvent(container, this.elements.length - 1);
                     this.addRemoveEvent(container, this.elements.length - 1);
+                    if (this.resizable) {
+                        this.addResizeEvents(container)
+                    }
                     this.id++;
                     this.trackNode.dispatchEvent(TrackChange);
                 }
@@ -55,24 +61,37 @@ export default class EditManager {
         });
     }
 
+    /**
+     * Calculates the index at which the element is inserted based on the drop x-position.
+     * 
+     * @param {DragEvent} event the event from dropping a element on the track
+     */
     determineDropIndex(event) {
         let totalWidth = 0;
         for (let i = 0; i < this.elements.length; i++) {
+            const element = this.elements[i];
+            totalWidth += element.offsetWidth;
             if (totalWidth > event.clientX) {
-                return i;
+                if (element.offsetLeft + element.offsetWidth / 2 > event.clientX) {
+                    return i;
+                } else {
+                    return i + 1;
+                }
             }
-            totalWidth += this.elements[i].offsetWidth;
+
         }
         return this.elements.length;
     }
 
+
+    //TODO: only add listener for current element
     addRemoveEvent(item, index) {
         let close = item.querySelector(".close")
         if (!close) {
             close = document.createElement("span");
             close.textContent = "X"
             close.className = "pointer close"
-            item.children[0].appendChild(close)
+            item.appendChild(close)
         }
         close.addEventListener("click", () => {
             this.removeElement(item, index)
@@ -130,23 +149,18 @@ export default class EditManager {
         item.setAttribute("draggable", true);
         item.addEventListener("dragstart", (e) => {
             if (e.target.id) {
-                let obj = {
-                    id: e.target.id,
-                    html: e.target.innerHTML
-                };
-                e.dataTransfer.setData("trackItem", JSON.stringify(obj));
+                e.dataTransfer.setData("trackItem", e.target.id);
             }
         });
         item.addEventListener("drop", (ev) => {
             if (ev.dataTransfer.getData("trackItem")) {
-                let targetObj = JSON.parse(ev.dataTransfer.getData("trackItem"));
-                let targetElement = this.trackNode.querySelector("#" + targetObj.id);
-                let fileKeyThis = item.children[0].getAttribute("fileKey")
-                let fileKeyTarget = targetElement.children[0].getAttribute("fileKey")
-                targetElement.innerHTML = item.innerHTML;
-                item.innerHTML = targetObj.html;
-                this.elements = this.changePosition(this.elements,targetObj, item, compareHTML);
-                this.fileKeys = this.changePosition(this.fileKeys, fileKeyThis, fileKeyTarget,compareKeys);
+                let targetElement = this.trackNode.querySelector("#" + ev.dataTransfer.getData("trackItem"));
+                const childFileKeyIndex = this.resizable ? 1 : 0;
+                let fileKeyThis = item.children[childFileKeyIndex].getAttribute("fileKey")
+                let fileKeyTarget = targetElement.children[childFileKeyIndex].getAttribute("fileKey")
+                item.parentNode.insertBefore(targetElement, item);
+                this.elements = this.changePosition(this.elements, targetElement, item, compareHTML);
+                this.fileKeys = this.changePosition(this.fileKeys, fileKeyThis, fileKeyTarget, compareKeys);
             }
         });
         return item;
@@ -155,7 +169,7 @@ export default class EditManager {
     setItemDuration(element, id) {
         this.durationMap.set(id,element.duration)
         console.log(this.durationMap);
-        this.trackNode.dispatchEvent(TrackChange);       
+        this.trackNode.dispatchEvent(TrackChange);
     } 
 
     changePosition(array, item1, item2,comperator) {
@@ -178,36 +192,68 @@ export default class EditManager {
         let temp = array[indexThis];
         array[indexThis] = array[indexTarget];
         array[indexTarget] = temp;
-        this.sectionNode.dispatchEvent(TrackChange);
+        this.trackNode.dispatchEvent(TrackChange);
         return array;
     }
 
+    addResizeEvents(element) {
+        const leftResize = document.createElement("span")
+        leftResize.className = "resize resize-left"
+        element.insertBefore(leftResize, element.children[0])
+        const spacer = document.createElement("div");
+        spacer.style.flexGrow = 1;
+        element.insertBefore(spacer, element.children[2])
+        const rightResize = document.createElement("span")
+        rightResize.className = "resize resize-right"
+        element.appendChild(rightResize)
+        makeResizable(element, leftResize, rightResize, 10)
+    }
 
     next() {
-        if(this.currentElement < this.elements.length - 1) {
+        if (this.currentElement < this.elements.length - 1) {
             this.currentElement++;
-            return fileKey[this.currentElement]
+            return this.fileKeys[this.currentElement]
         }
         return null;
     }
 
+    previous() {
+        if (this.currentElement > 0) {
+            this.currentElement--;
+            return this.fileKeys[this.currentElement];
+        }
+        return null;
+    }
+
+    /**
     next(time) {
         let duration = this.durationMap.get("item" + this.currentElement);
         let difference = duration - time;
         if(difference <= 0) {
             this.currentElement++;
-            this.next(Math.abs(difference));
+            return this.next(Math.abs(difference));
         } else {
             return {url: this.fileKeys[this.currentElement], time: Math.abs(difference)};
         }
     }
+    */
+
+    getElementbyTime(time) {
+        for (let i = 0; i < this.elements.length; i++) {
+            let diffrence = this.durationMap.get(this.elements[i].id) - time;
+            if(diffrence > 0) {
+                return {element:i, time:time};
+            }
+            time = Math.abs(diffrence);
+        }
+    }
 
     setCurrentElement(index) {
-        if(this.elements.length >= index) {
+        if (this.elements.length > index && index >= 0) {
             this.currentElement = index;
             return this.currentElement;
         }
-        else{ return null;}
+        return null;
     }
 }
 let TrackChange = new Event("trackChange", {bubbles: true});
