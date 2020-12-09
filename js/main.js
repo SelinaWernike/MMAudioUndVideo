@@ -33,7 +33,6 @@ document.querySelector("#audiotrack").addEventListener("trackChange", function(e
 });
 
 document.querySelector("#videotrack").addEventListener("trackChange", function(event) {
-    console.log("Hello");
     trackController.setEndTime();
 });
 

@@ -79,7 +79,7 @@ export default class EditManager {
         })
     }
 
-    addOptionsEvent(item, index){
+    addOptionsEvent(item){
         let options = item.querySelector(".options");
         if(!options && this.trackNode.id != "effecttrack") {
             let close = item.querySelector(".close");
@@ -91,14 +91,13 @@ export default class EditManager {
             image.className = 'fileListImage';
             image.setAttribute("draggable", false);
             options.appendChild(image);
-            console.log(item.children);
             item.children[0].replaceChild(options, close);
             item.children[0].appendChild(close);
         }
 
         if(options){
             options.addEventListener("click", () => {
-               settingsManager.onSettingsClick(event, this.durationMap);
+               settingsManager.onSettingsClick(event, this.durationMap)
             })
         }
     }

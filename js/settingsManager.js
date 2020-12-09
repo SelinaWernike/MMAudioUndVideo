@@ -13,7 +13,6 @@ export default class SettingsManager {
         let settingsStartTime = document.querySelector("#startInput");
         let settingsEndTime = document.querySelector("#endInput");
         if (settingsContainer.style.display == 'none') {
-             console.log('display none -> initial');
              settingsContainer.style.display = 'initial';
              settingsStartTime.value = "00:00";
              //settingsEndTime.value = "00:30";
@@ -22,7 +21,6 @@ export default class SettingsManager {
              settingsEndTime.value = endDuration;
              //how to get value to accept endDuration;
          }else{
-             console.log('display initial -> none');
              settingsContainer.style.display = 'none';
              settingsContainer.removeAttribute("settingsKey");
          }
