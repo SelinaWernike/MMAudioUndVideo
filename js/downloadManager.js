@@ -1,3 +1,6 @@
+/**
+ * feature abandoned for now
+ */
 export default class DownloadManager {
     constructor(videoManager, fileManager) {
         window.onSaveClick = function(){

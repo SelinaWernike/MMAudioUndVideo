@@ -4,6 +4,7 @@ import FilterManager from "./filterManager.js"
 import FileManager from "./fileManager.js"
 import EditManager from "./editManager.js"
 import DownloadManager from "./downloadManager.js";
+import SettingsManager from "./settingsManager.js";
 import AudioLoader from "./audioloader.js"
 import VideoLoader from "./videoloader.js"
 import EffectLoader from "./effectLoader.js"
@@ -15,6 +16,7 @@ let video = document.querySelector("video")
 let fileInput = document.querySelector("#fileInput");
 let filterManager = new FilterManager()
 let fileManager = new FileManager()
+let settingsManager = new SettingsManager()
 let videoManager = new EditManager("videotrack", new VideoLoader(fileManager), false)
 let audioManager = new EditManager("audiotrack", new AudioLoader(fileManager), false)
 let effectManager = new EditManager("effecttrack", new EffectLoader(filterManager), true)

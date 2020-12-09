@@ -5,7 +5,8 @@
 }
 
 #lowerArea {
-    display: flex;
+    /*display: flex;*/
+    display: grid;
     flex-direction: column;
     height: 50%;
 }
