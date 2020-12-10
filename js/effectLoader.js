@@ -6,7 +6,7 @@ export default class EffectLoader {
 
     /**
      * Checks if the fileKey belongs to a filter and if true, returns an object that determines
-     * itś duration based on the percentage of own width to the total track time.
+     * itś duration and start time based on the percentage of own width and left position to the total track time.
      * 
      * @param {String} fileKey the fileKey of the filter
      * @param {HTMLElement} element the element on the track
@@ -14,17 +14,25 @@ export default class EffectLoader {
     load(fileKey, element) {
         if (this.filterManager.filters.has(fileKey)) {
             return {
+                start: function() {
+                    return inTrackTime(element.offsetLeft - element.parentNode.offsetLeft)
+
+                },
+
                 duration: function() {
-                    const endTime = parseFloat(document.querySelector("#endTime").textContent)
-                    if (endTime === 0) {
-                        return 0
-                    }
-                    const effectTrack = document.querySelector("#effecttrack")
-                    return endTime * (element.offsetWidth / effectTrack.offsetWidth)
+                    return inTrackTime(element.offsetWidth);
                 }
             }
-        } else {
-            return null;
         }
+        return null;
     }
+}
+
+function inTrackTime(value) {
+    const endTime = parseFloat(document.querySelector("#endTime").textContent);
+    if (endTime === 0) {
+        return 0;
+    }
+    const effectTrack = document.querySelector("#effecttrack");
+    return endTime * (value / effectTrack.offsetWidth);
 }
