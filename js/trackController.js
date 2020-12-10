@@ -10,7 +10,7 @@ export default class TrackController {
         this.audiotrack = audiotrack;
         this.effecttrack = effecttrack;
         this.endTime = 0.0;
-        this.currentTime = 0.0; 
+        this.currentTime = 0.0;
     }
 
     setAudioController(audioController) {
@@ -30,8 +30,8 @@ export default class TrackController {
      */
     setEndTime() {
         let time = 0;
-        for (const[key, value] of this.maintrack.durationMap) {
-            if(value >= 0) {
+        for (const [key, value] of this.maintrack.durationMap) {
+            if (value >= 0) {
                 time = time + value;
 
             }
@@ -56,13 +56,11 @@ export default class TrackController {
     }
 
     getFirstVideo() {
-        let index = this.maintrack.setCurrentElement(0);
-        return this.maintrack.fileKeys[index];
+        return this.maintrack.getElementByIndex(0);
     }
 
     getLastVideo() {
-        let index = this.maintrack.setCurrentElement(this.maintrack.fileKeys.length - 1);
-        return this.maintrack.fileKeys[index];
+        return this.maintrack.getElementByIndex(this.maintrack.fileKeys.length - 1);
     }
 
     getNextAudio() {
@@ -72,31 +70,29 @@ export default class TrackController {
     getCurrentAudio() {
         const video = document.querySelector("#video")
         let currentTime = getCurrentTime(this.maintrack, video.currentTime);
-        let current = this.audiotrack.getElementbyTime(currentTime);
+        let current = this.audiotrack.getElementByTime(currentTime);
         if (current) {
-            this.audiotrack.currentElement = current.element;
-            return {fileKey: this.audiotrack.fileKeys[current.element], time: current.time};
+            return current;
         }
-        return {fileKey: null, time: null};
+        return { fileKey: null, time: null };
     }
 
     getCurrentFilter() {
         const video = document.querySelector("#video")
         let currentTime = getCurrentTime(this.maintrack, video.currentTime);
-        let current = this.effecttrack.getElementbyTime(currentTime);
+        let current = this.effecttrack.getElementByTime(currentTime);
         if (current) {
-            this.effecttrack.currentElement = current.element;
-            return this.effecttrack.fileKeys[current.element];
+            return current.fileKey;
         }
         return null;
     }
 }
 
 function setTrackLength(track, endTime) {
-    for (const[key, value] of track.durationMap) {
-        if(value >= 0) {
-           let element = track.trackNode.querySelector("#" + key);
-           element.style.width = Math.floor(value / endTime * 100) + "%"
+    for (const [key, value] of track.durationMap) {
+        if (value >= 0) {
+            let element = track.trackNode.querySelector("#" + key);
+            element.style.width = Math.floor(value / endTime * 100) + "%"
         }
     }
 }

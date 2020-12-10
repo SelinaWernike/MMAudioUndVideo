@@ -17,6 +17,7 @@ export default class EditManager {
         this.elements = [];
         this.fileKeys = [];
         this.durationMap = new FunctionMap();
+        this.startMap = new FunctionMap();
         this.resizable = resizable;
         this.id = 0;
         this.currentElement = -1;
@@ -39,26 +40,43 @@ export default class EditManager {
                 let trackObject = this.loader.load(fileKey, container, this);
                 if (trackObject !== null) {
                     const dropIndex = this.determineDropIndex(e);
-                    this.fileKeys.splice(dropIndex, 0, fileKey);
-                    this.elements.push(container);
-                    this.durationMap.set(container.id, trackObject.duration);
+                    this.addElementData(container, fileKey, trackObject, dropIndex);
+                    this.addElementEvents(container);
                     this.resizeElements()
-                    this.addDragNDrop(container);
                     if (this.elements.length <= dropIndex + 1) {
                         this.trackNode.appendChild(container)
                     } else {
                         this.trackNode.insertBefore(container, this.elements[dropIndex])
-                    }
-                    this.addOptionsEvent(container, this.elements.length - 1);
-                    this.addRemoveEvent(container, this.elements.length - 1);
-                    if (this.resizable) {
-                        this.addResizeEvents(container)
                     }
                     this.id++;
                     this.trackNode.dispatchEvent(TrackChange);
                 }
             }
         });
+    }
+
+    addElementData(container, fileKey, trackObject, dropIndex) {
+        this.fileKeys.splice(dropIndex, 0, fileKey);
+        this.elements.splice(dropIndex, 0, container);
+        this.durationMap.set(container.id, trackObject.duration);
+        if (this.resizable) {
+            this.startMap.set(container.id, trackObject.start);
+        } else if (dropIndex > 0) {
+            const previousElement = this.elements.get(dropIndex - 1);
+            const previousDuration = this.durationMap.get(previousElement.id);
+            this.startMap.set(container.id, previousDuration);
+        } else {
+            this.startMap.set(container.id, 0);
+        }
+    }
+
+    addElementEvents(container) {
+        this.addDragNDrop(container);
+        this.addOptionsEvent(container, this.elements.length - 1);
+        this.addRemoveEvent(container, this.elements.length - 1);
+        if (this.resizable) {
+            this.addResizeEvents(container)
+        }
     }
 
     /**
@@ -83,8 +101,6 @@ export default class EditManager {
         return this.elements.length;
     }
 
-
-    //TODO: only add listener for current element
     addRemoveEvent(item, index) {
         let close = item.querySelector(".close")
         if (!close) {
@@ -115,7 +131,7 @@ export default class EditManager {
         }
 
         if(options){
-            options.addEventListener("click", () => {
+            options.addEventListener("click", (event) => {
                settingsManager.onSettingsClick(event, this.durationMap)
             })
         }
@@ -225,6 +241,14 @@ export default class EditManager {
         return null;
     }
 
+    getElementByIndex(index) {
+        if (this.elements.length > index && index >= 0) {
+            this.currentElement = index;
+            return this.fileKeys[index];
+        }
+        return null;
+    }
+
     /**
     next(time) {
         let duration = this.durationMap.get("item" + this.currentElement);
@@ -238,20 +262,14 @@ export default class EditManager {
     }
     */
 
-    getElementbyTime(time) {
+    getElementByTime(time) {
         for (let i = 0; i < this.elements.length; i++) {
-            let diffrence = this.durationMap.get(this.elements[i].id) - time;
-            if(diffrence > 0) {
-                return {element:i, time:time};
+            const startTime = this.startMap.get(this.elements[i].id);
+            const endTime = startTime + this.durationMap.get(this.elements[i].id);
+            if (time >= startTime && time <= endTime) {
+                this.currentElement = i;
+                return { fileKey: this.fileKeys[i], time: time - startTime }
             }
-            time = Math.abs(diffrence);
-        }
-    }
-
-    setCurrentElement(index) {
-        if (this.elements.length > index && index >= 0) {
-            this.currentElement = index;
-            return this.currentElement;
         }
         return null;
     }
