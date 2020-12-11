@@ -15,6 +15,7 @@ export default class EditManager {
         editManager.elements = copy.elements;
         editManager.fileKeys = copy.fileKeys;
         editManager.durationMap = copy.durationMap;
+        editManager.startMap = copy.startMap;
         return editManager;
     }
 
@@ -53,7 +54,7 @@ export default class EditManager {
                     if (this.elements.length <= dropIndex + 1) {
                         this.trackNode.appendChild(container)
                     } else {
-                        this.trackNode.insertBefore(container, this.elements[dropIndex])
+                        this.trackNode.insertBefore(container, this.elements[dropIndex + 1])
                     }
                     this.id++;
                     this.trackNode.dispatchEvent(TrackChange);
@@ -69,7 +70,7 @@ export default class EditManager {
         if (this.resizable) {
             this.startMap.set(container.id, trackObject.start);
         } else if (dropIndex > 0) {
-            const previousElement = this.elements.get(dropIndex - 1);
+            const previousElement = this.elements[dropIndex - 1];
             const previousDuration = this.durationMap.get(previousElement.id);
             this.startMap.set(container.id, previousDuration);
         } else {

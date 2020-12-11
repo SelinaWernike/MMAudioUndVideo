@@ -149,14 +149,14 @@ export default class VideoController {
     }
 
     onVolumeClick() {
-        previousVolume = audio.volume
-        volumeSlider.value = 0
+        this.previousVolume = this.video.volume
+        this.volumeSlider.value = 0
         this.changeVolume(0)
     }
 
     onVolumeOffClick() {
-        volumeSlider.value = previousVolume
-        changeVolume(previousVolume)
+        this.volumeSlider.value = this.previousVolume
+        this.changeVolume(this.previousVolume)
     }
 
     onLoopClick() {
