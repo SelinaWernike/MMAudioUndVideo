@@ -15,10 +15,11 @@ export default class RenderToFile {
         canvas.width = width;
         canvas.height = height;
         fileManager = FileManager.fromCopy(Object.assign({}, fileManager));
-        filterManager = FilterManager.fromCopy(Object.assign({}, filterManager));
+        filterManager = new FilterManager();
         videoManager = EditManager.fromCopy(Object.assign({}, videoManager));
         effectManager = EditManager.fromCopy(Object.assign({}, effectManager));
         const trackController = new TrackController(videoManager, null, effectManager);
+        trackController.setEndTime(false);
         const video = document.createElement("video");
         video.muted = true;
         video.addEventListener("play", renderVideo);
@@ -28,13 +29,17 @@ export default class RenderToFile {
         })
         new VideoController(fileManager, trackController, video, recorder.stop.bind(recorder)).onPlayClick();
         recorder.start();
-        return new Promise(resolve => {
+        const promise = new Promise(resolve => {
             this.resolve = resolve;
         });
+        promise.__proto__.getProgress = function () {
+            return 100 * (trackController.getCurrentTime(video) / trackController.endTime);
+        }
+        return promise;
 
         function renderVideo() {
             context.drawImage(video, 0, 0, canvas.width, canvas.height)
-            const currentFilter = trackController.getCurrentFilter();
+            const currentFilter = trackController.getCurrentFilter(video);
             if (currentFilter) {
                 const currentFrame = context.getImageData(0, 0, canvas.width, canvas.height)
                 filterManager.apply(currentFrame, currentFilter)
@@ -44,5 +49,3 @@ export default class RenderToFile {
         }
     }
 }
-
-

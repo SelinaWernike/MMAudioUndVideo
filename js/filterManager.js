@@ -8,10 +8,6 @@ import BlueFilter from "./filter/BlueFilter.js"
 
 export default class FilterManager {
 
-    static fromCopy(copy) {
-        return new FilterManager();
-    }
-
     constructor() {
         this.filters = new Map()
         this.filters.set("ChromaKeyFilter", new ChromaKeyFilter())
