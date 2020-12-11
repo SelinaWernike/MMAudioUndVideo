@@ -1,11 +1,10 @@
-/**
- * feature abandoned for now
- */
+import RenderToFile from "./downloadWorker.js"
+
 export default class DownloadManager {
-    constructor(videoManager, fileManager) {
-        window.onSaveClick = function(){
-            if (videoManager.fileKeys.length > 0){
-                saveClick(fileManager.fileMap.get(fileKeys[0]));
+    constructor(fileManager, filterManager, videoManager, effectManager) {
+        window.onSaveClick = function () {
+            if (videoManager.fileKeys.length > 0) {
+                new RenderToFile(720, 480, fileManager, filterManager, videoManager, effectManager).then(saveClick)
             }
         };
     }
@@ -14,7 +13,7 @@ export default class DownloadManager {
 function saveClick(fileURL) {
     // anchor element to automatically trigger file download from
     const anchor = document.createElement('a');
-    anchor.href = fileURL; //blobUrl;
+    anchor.href = fileURL;
     anchor.target = "_blank";
     anchor.download = "Test.mp4";
     anchor.click();

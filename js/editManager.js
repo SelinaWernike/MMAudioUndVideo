@@ -2,7 +2,6 @@ import FunctionMap from "./util/functionMap.js"
 import settingsManager from "./settingsManager.js";
 import makeResizable from "./util/resize.js"
 
-
 /**
  * @author Selina Wernike
  * This Class creates a Manager for File Tracks. It enabels the user 
@@ -10,6 +9,14 @@ import makeResizable from "./util/resize.js"
  * Video. It also enables editing the Video, e.g. cutting
  */
 export default class EditManager {
+
+    static fromCopy(copy) {
+        const editManager = new EditManager()
+        editManager.elements = copy.elements;
+        editManager.fileKeys = copy.fileKeys;
+        editManager.durationMap = copy.durationMap;
+        return editManager;
+    }
 
     constructor(trackname, loader, resizable) {
         this.trackNode = document.querySelector('#' + trackname);

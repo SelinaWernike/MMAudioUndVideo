@@ -8,6 +8,10 @@ import BlueFilter from "./filter/BlueFilter.js"
 
 export default class FilterManager {
 
+    static fromCopy(copy) {
+        return new FilterManager();
+    }
+
     constructor() {
         this.filters = new Map()
         this.filters.set("ChromaKeyFilter", new ChromaKeyFilter())
@@ -17,15 +21,14 @@ export default class FilterManager {
         this.filters.set("RedFilter", new RedFilter())
         this.filters.set("GreenFilter", new GreenFilter())
         this.filters.set("BlueFilter", new BlueFilter())
-        const filterList = document.getElementById("filterList");
-        this.fillHtmlFilterList(filterList);
     }
 
     apply(currentFrame, currentFilter) {
         this.filters.get(currentFilter).apply(currentFrame);
     }
 
-    fillHtmlFilterList(filterList) {
+    fillHtmlFilterList() {
+        const filterList = document.getElementById("filterList");
         for (const key of this.filters.keys()) {
             const listItem = document.createElement('li');
             listItem.textContent = key;
@@ -37,6 +40,7 @@ export default class FilterManager {
             });
             filterList.appendChild(listItem);
         }
+        return this;
     }
 }
 
