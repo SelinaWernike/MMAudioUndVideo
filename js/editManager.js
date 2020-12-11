@@ -145,6 +145,7 @@ export default class EditManager {
         this.elements.splice(index, 1);
         this.fileKeys.splice(index, 1);
         this.durationMap.delete(item.id);
+        this.startMap.delete(item.id);
         this.resizeElements();
     }
 
