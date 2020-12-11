@@ -26,8 +26,12 @@
 #videoControls {
     display: flex;
     flex-direction: row;
-    justify-content: space-between;
     margin-top: 3px;
+    justify-content: center;
+}
+
+#videoControls * {
+    margin-right: 5px;
 }
 
 #canvasContainer {

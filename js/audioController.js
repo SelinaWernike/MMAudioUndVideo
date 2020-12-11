@@ -3,9 +3,9 @@ export default class AudioController {
     constructor(fileManager, trackController) {
         const audio = document.querySelector("#audio")
         const video = document.querySelector("#video")
-        const volumeOnIcon = document.querySelector("#volumeOnIcon")
-        const volumeOffIcon = document.querySelector("#volumeOffIcon")
-        const volumeSlider = document.querySelector("#volumeSlider")
+        const volumeOnIcon = document.querySelector("#audioVolumeOnIcon")
+        const volumeOffIcon = document.querySelector("#audioVolumeOffIcon")
+        const volumeSlider = document.querySelector("#audioVolumeSlider")
         changeVolume(volumeSlider.value)
         let previousVolume = audio.volume
 
@@ -49,18 +49,18 @@ export default class AudioController {
             }
         })
 
-        window.onVolumeOnClick = function() {
+        window.onAudioVolumeOnClick = function() {
             previousVolume = audio.volume
             volumeSlider.value = 0
             changeVolume(0)
         }
 
-        window.onVolumeOffClick = function() {
+        window.onAudioVolumeOffClick = function() {
             volumeSlider.value = previousVolume
             changeVolume(previousVolume)
         }
 
-        window.onVolumeChange = function(event) {
+        window.onAudioVolumeChange = function(event) {
             changeVolume(event.target.value)
         }
 

@@ -16,9 +16,7 @@ export default class EffectLoader {
             return {
                 start: function() {
                     return inTrackTime(element.offsetLeft - element.parentNode.offsetLeft)
-
                 },
-
                 duration: function() {
                     return inTrackTime(element.offsetWidth);
                 }
