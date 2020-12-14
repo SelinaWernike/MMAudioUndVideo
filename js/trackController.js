@@ -31,8 +31,10 @@ export default class TrackController {
     setEndTime() {
         let time = 0;
         for (const[key, value] of this.maintrack.durationMap) {
-            if(value >= 0) {
-                time = time + value;
+            // if(value >= 0) {
+            if(value[0] >= 0) {
+                // time = time + value;
+                time = time + value[0];
 
             }
         }
@@ -94,9 +96,11 @@ export default class TrackController {
 
 function setTrackLength(track, endTime) {
     for (const[key, value] of track.durationMap) {
-        if(value >= 0) {
+        // if(value >= 0) {
+        if(value[0] >= 0) {
            let element = track.trackNode.querySelector("#" + key);
-           element.style.width = Math.floor(value / endTime * 100) + "%"
+           // element.style.width = Math.floor(value / endTime * 100) + "%"
+           element.style.width = Math.floor(value[0] / endTime * 100) + "%"
         }
     }
 }
@@ -105,7 +109,7 @@ function getCurrentTime(maintrack, delay) {
     let currentIndex = maintrack.currentElement;
     let time = delay;
     for (let i = 0; i < currentIndex; i++) {
-        time += maintrack.durationMap.get(maintrack.elements[i].id);
+        time += maintrack.durationMap.get(maintrack.elements[i].id)[0];
     }
     return time;
 }

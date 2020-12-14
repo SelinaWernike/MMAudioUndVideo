@@ -41,7 +41,8 @@ export default class EditManager {
                     const dropIndex = this.determineDropIndex(e);
                     this.fileKeys.splice(dropIndex, 0, fileKey);
                     this.elements.push(container);
-                    this.durationMap.set(container.id, trackObject.duration);
+                    // this.durationMap.set(container.id, trackObject.duration);
+                    this.durationMap.set(container.id, [trackObject.duration, 0.00, trackObject.duration]);
                     this.resizeElements()
                     this.addDragNDrop(container);
                     if (this.elements.length <= dropIndex + 1) {
@@ -116,6 +117,7 @@ export default class EditManager {
 
         if(options){
             options.addEventListener("click", () => {
+                console.log(this.durationMap);
                settingsManager.onSettingsClick(event, this.durationMap)
             })
         }
@@ -167,7 +169,8 @@ export default class EditManager {
     }
 
     setItemDuration(element, id) {
-        this.durationMap.set(id,element.duration)
+        // this.durationMap.set(id,element.duration)
+        this.durationMap.set(id,[element.duration, 0.00, element.duration])
         console.log(this.durationMap);
         this.trackNode.dispatchEvent(TrackChange);
     } 
@@ -240,7 +243,8 @@ export default class EditManager {
 
     getElementbyTime(time) {
         for (let i = 0; i < this.elements.length; i++) {
-            let diffrence = this.durationMap.get(this.elements[i].id) - time;
+            let diffrence = this.durationMap.get(this.elements[i].id)[0] - time;
+            console.log(diffrence); //TODO CO: remove
             if(diffrence > 0) {
                 return {element:i, time:time};
             }

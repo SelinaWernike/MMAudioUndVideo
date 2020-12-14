@@ -68,12 +68,12 @@
         </div>
         <div class="settingsContainer" style="display: none">
             <h3>Settings</h3>
-            <label for="startInput">Startzeit</label>
-            <input type="time" id="startInput"/>
+            <label placeholder="0.00" for="startInput">Startzeit</label>
+            <input type="text" id="startInput"/>
             <label for="endInput">Endzeit</label>
-            <input type="time" id="endInput"/>
+            <input placeholder="0.00" type="text" id="endInput"/>
 
-            <br/><button id="settingsConfirm" onclick="closeSettings()" >OK</button>
+            <br/><button id="settingsConfirm" onclick="onSettingsOK()" >OK</button>
         </div>
     </div>
 </body>
