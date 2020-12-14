@@ -1,6 +1,7 @@
 export default class SettingsManager {
 
     constructor(trackController){
+        this.display = false;
     let startInput = document.querySelector("#startInput");
     //startInput.addEventListener("change", setNewStartTime());
 
@@ -18,11 +19,11 @@ export default class SettingsManager {
 
             switch(settingsTrack){
                 case "videotrack":
-                    durationMap = trackController.maintrack.durationMap;
+                    trackController.maintrack.changeTime(settingsKey, {duration: Number(endValue) - Number(startValue), startTime:Number(startValue)});
                     console.log("videotrack");
                     break;
                 case "audiotrack":
-                    durationMap = trackController.audiotrack.durationMap;
+                    trackController.audiotrack.changeTime(settingsKey, {duration: Number(endValue) - Number(startValue), startTime:Number(startValue)});
                     console.log("audiotrack");
                     break;
                 default:
@@ -30,13 +31,7 @@ export default class SettingsManager {
                     break;
             }
 
-            if(typeof durationMap != 'undefined'){
-                console.log(durationMap.get(settingsKey));
-                let duration = durationMap.get(settingsKey)[0];
-                durationMap.delete(settingsKey);
-                durationMap.set(settingsKey, [duration, Number(startValue), Number(endValue)]);
-                console.log(durationMap.get(settingsKey));
-            }
+            
 
             SettingsManager.closeSettings();
             }
@@ -52,21 +47,28 @@ export default class SettingsManager {
          }
 
          static openSettings(event, durationMap){
+             let grid =  document.querySelector("#lowerArea");
+             grid.style.gridTemplateAreas = ("\'header auto\'\'track1 settings\'\' track2 settings\'\'track3 settings\'");
+             grid.style.gridTemplateColumns = "70% 30%"
          let settingsContainer = document.querySelector(".settingsContainer");
             let settingsStartTime = document.querySelector("#startInput");
             let settingsEndTime = document.querySelector("#endInput");
             let settingsTrack = event.currentTarget.parentNode.parentNode.parentNode.getAttribute("id");
             let settingsKey = event.currentTarget.parentNode.parentNode.getAttribute("id");
-            settingsContainer.style.display = 'initial';
-            settingsStartTime.value = durationMap.get(settingsKey)[1];
-            settingsEndTime.value = durationMap.get(settingsKey)[2];
+            settingsContainer.style.display = 'block';
+            let timeObject = durationMap.get(settingsKey);
+            settingsStartTime.value = timeObject.startTime;
+            settingsEndTime.value = timeObject.startTime + timeObject.duration;
             settingsContainer.setAttribute("settingsKey", settingsKey);
             settingsContainer.setAttribute("settingsTrack", settingsTrack);
             console.log(event.currentTarget.parentNode);}
 
          static closeSettings(){
+            let grid =  document.querySelector("#lowerArea");
             let settingsContainer = document.querySelector(".settingsContainer");
             settingsContainer.style.display = 'none';
+            grid.style.gridTemplateAreas = "\' header header\'\' track1 track1\'\' track2 track2\'\' track3 track3\'";
+            grid.style.gridTemplateColumns = "70% 30%";
             settingsContainer.removeAttribute("settingsKey");
             settingsContainer.removeAttribute("settingsTrack");
          }
