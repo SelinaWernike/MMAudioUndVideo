@@ -1,11 +1,45 @@
 export default class SettingsManager {
 
-    constructor(){
+    constructor(trackController){
     let startInput = document.querySelector("#startInput");
     //startInput.addEventListener("change", setNewStartTime());
 
     let endInput = document.querySelector("#endInput");
     //endInput.addEventListener("change", setNewEndTime());
+
+
+    window.onSettingsOK = function(){
+            let startValue = document.querySelector("#startInput").value;
+            let endValue = document.querySelector("#endInput").value;
+            let settingsKey = document.querySelector(".settingsContainer").getAttribute("settingsKey");
+            let settingsTrack = document.querySelector(".settingsContainer").getAttribute("settingsTrack");
+
+            let durationMap;
+
+            switch(settingsTrack){
+                case "videotrack":
+                    durationMap = trackController.maintrack.durationMap;
+                    console.log("videotrack");
+                    break;
+                case "audiotrack":
+                    durationMap = trackController.audiotrack.durationMap;
+                    console.log("audiotrack");
+                    break;
+                default:
+                    console.log("forbidden track name " + settingsTrack);
+                    break;
+            }
+
+            if(typeof durationMap != 'undefined'){
+                console.log(durationMap.get(settingsKey));
+                let duration = durationMap.get(settingsKey)[0];
+                durationMap.delete(settingsKey);
+                durationMap.set(settingsKey, [duration, Number(startValue), Number(endValue)]);
+                console.log(durationMap.get(settingsKey));
+            }
+
+            SettingsManager.closeSettings();
+            }
     }
 
     static onSettingsClick(event, durationMap) {
@@ -37,17 +71,3 @@ export default class SettingsManager {
             settingsContainer.removeAttribute("settingsTrack");
          }
 }
-
-window.onSettingsOK = function(){
-        let startValue = document.querySelector("#startInput").value;
-        let endValue = document.querySelector("#endInput").value;
-        let settingsKey = document.querySelector(".settingsContainer").getAttribute("settingsKey");
-        let settingsTrack = document.querySelector(".settingsContainer").getAttribute("settingsTrack");
-
-        console.log(settingsKey,settingsTrack,startValue,endValue);
-        //let duration = durationMap.get(settingsKey)[0];
-        //durationMap.remove(settingsKey);
-        //durationMap.set(settingsKey, [duration, startValue, endValue]);
-
-        SettingsManager.closeSettings();
-        }

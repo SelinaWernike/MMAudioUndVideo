@@ -16,14 +16,14 @@ let video = document.querySelector("video")
 let fileInput = document.querySelector("#fileInput");
 let filterManager = new FilterManager()
 let fileManager = new FileManager()
-let settingsManager = new SettingsManager()
 let videoManager = new EditManager("videotrack", new VideoLoader(fileManager), false)
 let audioManager = new EditManager("audiotrack", new AudioLoader(fileManager), false)
 let effectManager = new EditManager("effecttrack", new EffectLoader(filterManager), true)
 const trackController = new TrackController(videoManager, audioManager, effectManager);
 const videoController = new VideoController(fileManager, trackController)
 const audioController = new AudioController(fileManager, trackController)
-const downloadManager = new DownloadManager(videoManager, fileManager);
+let settingsManager = new SettingsManager(trackController);
+// const downloadManager = new DownloadManager(videoManager, fileManager);
 resizeCanvas()
 
 videoManager.initializeTrack();
