@@ -1,5 +1,7 @@
 import FunctionMap from "./util/functionMap.js"
+import settingsManager from "./settingsManager.js";
 import makeResizable from "./util/resize.js"
+
 
 /**
  * @author Selina Wernike
@@ -47,6 +49,7 @@ export default class EditManager {
                     } else {
                         this.trackNode.insertBefore(container, this.elements[dropIndex])
                     }
+                    this.addOptionsEvent(container, this.elements.length - 1);
                     this.addRemoveEvent(container, this.elements.length - 1);
                     if (this.resizable) {
                         this.addResizeEvents(container)
@@ -93,6 +96,29 @@ export default class EditManager {
         close.addEventListener("click", () => {
             this.removeElement(item, index)
         })
+    }
+
+    addOptionsEvent(item){
+        let options = item.querySelector(".options");
+        if(!options && this.trackNode.id != "effecttrack") {
+            let close = item.querySelector(".close");
+            options = document.createElement("div");
+            options.className = "pointer options"
+            const image = document.createElement('img');
+            image.src = '/../images/cut.png';
+            image.width = 30;
+            image.className = 'fileListImage';
+            image.setAttribute("draggable", false);
+            options.appendChild(image);
+            item.children[0].replaceChild(options, close);
+            item.children[0].appendChild(close);
+        }
+
+        if(options){
+            options.addEventListener("click", () => {
+               settingsManager.onSettingsClick(event, this.durationMap)
+            })
+        }
     }
 
     /**
@@ -184,13 +210,22 @@ export default class EditManager {
     }
 
     next() {
-        if(this.currentElement < this.elements.length - 1) {
+        if (this.currentElement < this.elements.length - 1) {
             this.currentElement++;
-            return fileKey[this.currentElement]
+            return this.fileKeys[this.currentElement]
         }
         return null;
     }
 
+    previous() {
+        if (this.currentElement > 0) {
+            this.currentElement--;
+            return this.fileKeys[this.currentElement];
+        }
+        return null;
+    }
+
+    /**
     next(time) {
         let duration = this.durationMap.get("item" + this.currentElement);
         let difference = duration - time;
@@ -201,6 +236,7 @@ export default class EditManager {
             return {url: this.fileKeys[this.currentElement], time: Math.abs(difference)};
         }
     }
+    */
 
     getElementbyTime(time) {
         for (let i = 0; i < this.elements.length; i++) {
@@ -213,11 +249,11 @@ export default class EditManager {
     }
 
     setCurrentElement(index) {
-        if(this.elements.length >= index) {
+        if (this.elements.length > index && index >= 0) {
             this.currentElement = index;
             return this.currentElement;
         }
-        else{ return null;}
+        return null;
     }
 }
 let TrackChange = new Event("trackChange", {bubbles: true});
