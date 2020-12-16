@@ -1,5 +1,4 @@
 import VideoController from "./videoController.js"
-import FilterManager from "./filterManager.js"
 import FileManager from "./fileManager.js"
 import EditManager from "./editManager.js"
 import TrackController from "./trackController.js"
@@ -15,7 +14,6 @@ export default class RenderToFile {
         canvas.width = width;
         canvas.height = height;
         fileManager = FileManager.fromCopy(Object.assign({}, fileManager));
-        filterManager = new FilterManager();
         videoManager = EditManager.fromCopy(Object.assign({}, videoManager));
         effectManager = EditManager.fromCopy(Object.assign({}, effectManager));
         const trackController = new TrackController(videoManager, null, effectManager);
@@ -38,14 +36,16 @@ export default class RenderToFile {
         return promise;
 
         function renderVideo() {
-            context.drawImage(video, 0, 0, canvas.width, canvas.height)
-            const currentFilter = trackController.getCurrentFilter(video);
-            if (currentFilter) {
-                const currentFrame = context.getImageData(0, 0, canvas.width, canvas.height)
-                filterManager.apply(currentFrame, currentFilter)
-                context.putImageData(currentFrame, 0, 0)
+            if (!video.paused && !video.ended) {
+                context.drawImage(video, 0, 0, canvas.width, canvas.height)
+                const currentFilter = trackController.getCurrentFilter(video);
+                if (currentFilter) {
+                    const currentFrame = context.getImageData(0, 0, canvas.width, canvas.height)
+                    filterManager.apply(currentFrame, currentFilter)
+                    context.putImageData(currentFrame, 0, 0)
+                }
+                requestAnimationFrame(renderVideo)
             }
-            requestAnimationFrame(renderVideo)
         }
     }
 }
