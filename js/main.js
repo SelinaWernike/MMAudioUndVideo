@@ -11,7 +11,9 @@ import TrackController from "./trackController.js"
 let canvas = document.querySelector("canvas")
 let context = canvas.getContext("2d")
 let video = document.querySelector("video")
+let bgImage = document.querySelector("backgroundImgCanvas")
 let fileInput = document.querySelector("#fileInput");
+let imageInput = document.querySelector("#imageInput");
 let filterManager = new FilterManager()
 let fileManager = new FileManager()
 let videoManager = new EditManager("videotrack", new VideoLoader(fileManager), false)
@@ -45,6 +47,10 @@ window.addEventListener("resize", () => {
 
 fileInput.addEventListener("change", () => {
     fileManager.addFile();
+})
+
+imageInput.addEventListener("change", () => {
+    bgImage.src = "";
 })
 
 function resizeCanvas() {
