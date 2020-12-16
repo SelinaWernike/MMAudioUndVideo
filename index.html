@@ -51,29 +51,29 @@
             <div class="item6" id="startTime">0</div>
             <div class="item7" id="endTime">0</div>
         </div>
-        <div class="trackContainer">
+        <div class="trackContainer" id="videoContainer">
             <h3>Videotrack</h3>
             <div class="track" id="videotrack">
             </div>
         </div>
-        <div class="trackContainer">
+        <div class="trackContainer" id="audioContainer">
             <h3>Audiotrack</h3>
             <div class="track" id="audiotrack">
             </div>
         </div>
-        <div class="trackContainer">
+        <div class="trackContainer"  id="effectContainer">
             <h3>Effecttrack</h3>
             <div class="track" id="effecttrack">
             </div>
         </div>
         <div class="settingsContainer" style="display: none">
             <h3>Settings</h3>
-            <label for="startInput">Startzeit</label>
-            <input type="time" id="startInput"/>
+            <label placeholder="0.00" for="startInput">Startzeit</label>
+            <input type="text" id="startInput"/>
             <label for="endInput">Endzeit</label>
-            <input type="time" id="endInput"/>
+            <input placeholder="0.00" type="text" id="endInput"/>
 
-            <br/><button id="settingsConfirm" onclick="closeSettings()" >OK</button>
+            <br/><button id="settingsConfirm" onclick="onSettingsOK()" >OK</button>
         </div>
     </div>
 </body>
