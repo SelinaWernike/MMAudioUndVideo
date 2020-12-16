@@ -18,8 +18,10 @@ let filterManager = new FilterManager().fillHtmlFilterList();
 let fileManager = new FileManager()
 let videoManager = new EditManager("videotrack", new VideoLoader(fileManager), false)
 let audioManager = new EditManager("audiotrack", new AudioLoader(fileManager), false)
-let effectManager = new EditManager("effecttrack", new EffectLoader(filterManager), true)
+const effectLoader = new EffectLoader(filterManager);
+let effectManager = new EditManager("effecttrack", effectLoader, true)
 const trackController = new TrackController(videoManager, audioManager, effectManager);
+effectLoader.setTrackManager(trackController);
 const videoController = new VideoController(fileManager, trackController).addWindowListener();
 const audioController = new AudioController(fileManager, trackController)
 let settingsManager = new SettingsManager(trackController);

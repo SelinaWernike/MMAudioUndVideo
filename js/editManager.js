@@ -66,9 +66,14 @@ export default class EditManager {
     addElementData(container, fileKey, trackObject, dropIndex) {
         this.fileKeys.splice(dropIndex, 0, fileKey);
         this.elements.splice(dropIndex, 0, container);
-        this.durationMap.set(container.id, {duration: trackObject.duration, startTime: 0.00});
+        //TODO: fixme
+        let duration = trackObject.duration;
+        if (duration instanceof Function) {
+            duration = duration.bind(trackObject);
+        }
+        this.durationMap.set(container.id, {duration: duration, startTime: 0.00});
         if (this.resizable) {
-            this.startMap.set(container.id, trackObject.start);
+            this.startMap.set(container.id, trackObject.start.bind(trackObject));
         } else if (dropIndex > 0) {
             const previousElement = this.elements[dropIndex - 1];
             const previousDuration = this.durationMap.get(previousElement.id);
@@ -280,7 +285,12 @@ export default class EditManager {
     getElementByTime(time) {
         for (let i = 0; i < this.elements.length; i++) {
             const startTime = this.startMap.get(this.elements[i].id);
-            const endTime = startTime + this.durationMap.get(this.elements[i].id);
+            let duration = this.durationMap.get(this.elements[i].id).duration;
+            // TODO: fixme
+            if (duration instanceof Function) {
+                duration = duration();
+            }
+            const endTime = startTime + duration;
             if (time >= startTime && time <= endTime) {
                 this.currentElement = i;
                 return { fileKey: this.fileKeys[i], time: time - startTime }
