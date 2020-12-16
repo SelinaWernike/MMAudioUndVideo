@@ -248,7 +248,8 @@ export default class EditManager {
     next() {
         if (this.currentElement < this.elements.length - 1) {
             this.currentElement++;
-            return this.fileKeys[this.currentElement]
+            return {fileKey : this.fileKeys[this.currentElement], startTime : this.durationMap.get("item" + this.currentElement).startTime,
+                                duration : this.durationMap.get("item" + this.currentElement).duration }
         }
         return null;
     }
@@ -256,7 +257,8 @@ export default class EditManager {
     previous() {
         if (this.currentElement > 0) {
             this.currentElement--;
-            return this.fileKeys[this.currentElement];
+            return {fileKey : this.fileKeys[this.currentElement], startTime : this.durationMap.get("item" + this.currentElement).startTime,
+                        duration : this.durationMap.get("item" + this.currentElement).duration }
         }
         return null;
     }
@@ -264,7 +266,8 @@ export default class EditManager {
     getElementByIndex(index) {
         if (this.elements.length > index && index >= 0) {
             this.currentElement = index;
-            return this.fileKeys[index];
+            return {fileKey : this.fileKeys[this.currentElement], startTime : this.durationMap.get("item" + this.currentElement).startTime,
+            duration : this.durationMap.get("item" + this.currentElement).duration }
         }
         return null;
     }
@@ -281,7 +284,7 @@ export default class EditManager {
         }
     }
     */
-
+// Nochmal nachschauen
     getElementByTime(time) {
         for (let i = 0; i < this.elements.length; i++) {
             const startTime = this.startMap.get(this.elements[i].id);
@@ -293,7 +296,8 @@ export default class EditManager {
             const endTime = startTime + duration;
             if (time >= startTime && time <= endTime) {
                 this.currentElement = i;
-                return { fileKey: this.fileKeys[i], time: time - startTime }
+                return {fileKey : this.fileKeys[i], startTime : time - startTime,
+                duration : this.durationMap.get("item" + i).duration }
             }
         }
         return null;

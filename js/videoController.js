@@ -11,6 +11,7 @@ export default class VideoController {
         this.previousVolume = video.volume
         this.userControlled = false;
         video.addEventListener("ended", this.onEnded.bind(this));
+        
     }
 
     addWindowListener() {
