@@ -26,7 +26,7 @@ export default class ChromaKeyFilter {
             let h = hsv[0];
 
             // make pixel transparent when in threshhold
-            switch (normal) {
+            switch (mode) {
                 case "normal": if (h >= hMin && h <= hMax) frame.data[i * 4 + 3] = 0;
                     break;
                 case "highMin":

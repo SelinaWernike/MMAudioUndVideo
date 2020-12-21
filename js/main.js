@@ -8,10 +8,10 @@ import VideoLoader from "./videoloader.js"
 import EffectLoader from "./effectLoader.js"
 import TrackController from "./trackController.js"
 
-let canvas = document.querySelector("canvas")
+let canvas = document.querySelector("#canvas")
 let context = canvas.getContext("2d")
-let video = document.querySelector("video")
-let bgImage = document.querySelector("backgroundImgCanvas")
+let video = document.querySelector("#video")
+let bgImage = document.querySelector("#backgroundImgCanvas")
 let fileInput = document.querySelector("#fileInput");
 let imageInput = document.querySelector("#imageInput");
 let filterManager = new FilterManager()
@@ -46,16 +46,22 @@ window.addEventListener("resize", () => {
 })
 
 fileInput.addEventListener("change", () => {
-    fileManager.addFile();
+    fileManager.addFiles(fileInput.files);
 })
 
 imageInput.addEventListener("change", () => {
-    bgImage.src = "";
+    const reader = new FileReader();
+    reader.onloadend = (event) => {
+        bgImage.src = event.target.result;
+    }
+    reader.readAsDataURL(imageInput.files[0]);
 })
 
 function resizeCanvas() {
     canvas.width = canvas.parentNode.clientWidth;
     canvas.height = canvas.parentNode.clientHeight;
+    bgImage.width = canvas.width;
+    bgImage.height = canvas.height;
 }
 
 function renderVideo() {
