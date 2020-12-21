@@ -72,11 +72,7 @@ export default class TrackController {
 
     getCurrentAudio(video = document.querySelector("#video")) {
         let currentTime = this.getCurrentTime(video);
-        let current = this.audiotrack.getElementByTime(currentTime);
-        if (current) {
-            return current;
-        }
-        return { fileKey: null, time: null };
+        return this.audiotrack.getElementByTime(currentTime);
     }
 
     getCurrentFilter(video = document.querySelector("#video")) {
