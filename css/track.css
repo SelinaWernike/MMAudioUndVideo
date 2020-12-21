@@ -8,6 +8,15 @@
    /* grid-column: 1 / 4; */
 } 
 
+.trackHeader {
+    display: flex;
+    align-items: center;
+}
+
+.trackHeader * {
+    margin-right: 10px;
+}
+
 .track {
     display: flex;
     flex-direction: row;
@@ -21,7 +30,8 @@
     background-color: white;
 }
 /*
-#time{
+#time {
+>>>>>>> Add volume slider for audio and video track
     grid-column: 1 / 4
 } */
 

@@ -9,7 +9,7 @@
     <link rel="stylesheet" href="./css/settings.css" type="text/css">
 </head>
 <body>
-    <video id="video" crossorigin="anonymous" hidden="" muted=""></video>
+    <video id="video" crossorigin="anonymous" hidden=""></video>
     <audio id="audio" crossorigin="anonymous" hidden=""></audio>
     <div id="upperArea">
         <div id="fileArea">
@@ -23,22 +23,16 @@
                 <canvas id="canvas"></canvas>
             </div>
             <div id="videoControls">
-                <div>
-                    <img id="volumeOnIcon" src="./images/volume.png" width="24" height="24" onclick="onVolumeOnClick()" class="pointer">
-                    <img id="volumeOffIcon" src="./images/mute.png" width="24" height="24" onclick="onVolumeOffClick()" class="pointer" hidden="">
-                    <input id="volumeSlider" type="range" min="0" max="1" value="1" step="0.01" oninput="onVolumeChange(event)">
-                </div>
-                <div>
-                    <img src="./images/toStart.png" width="24" height="24" onclick="onToStartClick()" class="pointer">
-                    <img src="./images/rewind.png" width="24" height="24" onclick="onRewindClick()" class="pointer">
-                    <img id="playIcon" src="./images/play.png" width="24" height="24" onclick="onPlayClick()" class="pointer">
-                    <img id="pauseIcon" src="./images/pause.png" width="24" height="24" onclick="onPauseClick()" class="pointer" hidden="">
-                    <img src="./images/fast_forward.png" width="24" height="24" onclick="onForwardClick()" class="pointer">
-                    <img src="./images/toEnd.png" width="24" height="24" onclick="onToEndClick()" class="pointer">
-                </div>
-<!--                <img id="saveIcon" src="./images/save.png" width="24" height="24" onclick="onSaveClick()" class="pointer">-->
+                <img src="./images/toStart.png" width="24" height="24" onclick="onToStartClick()" class="pointer">
+                <img src="./images/rewind.png" width="24" height="24" onclick="onRewindClick()" class="pointer">
+                <img id="playIcon" src="./images/play.png" width="24" height="24" onclick="onPlayClick()" class="pointer">
+                <img id="pauseIcon" src="./images/pause.png" width="24" height="24" onclick="onPauseClick()" class="pointer" hidden="">
+                <img src="./images/fast_forward.png" width="24" height="24" onclick="onForwardClick()" class="pointer">
+                <img src="./images/toEnd.png" width="24" height="24" onclick="onToEndClick()" class="pointer">
                 <img id="loopIcon" src="./images/loop.png" width="24" height="24" onclick="onLoopClick()" class="pointer" hidden="">
                 <img id="noLoopIcon" src="./images/no_loop.png" width="24" height="24" onclick="onLoopClick()" class="pointer">
+                <img id="saveIcon" src="./images/save.png" width="24" height="24" onclick="onSaveClick()" class="pointer">
+                <progress id="downloadProgress" max="100" value="0" hidden=""></progress>
             </div>
         </div>
         <div id="filterArea">
@@ -52,12 +46,22 @@
             <div class="item7" id="endTime">0</div>
         </div>
         <div class="trackContainer" id="videoContainer">
-            <h3>Videotrack</h3>
+            <div class="trackHeader">
+                <h3>Videotrack</h3>
+                <img id="videoVolumeOnIcon" src="./images/volume.png" width="24" height="24" onclick="onVideoVolumeOnClick()" class="pointer">
+                <img id="videoVolumeOffIcon" src="./images/mute.png" width="24" height="24" onclick="onVideoVolumeOffClick()" class="pointer" hidden="">
+                <input id="videoVolumeSlider" type="range" min="0" max="1" value="1" step="0.01" oninput="onVideoVolumeChange(event)">
+            </div>
             <div class="track" id="videotrack">
             </div>
         </div>
         <div class="trackContainer" id="audioContainer">
-            <h3>Audiotrack</h3>
+            <div class="trackHeader">
+                <h3>Audiotrack</h3>
+                <img id="audioVolumeOnIcon" src="./images/volume.png" width="24" height="24" onclick="onAudioVolumeOnClick()" class="pointer">
+                <img id="audioVolumeOffIcon" src="./images/mute.png" width="24" height="24" onclick="onAudioVolumeOffClick()" class="pointer" hidden="">
+                <input id="audioVolumeSlider" type="range" min="0" max="1" value="1" step="0.01" oninput="onAudioVolumeChange(event)">
+            </div>
             <div class="track" id="audiotrack">
             </div>
         </div>

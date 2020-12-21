@@ -1,7 +1,11 @@
 export default class FileManager {
 
-    constructor(){
-        this.fileMap = new Map(); //key: getfileKey(), value: Data URLs for the file data
+    static fromCopy(copy) {
+        return new FileManager(copy.fileMap);
+    }
+
+    constructor(fileMap = new Map()) {
+        this.fileMap = fileMap; //key: getfileKey(), value: Data URLs for the file data
         // Check for the various File API support.
         if (window.File && window.FileReader && window.FileList && window.Blob) {
             // Great success! All the File APIs are supported.

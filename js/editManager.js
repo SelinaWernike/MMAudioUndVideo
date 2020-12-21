@@ -2,7 +2,6 @@ import FunctionMap from "./util/functionMap.js"
 import settingsManager from "./settingsManager.js";
 import makeResizable from "./util/resize.js"
 
-
 /**
  * @author Selina Wernike
  * This Class creates a Manager for File Tracks. It enabels the user 
@@ -11,12 +10,22 @@ import makeResizable from "./util/resize.js"
  */
 export default class EditManager {
 
+    static fromCopy(copy) {
+        const editManager = new EditManager()
+        editManager.elements = copy.elements;
+        editManager.fileKeys = copy.fileKeys;
+        editManager.durationMap = copy.durationMap;
+        editManager.startMap = copy.startMap;
+        return editManager;
+    }
+
     constructor(trackname, loader, resizable) {
         this.trackNode = document.querySelector('#' + trackname);
         this.loader = loader;
         this.elements = [];
         this.fileKeys = [];
         this.durationMap = new FunctionMap();
+        this.startMap = new FunctionMap();
         this.resizable = resizable;
         this.id = 0;
         this.currentElement = -1;
@@ -39,26 +48,43 @@ export default class EditManager {
                 let trackObject = this.loader.load(fileKey, container, this);
                 if (trackObject !== null) {
                     const dropIndex = this.determineDropIndex(e);
-                    this.fileKeys.splice(dropIndex, 0, fileKey);
-                    this.elements.push(container);
-                    this.durationMap.set(container.id, {duration: trackObject.duration, startTime: 0.00});
+                    this.addElementData(container, fileKey, trackObject, dropIndex);
+                    this.addElementEvents(container);
                     this.resizeElements()
-                    this.addDragNDrop(container);
                     if (this.elements.length <= dropIndex + 1) {
                         this.trackNode.appendChild(container)
                     } else {
-                        this.trackNode.insertBefore(container, this.elements[dropIndex])
-                    }
-                    this.addOptionsEvent(container, this.elements.length - 1);
-                    this.addRemoveEvent(container, this.elements.length - 1);
-                    if (this.resizable) {
-                        this.addResizeEvents(container)
+                        this.trackNode.insertBefore(container, this.elements[dropIndex + 1])
                     }
                     this.id++;
                     this.trackNode.dispatchEvent(TrackChange);
                 }
             }
         });
+    }
+
+    addElementData(container, fileKey, trackObject, dropIndex) {
+        this.fileKeys.splice(dropIndex, 0, fileKey);
+        this.elements.splice(dropIndex, 0, container);
+        this.durationMap.set(container.id, { get duration() { return trackObject.duration }, startTime: 0.00});
+        if (this.resizable) {
+            this.startMap.set(container.id, function () { return trackObject.start });
+        } else if (dropIndex > 0) {
+            const previousElement = this.elements[dropIndex - 1];
+            const previousDuration = this.durationMap.get(previousElement.id);
+            this.startMap.set(container.id, previousDuration.duration)
+        } else {
+            this.startMap.set(container.id, 0);
+        }
+    }
+
+    addElementEvents(container) {
+        this.addDragNDrop(container);
+        this.addOptionsEvent(container, this.elements.length - 1);
+        this.addRemoveEvent(container, this.elements.length - 1);
+        if (this.resizable) {
+            this.addResizeEvents(container)
+        }
     }
 
     /**
@@ -83,8 +109,6 @@ export default class EditManager {
         return this.elements.length;
     }
 
-
-    //TODO: only add listener for current element
     addRemoveEvent(item, index) {
         let close = item.querySelector(".close")
         if (!close) {
@@ -115,8 +139,7 @@ export default class EditManager {
         }
 
         if(options){
-            options.addEventListener("click", () => {
-                console.log(this.durationMap);
+            options.addEventListener("click", (event) => {
                settingsManager.onSettingsClick(event, this.durationMap)
             })
         }
@@ -130,6 +153,7 @@ export default class EditManager {
         this.elements.splice(index, 1);
         this.fileKeys.splice(index, 1);
         this.durationMap.delete(item.id);
+        this.startMap.delete(item.id);
         this.resizeElements();
     }
 
@@ -219,7 +243,8 @@ export default class EditManager {
     next() {
         if (this.currentElement < this.elements.length - 1) {
             this.currentElement++;
-            return this.fileKeys[this.currentElement]
+            return {fileKey : this.fileKeys[this.currentElement], startTime : this.durationMap.get("item" + this.currentElement).startTime,
+                                duration : this.durationMap.get("item" + this.currentElement).duration }
         }
         return null;
     }
@@ -227,39 +252,34 @@ export default class EditManager {
     previous() {
         if (this.currentElement > 0) {
             this.currentElement--;
-            return this.fileKeys[this.currentElement];
+            return {fileKey : this.fileKeys[this.currentElement], startTime : this.durationMap.get("item" + this.currentElement).startTime,
+                        duration : this.durationMap.get("item" + this.currentElement).duration }
         }
         return null;
     }
 
-    /**
-    next(time) {
-        let duration = this.durationMap.get("item" + this.currentElement);
-        let difference = duration - time;
-        if(difference <= 0) {
-            this.currentElement++;
-            return this.next(Math.abs(difference));
-        } else {
-            return {url: this.fileKeys[this.currentElement], time: Math.abs(difference)};
-        }
-    }
-    */
-
-    getElementbyTime(time) {
-        for (let i = 0; i < this.elements.length; i++) {
-            let diffrence = this.durationMap.get(this.elements[i].id).duration - time;
-            console.log(diffrence); //TODO CO: remove
-            if(diffrence > 0) {
-                return {element:i, time:time};
-            }
-            time = Math.abs(diffrence);
-        }
-    }
-
-    setCurrentElement(index) {
+    getElementByIndex(index) {
         if (this.elements.length > index && index >= 0) {
             this.currentElement = index;
-            return this.currentElement;
+            return {fileKey : this.fileKeys[this.currentElement], startTime : this.durationMap.get("item" + this.currentElement).startTime,
+            duration : this.durationMap.get("item" + this.currentElement).duration }
+        }
+        return null;
+    }
+
+    getElementByTime(time) {
+        for (let i = 0; i < this.elements.length; i++) {
+            const startTime = this.startMap.get(this.elements[i].id);
+            const endTime = startTime + this.durationMap.get(this.elements[i].id).duration;
+            if (time >= startTime && time <= endTime) {
+                this.currentElement = i;
+                return {
+                    fileKey: this.fileKeys[i], 
+                    startTime: this.durationMap.get("item" + i).startTime,
+                    duration: this.durationMap.get("item" + i).duration,
+                    time: time - startTime + this.durationMap.get("item" + i).startTime,
+                }
+            }
         }
         return null;
     }

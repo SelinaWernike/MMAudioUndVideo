@@ -10,7 +10,7 @@ export default class TrackController {
         this.audiotrack = audiotrack;
         this.effecttrack = effecttrack;
         this.endTime = 0.0;
-        this.currentTime = 0.0; 
+        this.currentTime = 0.0;
     }
 
     setAudioController(audioController) {
@@ -28,19 +28,20 @@ export default class TrackController {
     /**
      * Sets the Time of the Time Bar. By calling the Videomanager.
      */
-    setEndTime() {
+    setEndTime(userInterface = true) {
         let time = 0;
-        for (const[key, value] of this.maintrack.durationMap) {
+        for (const [key, value] of this.maintrack.durationMap) {
             // if(value >= 0) {
-            if(value.duration >= 0) {
+            if (value.duration >= 0) {
                 // time = time + value;
                 time = time + value.duration;
-
             }
         }
         this.endTime = time;
-        let endTime = document.querySelector("#endTime");
-        endTime.textContent = this.endTime;
+        if (userInterface) {
+            let endTime = document.querySelector("#endTime");
+            endTime.textContent = toHHMMSS(this.endTime);
+        }
     }
 
     setTrackLength() {
@@ -58,58 +59,60 @@ export default class TrackController {
     }
 
     getFirstVideo() {
-        let index = this.maintrack.setCurrentElement(0);
-        return this.maintrack.fileKeys[index];
+        return this.maintrack.getElementByIndex(0);
     }
 
     getLastVideo() {
-        let index = this.maintrack.setCurrentElement(this.maintrack.fileKeys.length - 1);
-        return this.maintrack.fileKeys[index];
+        return this.maintrack.getElementByIndex(this.maintrack.fileKeys.length - 1);
     }
 
     getNextAudio() {
         return this.audiotrack.next();
     }
 
-    getCurrentAudio() {
-        const video = document.querySelector("#video")
-        let currentTime = getCurrentTime(this.maintrack, video.currentTime);
-        let current = this.audiotrack.getElementbyTime(currentTime);
-        if (current) {
-            this.audiotrack.currentElement = current.element;
-            return {fileKey: this.audiotrack.fileKeys[current.element], time: current.time};
-        }
-        return {fileKey: null, time: null};
+    getCurrentAudio(video = document.querySelector("#video")) {
+        let currentTime = this.getCurrentTime(video);
+        return this.audiotrack.getElementByTime(currentTime);
     }
 
-    getCurrentFilter() {
-        const video = document.querySelector("#video")
-        let currentTime = getCurrentTime(this.maintrack, video.currentTime);
-        let current = this.effecttrack.getElementbyTime(currentTime);
+    getCurrentFilter(video = document.querySelector("#video")) {
+        let currentTime = this.getCurrentTime(video);
+        let current = this.effecttrack.getElementByTime(currentTime);
         if (current) {
-            this.effecttrack.currentElement = current.element;
-            return this.effecttrack.fileKeys[current.element];
+            return current.fileKey;
         }
         return null;
+    }
+
+    getCurrentTime(video) {
+        let currentIndex = this.maintrack.currentElement;
+        let time = video.currentTime - video.startTime;
+        for (let i = 0; i < currentIndex; i++) {
+            time += this.maintrack.durationMap.get(this.maintrack.elements[i].id).duration;
+        }
+        return time;
     }
 }
 
 function setTrackLength(track, endTime) {
-    for (const[key, value] of track.durationMap) {
+    for (const [key, value] of track.durationMap) {
         // if(value >= 0) {
-        if(value.duration >= 0) {
-           let element = track.trackNode.querySelector("#" + key);
-           // element.style.width = Math.floor(value / endTime * 100) + "%"
-           element.style.width = Math.floor(value.duration / endTime * 100) + "%"
+        if (value.duration >= 0) {
+            let element = track.trackNode.querySelector("#" + key);
+            // element.style.width = Math.floor(value / endTime * 100) + "%"
+            element.style.width = Math.floor(value.duration / endTime * 100) + "%"
         }
     }
 }
 
-function getCurrentTime(maintrack, delay) {
-    let currentIndex = maintrack.currentElement;
-    let time = delay;
-    for (let i = 0; i < currentIndex; i++) {
-        time += maintrack.durationMap.get(maintrack.elements[i].id).duration;
-    }
-    return time;
+function toHHMMSS(totalSeconds) {
+    let sec_num = totalSeconds;
+    let hours = Math.floor(sec_num / 3600);
+    let minutes = Math.floor((sec_num - (hours * 3600)) / 60);
+    let seconds = Math.floor(sec_num - (hours * 3600) - minutes * 60);
+
+    if (hours < 10) { hours = "0" + hours; }
+    if (minutes < 10) { minutes = "0" + minutes; }
+    if (seconds < 10) { seconds = "0" + seconds; }
+    return hours + " : " + minutes + " : " + seconds;
 }

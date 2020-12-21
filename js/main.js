@@ -14,16 +14,18 @@ let canvas = document.querySelector("canvas")
 let context = canvas.getContext("2d")
 let video = document.querySelector("video")
 let fileInput = document.querySelector("#fileInput");
-let filterManager = new FilterManager()
+let filterManager = new FilterManager().fillHtmlFilterList();
 let fileManager = new FileManager()
 let videoManager = new EditManager("videotrack", new VideoLoader(fileManager), false)
 let audioManager = new EditManager("audiotrack", new AudioLoader(fileManager), false)
-let effectManager = new EditManager("effecttrack", new EffectLoader(filterManager), true)
+const effectLoader = new EffectLoader(filterManager);
+let effectManager = new EditManager("effecttrack", effectLoader, true)
 const trackController = new TrackController(videoManager, audioManager, effectManager);
-const videoController = new VideoController(fileManager, trackController)
+effectLoader.setTrackManager(trackController);
+const videoController = new VideoController(fileManager, trackController).addWindowListener();
 const audioController = new AudioController(fileManager, trackController)
 let settingsManager = new SettingsManager(trackController);
-// const downloadManager = new DownloadManager(videoManager, fileManager);
+const downloadManager = new DownloadManager(fileManager, filterManager, videoManager, effectManager);
 resizeCanvas()
 
 videoManager.initializeTrack();
