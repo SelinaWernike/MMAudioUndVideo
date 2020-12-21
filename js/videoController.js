@@ -38,7 +38,7 @@ export default class VideoController {
     }
 
     onUpdate() {
-        if (this.video.currentTime > this.endTime) {
+        if (this.video.currentTime > video.endTime) {
             console.log("FORCE END")
             this.video.pause();
             this.onEnded();
@@ -112,19 +112,19 @@ export default class VideoController {
 
     onRewindClick() {
         if (this.video.src !== "") {
-            const overhang = this.startTime - this.video.currentTime - VideoController.JUMP_TIME_SECONDS
+            const overhang = video.startTime - this.video.currentTime - VideoController.JUMP_TIME_SECONDS
             if (overhang < 0) {
                 const previousKey = this.trackController.getPreviousVideo()
                 if (previousKey) {
                     const wasPlaying = !this.video.paused
                     this.video.pause()
                     this.changeVideoSource(previousKey)
-                    this.video.currentTime = this.endTime + overhang
+                    this.video.currentTime = video.endTime + overhang
                     if (wasPlaying) {
                         this.video.play()
                     }
                 } else {
-                    this.video.currentTime = this.startTime
+                    this.video.currentTime = video.startTime
                 }
             } else {
                 this.video.currentTime = overhang
@@ -134,19 +134,19 @@ export default class VideoController {
 
     onForwardClick() {
         if (this.video.src !== "") {
-            const overhang = this.endTime - this.video.currentTime - VideoController.JUMP_TIME_SECONDS
+            const overhang = video.endTime - this.video.currentTime - VideoController.JUMP_TIME_SECONDS
             if (overhang < 0) {
                 const nextKey = this.trackController.getNextVideo();
                 if (nextKey) {
                     const wasPlaying = !this.video.paused
                     this.video.pause()
                     this.changeVideoSource(nextKey)
-                    this.video.currentTime = this.startTime + overhang
+                    this.video.currentTime = video.startTime + overhang
                     if (wasPlaying) {
                         video.play()
                     }
                 } else {
-                    video.currentTime = this.endTime;
+                    video.currentTime = video.endTime;
                 }
             } else {
                 video.currentTime += VideoController.JUMP_TIME_SECONDS
@@ -193,8 +193,8 @@ export default class VideoController {
 
     changeVideoSource(data) {
         const url = this.fileManager.fileMap.get(data.fileKey);
-        this.startTime = data.startTime;
-        this.endTime = this.startTime + data.duration;
+        video.startTime = data.startTime;
+        video.endTime = video.startTime + data.duration;
         if (this.video.src !== url) {
             this.video.src = url
             this.video.load()

@@ -90,7 +90,7 @@ export default class TrackController {
 
     getCurrentTime(video) {
         let currentIndex = this.maintrack.currentElement;
-        let time = video.currentTime;
+        let time = video.currentTime - video.startTime;
         for (let i = 0; i < currentIndex; i++) {
             time += this.maintrack.durationMap.get(this.maintrack.elements[i].id).duration;
         }
