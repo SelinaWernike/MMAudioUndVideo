@@ -72,3 +72,11 @@ ul li:nth-child(odd) {
 #endTime {
     float: right;
 }
+
+input:invalid {
+    border: 2px solid #b40000;
+}
+
+.jqinvalid {
+    border: 2px solid #b40000;
+}

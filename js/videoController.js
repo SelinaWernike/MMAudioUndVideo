@@ -11,6 +11,7 @@ export default class VideoController {
         this.previousVolume = video.volume
         this.userControlled = false;
         video.addEventListener("ended", this.onEnded.bind(this));
+        video.addEventListener("timeupdate", this.onUpdate.bind(this));
     }
 
     addWindowListener() {
@@ -25,8 +26,8 @@ export default class VideoController {
         this.changeVolume(this.volumeSlider.value)
         window.onPlayClick = this.onPlayClick.bind(this)
         window.onPauseClick = this.onPauseClick.bind(this)
-        window.onToStartClick = this.onToStartClick.bind(this)
-        window.onToEndClick = this.onToEndClick.bind(this)
+        window.onToStartClick = this.onToStartClick.bind(this, false)
+        window.onToEndClick = this.onToEndClick.bind(this, true)
         window.onRewindClick = this.onRewindClick.bind(this)
         window.onForwardClick = this.onForwardClick.bind(this)
         window.onVideoVolumeOnClick = this.onVolumeClick.bind(this);
@@ -34,6 +35,13 @@ export default class VideoController {
         window.onVideoVolumeChange = (event) => this.changeVolume(event.target.value);
         window.onLoopClick = this.onLoopClick.bind(this)
         return this;
+    }
+
+    onUpdate() {
+        if (this.video.currentTime > this.video.endTime) {
+            this.video.pause();
+            this.onEnded();
+        }
     }
 
     onPlayClick() {
@@ -52,14 +60,14 @@ export default class VideoController {
         }
     }
 
-    onEnded() {
+    onEnded(forcePause) {
         const nextKey = this.trackController.getNextVideo()
         if (nextKey) {
             this.changeVideoSource(nextKey)
             this.video.play()
         } else {
             this.changeVideoSource(this.trackController.getFirstVideo())
-            if (this.looping) {
+            if (!forcePause && this.looping) {
                 this.video.play()
             } else {
                 if (this.onFinalEnd) {
@@ -86,7 +94,6 @@ export default class VideoController {
             const wasPlaying = !this.video.paused
             this.video.pause()
             this.changeVideoSource(this.trackController.getFirstVideo())
-            this.video.currentTime = 0
             if (wasPlaying) {
                 this.video.play()
             }
@@ -95,30 +102,28 @@ export default class VideoController {
 
     onToEndClick() {
         if (this.video.src !== "") {
+            const wasPlaying = !this.video.paused
             this.video.pause()
-            if (this.changeVideoSource(this.trackController.getLastVideo())) {
-                // metadata (duration) might not be loaded yet after change of source
-                this.video.addEventListener("loadedmetadata", this.jumpToLastFrame)
-            } else {
-                this.jumpToLastFrame()
-            }
+            this.changeVideoSource(this.trackController.getLastVideo())
+            this.onEnded(!wasPlaying);
         }
     }
 
     onRewindClick() {
         if (this.video.src !== "") {
-            const overhang = this.video.currentTime - VideoController.JUMP_TIME_SECONDS
+            const overhang = this.video.startTime - this.video.currentTime - VideoController.JUMP_TIME_SECONDS
             if (overhang < 0) {
                 const previousKey = this.trackController.getPreviousVideo()
                 if (previousKey) {
                     const wasPlaying = !this.video.paused
                     this.video.pause()
                     this.changeVideoSource(previousKey)
-                    this.rewindFunction = () => this.jumpToFrameFromEnd(overhang, wasPlaying)
-                    // metadata (duration) might not be loaded yet after change of source
-                    this.video.addEventListener("loadedmetadata", this.rewindFunction)
+                    this.video.currentTime = this.video.endTime + overhang
+                    if (wasPlaying) {
+                        this.video.play()
+                    }
                 } else {
-                    this.video.currentTime = 0
+                    this.video.currentTime = this.video.startTime
                 }
             } else {
                 this.video.currentTime = overhang
@@ -128,19 +133,19 @@ export default class VideoController {
 
     onForwardClick() {
         if (this.video.src !== "") {
-            const overhang = this.video.duration - this.video.currentTime - VideoController.JUMP_TIME_SECONDS
+            const overhang = this.video.endTime - this.video.currentTime - VideoController.JUMP_TIME_SECONDS
             if (overhang < 0) {
                 const nextKey = this.trackController.getNextVideo();
                 if (nextKey) {
                     const wasPlaying = !this.video.paused
                     this.video.pause()
                     this.changeVideoSource(nextKey)
-                    this.video.currentTime = -overhang
+                    this.video.currentTime = this.video.startTime + overhang
                     if (wasPlaying) {
                         video.play()
                     }
                 } else {
-                    video.currentTime = video.duration;
+                    video.currentTime = this.video.endTime;
                 }
             } else {
                 video.currentTime += VideoController.JUMP_TIME_SECONDS
@@ -185,26 +190,14 @@ export default class VideoController {
         }
     }
 
-    changeVideoSource(fileKey) {
-        const url = this.fileManager.fileMap.get(fileKey);
+    changeVideoSource(data) {
+        const url = this.fileManager.fileMap.get(data.fileKey);
+        this.video.startTime = data.startTime;
+        this.video.endTime = data.startTime + data.duration;
         if (this.video.src !== url) {
             this.video.src = url
             this.video.load()
-            return true
         }
-        return false
-    }
-
-    jumpToLastFrame() {
-        this.video.removeEventListener("loadedmetadata", this.jumpToLastFrame)
-        this.video.currentTime = this.video.duration
-    }
-
-    jumpToFrameFromEnd(overhang, wasPlaying) {
-        this.video.removeEventListener("loadedmetadata", this.rewindFunction)
-        this.video.currentTime = this.video.duration + overhang
-        if (wasPlaying) {
-            this.video.play()
-        }
+        this.video.currentTime = data.startTime;
     }
 }

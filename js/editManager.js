@@ -66,18 +66,13 @@ export default class EditManager {
     addElementData(container, fileKey, trackObject, dropIndex) {
         this.fileKeys.splice(dropIndex, 0, fileKey);
         this.elements.splice(dropIndex, 0, container);
-        //TODO: fixme
-        let duration = trackObject.duration;
-        if (duration instanceof Function) {
-            duration = duration.bind(trackObject);
-        }
-        this.durationMap.set(container.id, {duration: duration, startTime: 0.00});
+        this.durationMap.set(container.id, { get duration() { return trackObject.duration }, startTime: 0.00});
         if (this.resizable) {
-            this.startMap.set(container.id, trackObject.start.bind(trackObject));
+            this.startMap.set(container.id, function () { return trackObject.start });
         } else if (dropIndex > 0) {
             const previousElement = this.elements[dropIndex - 1];
             const previousDuration = this.durationMap.get(previousElement.id);
-            this.startMap.set(container.id, previousDuration);
+            this.startMap.set(container.id, previousDuration.duration)
         } else {
             this.startMap.set(container.id, 0);
         }
@@ -248,7 +243,8 @@ export default class EditManager {
     next() {
         if (this.currentElement < this.elements.length - 1) {
             this.currentElement++;
-            return this.fileKeys[this.currentElement]
+            return {fileKey : this.fileKeys[this.currentElement], startTime : this.durationMap.get("item" + this.currentElement).startTime,
+                                duration : this.durationMap.get("item" + this.currentElement).duration }
         }
         return null;
     }
@@ -256,7 +252,8 @@ export default class EditManager {
     previous() {
         if (this.currentElement > 0) {
             this.currentElement--;
-            return this.fileKeys[this.currentElement];
+            return {fileKey : this.fileKeys[this.currentElement], startTime : this.durationMap.get("item" + this.currentElement).startTime,
+                        duration : this.durationMap.get("item" + this.currentElement).duration }
         }
         return null;
     }
@@ -264,36 +261,24 @@ export default class EditManager {
     getElementByIndex(index) {
         if (this.elements.length > index && index >= 0) {
             this.currentElement = index;
-            return this.fileKeys[index];
+            return {fileKey : this.fileKeys[this.currentElement], startTime : this.durationMap.get("item" + this.currentElement).startTime,
+            duration : this.durationMap.get("item" + this.currentElement).duration }
         }
         return null;
     }
 
-    /**
-    next(time) {
-        let duration = this.durationMap.get("item" + this.currentElement);
-        let difference = duration - time;
-        if(difference <= 0) {
-            this.currentElement++;
-            return this.next(Math.abs(difference));
-        } else {
-            return {url: this.fileKeys[this.currentElement], time: Math.abs(difference)};
-        }
-    }
-    */
-
     getElementByTime(time) {
         for (let i = 0; i < this.elements.length; i++) {
             const startTime = this.startMap.get(this.elements[i].id);
-            let duration = this.durationMap.get(this.elements[i].id).duration;
-            // TODO: fixme
-            if (duration instanceof Function) {
-                duration = duration();
-            }
-            const endTime = startTime + duration;
+            const endTime = startTime + this.durationMap.get(this.elements[i].id).duration;
             if (time >= startTime && time <= endTime) {
                 this.currentElement = i;
-                return { fileKey: this.fileKeys[i], time: time - startTime }
+                return {
+                    fileKey: this.fileKeys[i], 
+                    startTime: this.durationMap.get("item" + i).startTime,
+                    duration: this.durationMap.get("item" + i).duration,
+                    time: time - startTime + this.durationMap.get("item" + i).startTime,
+                }
             }
         }
         return null;

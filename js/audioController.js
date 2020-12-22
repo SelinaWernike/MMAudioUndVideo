@@ -1,88 +1,98 @@
 export default class AudioController {
 
     constructor(fileManager, trackController) {
-        const audio = document.querySelector("#audio")
-        const video = document.querySelector("#video")
-        const volumeOnIcon = document.querySelector("#audioVolumeOnIcon")
-        const volumeOffIcon = document.querySelector("#audioVolumeOffIcon")
-        const volumeSlider = document.querySelector("#audioVolumeSlider")
-        changeVolume(volumeSlider.value)
-        let previousVolume = audio.volume
+        this.fileManager = fileManager;
+        this.trackController = trackController;
+        this.audio = document.querySelector("#audio")
+        this.video = document.querySelector("#video")
+        this.volumeOnIcon = document.querySelector("#audioVolumeOnIcon")
+        this.volumeOffIcon = document.querySelector("#audioVolumeOffIcon")
+        this.volumeSlider = document.querySelector("#audioVolumeSlider")
+        this.previousVolume = this.audio.volume
+        this.changeVolume(this.volumeSlider.value)
+        audio.addEventListener("timeupdate", this.onUpdate.bind(this));
+        audio.addEventListener("ended", this.onEnded.bind(this));
+        video.addEventListener("play", this.onPlayClick.bind(this));
+        video.addEventListener("pause", () => audio.pause());
+        video.addEventListener("seeked", this.onVideoSeek.bind(this));
+        window.onAudioVolumeOnClick = this.onVolumeClick.bind(this);
+        window.onAudioVolumeOffClick = this.onVolumeOffClick.bind(this);
+        window.onAudioVolumeChange = (event) => this.changeVolume(event.target.value);
+    }
 
-        audio.addEventListener("ended", () => {
-            const nextKey = trackController.getNextAudio()
-            if (nextKey) {
-                changeAudioSource(nextKey)
-                audio.play()
-            } else {
-                audio.removeAttribute("src")
-            }
-        })
-
-        video.addEventListener("play", () => {
-            if (audio.src === "") {
-                const { fileKey, time } = trackController.getCurrentAudio()
-                if (fileKey) {
-                    changeAudioSource(fileKey)
-                    audio.currentTime = time
-                }
-            }
-            if (audio.src !== "") {
-                audio.play()
-            }
-        })
-
-        video.addEventListener("pause", () => {
-            audio.pause()
-        })
-
-        video.addEventListener("seeked", () => {
-            const { fileKey, time } = trackController.getCurrentAudio()
-            if (fileKey) {
-                const wasPlaying = !video.paused
-                audio.pause()
-                changeAudioSource(fileKey)
-                audio.currentTime = time
-                if (wasPlaying) {
-                    audio.play()
-                }
-            }
-        })
-
-        window.onAudioVolumeOnClick = function() {
-            previousVolume = audio.volume
-            volumeSlider.value = 0
-            changeVolume(0)
+    onUpdate() {
+        if (this.audio.currentTime > this.audio.endTime) {
+            this.audio.pause();
+            this.onEnded();
         }
+    }
 
-        window.onAudioVolumeOffClick = function() {
-            volumeSlider.value = previousVolume
-            changeVolume(previousVolume)
-        }
-
-        window.onAudioVolumeChange = function(event) {
-            changeVolume(event.target.value)
-        }
-
-        function changeAudioSource(fileKey) {
-            const url = fileManager.fileMap.get(fileKey);
-            if (audio.src !== url) {
-                audio.src = url
-                audio.load()
-                return true
+    onPlayClick() {
+        if (this.audio.src === "") {
+            const data = this.trackController.getCurrentAudio()
+            if (data) {
+                this.changeAudioSource(data)
+                this.audio.currentTime = data.time
             }
-            return false
         }
+        if (this.audio.src !== "") {
+            this.audio.play()
+        }
+    }
 
-        function changeVolume(volume) {
-            if (volume == 0) {
-                volumeOnIcon.setAttribute("hidden", "")
-                volumeOffIcon.removeAttribute("hidden")
-            } else {
-                volumeOffIcon.setAttribute("hidden", "")
-                volumeOnIcon.removeAttribute("hidden")
-            }
-            audio.volume = volume
+    onEnded() {
+        const data = this.trackController.getNextAudio()
+        if (data) {
+            this.changeAudioSource(data)
+            this.audio.play()
+        } else {
+            this.audio.removeAttribute("src")
         }
+    }
+
+    onVideoSeek() {
+        const data = this.trackController.getCurrentAudio()
+        if (data) {
+            const wasPlaying = !this.video.paused
+            this.audio.pause()
+            this.changeAudioSource(data)
+            this.audio.currentTime = data.time
+            if (wasPlaying) {
+                this.audio.play()
+            }
+        }
+    }
+
+    onVolumeClick() {
+        this.previousVolume = this.audio.volume
+        this.volumeSlider.value = 0
+        this.changeVolume(0)
+    }
+
+    onVolumeOffClick() {
+        this.volumeSlider.value = this.previousVolume
+        this.changeVolume(this.previousVolume)
+    }
+
+    changeVolume(volume) {
+        if (volume == 0) {
+            this.volumeOnIcon.setAttribute("hidden", "")
+            this.volumeOffIcon.removeAttribute("hidden")
+        } else {
+            this.volumeOffIcon.setAttribute("hidden", "")
+            this.volumeOnIcon.removeAttribute("hidden")
+        }
+        this.audio.volume = volume
+    }
+
+    changeAudioSource(data) {
+        const url = this.fileManager.fileMap.get(data.fileKey);
+        this.audio.startTime = data.startTime;
+        this.audio.endTime = data.startTime + data.duration;
+        if (this.audio.src !== url) {
+            this.audio.src = url
+            this.audio.load()
+        }
+        this.audio.currentTime = data.startTime;
     }
 }

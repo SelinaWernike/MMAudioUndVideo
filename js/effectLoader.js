@@ -1,5 +1,3 @@
-import Filter from "./testMeOneMoreTime.js"
-
 export default class EffectLoader {
 
     constructor(filterManager) {
@@ -22,5 +20,30 @@ export default class EffectLoader {
             return new Filter(this.trackManager, element);
         }
         return null;
+    }
+}
+
+class Filter {
+
+    constructor(trackManager, element) {
+        this.trackManager = trackManager;
+        this.element = element;
+    }
+
+    get start() {
+        return this.inTrackTime(this.element.offsetLeft - this.element.parentNode.offsetLeft)
+    }
+
+    get duration() {
+        return this.inTrackTime(this.element.offsetWidth);
+    }
+
+    inTrackTime(value) {
+        const endTime = this.trackManager.endTime;
+        if (endTime === 0) {
+            return 0;
+        }
+        const effectTrack = document.querySelector("#effecttrack");
+        return endTime * (value / effectTrack.offsetWidth);
     }
 }

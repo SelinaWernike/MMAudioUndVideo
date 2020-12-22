@@ -73,11 +73,11 @@
         <div class="settingsContainer" style="display: none">
             <h3>Settings</h3>
             <label placeholder="0.00" for="startInput">Startzeit</label>
-            <input type="text" id="startInput"/>
+            <input type="text" onchange="validateStartInput()" id="startInput" pattern="[0-9]*\.*[0-9]*"/>
             <label for="endInput">Endzeit</label>
-            <input placeholder="0.00" type="text" id="endInput"/>
+            <input placeholder="0.00" onchange="validateEndInput()" type="text" id="endInput" pattern="[0-9]*\.*[0-9]*"/>
 
-            <br/><button id="settingsConfirm" onclick="onSettingsOK()" >OK</button>
+            <br/><button id="settingsConfirm" onclick="onSettingsOK()">OK</button>
         </div>
     </div>
 </body>
