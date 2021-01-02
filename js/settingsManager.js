@@ -1,5 +1,7 @@
 const START_INPUT = document.querySelector("#startInput");
 const END_INPUT = document.querySelector("#endInput");
+const SETTINGS_TRACK = document.querySelector(".settingsContainer").getAttribute("settingsTrack");
+const SETTINGS_KEY = document.querySelector(".settingsContainer").getAttribute("settingsKey");
 
 export default class SettingsManager {
 
@@ -7,15 +9,11 @@ export default class SettingsManager {
         this.display = false;
 
         window.onSettingsOK = function(){
-            let settingsKey = document.querySelector(".settingsContainer").getAttribute("settingsKey");
-            let settingsTrack = document.querySelector(".settingsContainer").getAttribute("settingsTrack");
             let button = document.querySelector("#settingsConfirm");
 
             if(START_INPUT.checkValidity() && END_INPUT.checkValidity()){
-                console.log(START_INPUT.checkValidity());
-                console.log(END_INPUT.checkValidity());
-                let track = SettingsManager.getTrackByString(settingsTrack, trackController);
-                track.changeTime(settingsKey, {duration: Number(END_INPUT.value) - Number(START_INPUT.value), startTime:Number(START_INPUT.value)});
+                let track = SettingsManager.getTrackByString(SETTINGS_TRACK, trackController);
+                track.changeTime(SETTINGS_KEY, {duration: Number(END_INPUT.value) - Number(START_INPUT.value), startTime:Number(START_INPUT.value)});
                 SettingsManager.closeSettings();
                 button.setCustomValidity("");
             }else{
@@ -23,33 +21,40 @@ export default class SettingsManager {
             }
         }
 
-        window.validateStartInput = function(){
+        window.onSettingsCancel = function(){
+        SettingsManager.closeSettings();
+        }
+
+        window.processStartInput = function(){
             if(Number(START_INPUT.value) > Number(END_INPUT.value)) {
                 START_INPUT.setCustomValidity("Startzeit darf nicht größer als Endzeit sein!");
                 START_INPUT.reportValidity();
             }else{
                 START_INPUT.setCustomValidity('');
                 START_INPUT.reportValidity();
+                //SettingsManager.getTrackByString(SETTINGS_TRACK, trackController);
+                //trackController.jumpToTime(START_INPUT, SETTINGS_TRACK, SETTINGS_KEY);
             }
         }
 
-        window.validateEndInput = function(){
-            let settingsKey = document.querySelector(".settingsContainer").getAttribute("settingsKey");
-            let settingsTrack = document.querySelector(".settingsContainer").getAttribute("settingsTrack");
-            let track = SettingsManager.getTrackByString(settingsTrack, trackController);
-            let durationMapEntry = track.durationMap.get(settingsKey);
+        window.processEndInput = function(){
+            let track = SettingsManager.getTrackByString(SETTINGS_TRACK, trackController);
+            let durationMapEntry = track.durationMap.get(SETTINGS_KEY);
 
             if(Number(START_INPUT.value) > Number(END_INPUT.value)) {
                  endInput.setCustomValidity("Endzeit darf nicht kleiner als Startzeit sein!");
-            //TODO syntax nach merge prüfen!
-            //}else if(Number(otherEndValue) > (durationMapEntry.start + durationMap.duration)){
-                 //endInput.setCustomValidity("Endzeit darf nicht größer als Länge des Videos sein!");
+            }else if(Number(END_INPUT.value) > (durationMapEntry.startTime + durationMapEntry.duration)){
+                 //problem: ich kenne Original-Endzeit/duration nicht
+                 //wie komme ich am effizientesten an Daten aus fileMap?
+                 //(da müsste die echte duration drinstehen)
+                 endInput.setCustomValidity("Endzeit darf nicht größer als Länge des Videos sein!");
             }else{
                  endInput.setCustomValidity("");
             }
             endInput.reportValidity();
-        }
 
+        }
+        //todo zu Zeitpunkt springen (sobald das bei processStartInput funktioniert)
     }
 
     static getTrackByString(trackName, trackController){
@@ -61,7 +66,6 @@ export default class SettingsManager {
                return trackController.audiotrack;
                break;
             default:
-               //TODO is not returning anything a good idea in this case
                console.log("forbidden track name " + settingsTrack);
                break;
         }
@@ -81,8 +85,6 @@ export default class SettingsManager {
         grid.style.gridTemplateAreas = ("\'header auto\'\'track1 settings\'\' track2 settings\'\'track3 settings\'");
         grid.style.gridTemplateColumns = "70% 30%"
         let settingsContainer = document.querySelector(".settingsContainer");
-        //let settingsStartTime = document.querySelector("#startInput");
-        //let settingsEndTime = document.querySelector("#endInput");
         let settingsTrack = event.currentTarget.parentNode.parentNode.parentNode.getAttribute("id");
         let settingsKey = event.currentTarget.parentNode.parentNode.getAttribute("id");
         settingsContainer.style.display = 'block';

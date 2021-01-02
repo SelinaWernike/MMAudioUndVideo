@@ -200,4 +200,8 @@ export default class VideoController {
         }
         this.video.currentTime = data.startTime;
     }
+
+    setCurrentTime(time){
+        this.video.currentTime = time;
+    }
 }
