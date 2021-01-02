@@ -13,7 +13,7 @@ export default class FilterManager {
         this.filters.set("ChromaKeyFilter", new ChromaKeyFilter())
         this.filters.set("BWFilter", new BWFilter())
         this.filters.set("InvertFilter", new InvertFilter())
-        this.filters.set("SerpiaFilter", new SepiaFilter())
+        this.filters.set("SepiaFilter", new SepiaFilter())
         this.filters.set("RedFilter", new RedFilter())
         this.filters.set("GreenFilter", new GreenFilter())
         this.filters.set("BlueFilter", new BlueFilter())
