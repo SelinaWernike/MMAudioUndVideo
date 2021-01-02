@@ -21,10 +21,6 @@ export default class TrackController {
         this.videoController = videoController;
     }
 
-    setAudioController(effectController) {
-        this.effectController = effectController;
-    }
-
     /**
      * Sets the Time of the Time Bar. By calling the Videomanager.
      */

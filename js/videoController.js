@@ -202,6 +202,7 @@ export default class VideoController {
     }
 
     setCurrentTime(time){
+        console.log(time);
         this.video.currentTime = time;
     }
 }

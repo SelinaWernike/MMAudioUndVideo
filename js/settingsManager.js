@@ -1,7 +1,5 @@
 const START_INPUT = document.querySelector("#startInput");
 const END_INPUT = document.querySelector("#endInput");
-const SETTINGS_TRACK = document.querySelector(".settingsContainer").getAttribute("settingsTrack");
-const SETTINGS_KEY = document.querySelector(".settingsContainer").getAttribute("settingsKey");
 
 export default class SettingsManager {
 
@@ -9,11 +7,13 @@ export default class SettingsManager {
         this.display = false;
 
         window.onSettingsOK = function(){
+            let settingsKey = document.querySelector(".settingsContainer").getAttribute("settingsKey");
+            let settingsTrack = document.querySelector(".settingsContainer").getAttribute("settingsTrack");
             let button = document.querySelector("#settingsConfirm");
 
             if(START_INPUT.checkValidity() && END_INPUT.checkValidity()){
-                let track = SettingsManager.getTrackByString(SETTINGS_TRACK, trackController);
-                track.changeTime(SETTINGS_KEY, {duration: Number(END_INPUT.value) - Number(START_INPUT.value), startTime:Number(START_INPUT.value)});
+                let track = SettingsManager.getTrackByString(settingsTrack, trackController);
+                track.changeTime(settingsKey, {duration: Number(END_INPUT.value) - Number(START_INPUT.value), startTime:Number(START_INPUT.value)});
                 SettingsManager.closeSettings();
                 button.setCustomValidity("");
             }else{
@@ -30,16 +30,20 @@ export default class SettingsManager {
                 START_INPUT.setCustomValidity("Startzeit darf nicht größer als Endzeit sein!");
                 START_INPUT.reportValidity();
             }else{
+                let settingsKey = document.querySelector(".settingsContainer").getAttribute("settingsKey");
+                let settingsTrack = document.querySelector(".settingsContainer").getAttribute("settingsTrack");
                 START_INPUT.setCustomValidity('');
                 START_INPUT.reportValidity();
-                //SettingsManager.getTrackByString(SETTINGS_TRACK, trackController);
-                //trackController.jumpToTime(START_INPUT, SETTINGS_TRACK, SETTINGS_KEY);
+                SettingsManager.getTrackByString(settingsTrack, trackController);
+                trackController.jumpToTime(START_INPUT.value, settingsTrack, settingsKey);
             }
         }
 
         window.processEndInput = function(){
-            let track = SettingsManager.getTrackByString(SETTINGS_TRACK, trackController);
-            let durationMapEntry = track.durationMap.get(SETTINGS_KEY);
+            let settingsKey = document.querySelector(".settingsContainer").getAttribute("settingsKey");
+            let settingsTrack = document.querySelector(".settingsContainer").getAttribute("settingsTrack");
+            let track = SettingsManager.getTrackByString(settingsTrack, trackController);
+            let durationMapEntry = track.durationMap.get(settingsKey);
 
             if(Number(START_INPUT.value) > Number(END_INPUT.value)) {
                  endInput.setCustomValidity("Endzeit darf nicht kleiner als Startzeit sein!");
@@ -50,6 +54,9 @@ export default class SettingsManager {
                  endInput.setCustomValidity("Endzeit darf nicht größer als Länge des Videos sein!");
             }else{
                  endInput.setCustomValidity("");
+                 START_INPUT.reportValidity();
+                 SettingsManager.getTrackByString(settingsTrack, trackController);
+                 trackController.jumpToTime(END_INPUT.value, settingsTrack, settingsKey);
             }
             endInput.reportValidity();
 
@@ -66,7 +73,7 @@ export default class SettingsManager {
                return trackController.audiotrack;
                break;
             default:
-               console.log("forbidden track name " + settingsTrack);
+               console.log("forbidden track name " + trackName);
                break;
         }
     }
