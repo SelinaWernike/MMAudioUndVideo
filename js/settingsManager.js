@@ -34,8 +34,8 @@ export default class SettingsManager {
                 let settingsTrack = document.querySelector(".settingsContainer").getAttribute("settingsTrack");
                 START_INPUT.setCustomValidity('');
                 START_INPUT.reportValidity();
-                SettingsManager.getTrackByString(settingsTrack, trackController);
-                trackController.jumpToTime(START_INPUT.value, settingsTrack, settingsKey);
+                const track = SettingsManager.getTrackByString(settingsTrack, trackController);
+                trackController.jumpToTime(START_INPUT.value, track, settingsKey);
             }
         }
 
@@ -55,8 +55,8 @@ export default class SettingsManager {
             }else{
                  endInput.setCustomValidity("");
                  START_INPUT.reportValidity();
-                 SettingsManager.getTrackByString(settingsTrack, trackController);
-                 trackController.jumpToTime(END_INPUT.value, settingsTrack, settingsKey);
+                 const track = SettingsManager.getTrackByString(settingsTrack, trackController);
+                 trackController.jumpToTime(END_INPUT.value, track, settingsKey);
             }
             endInput.reportValidity();
 

@@ -93,14 +93,16 @@ export default class TrackController {
         // um gleiches Format zu haben wie bei getElementByTime/getElementByIndex
 
         console.log("jumpToTime");
-        let videoIndex = key.substr(4,1);//index von element mit key //ist der key der index tho
         let globalTime = 0;
         //evtl könnte man hier die editManager-startmap nutzen?
-        for (let i = 0; i < videoIndex; i++) {
+        for (let i = 0; i < track.elements.length; i++) {
+            if (track.elements[i].id === key) {
+                break;
+            }
             globalTime += track.durationMap.get(track.elements[i].id).duration;
         }
         console.log(globalTime);
-        let videoElement = this.maintrack.getElementByTime(globalTime);
+        let videoElement = this.maintrack.getElementByTime(globalTime + parseFloat(time));
         console.log(videoElement);
         //help ich kenn an dieser Stelle videoController noch nicht
         this.videoController.changeVideoSource(videoElement);
