@@ -26,7 +26,7 @@ export default class TrackController {
     }
 
     /**
-     * Sets the Time of the Time Bar. By calling the Videomanager.
+     * Sets the End Time of the Time Bar. By calling the VideoTrack.
      */
     setEndTime(userInterface = true) {
         let time = 0;
@@ -49,7 +49,10 @@ export default class TrackController {
         setTrackLength(this.audiotrack, this.endTime)
         setTrackLength(this.effecttrack, this.endTime)
     }
-
+/**
+ * Returns the next video on the maintrack, if possible
+ * @returns {object} object containing fileKey, startTime and duration
+ */
     getNextVideo() {
         let nextObject = this.maintrack.next();
         if(nextObject != null) {
@@ -60,7 +63,10 @@ export default class TrackController {
         }
         return nextObject;
     }
-
+/**
+ * Returns the previous video on the maintrack, if possible
+ * @returns {object} object containing fileKey, startTime and duration
+ */
     getPreviousVideo() {
         let previousObject = this.maintrack.previous();
         if(nextObject != null) {
@@ -69,7 +75,10 @@ export default class TrackController {
         }
         return previousObject;
     }
-
+/**
+ * Returns the first video on the maintrack, if possible
+ * @returns {object} object containing fileKey, startTime and duration
+ */
     getFirstVideo() {
         let index = this.maintrack.currentElement;
         let firstObject = this.maintrack.getElementByIndex(0);
@@ -79,7 +88,10 @@ export default class TrackController {
         }
         return firstObject;
     }
-
+/**
+ * Returns the last video on the maintrack, if possible
+ * @returns {object} object containing fileKey, startTime and duration
+ */
     getLastVideo() {
         let index = this.maintrack.currentElement;
         let lastObject = this.maintrack.getElementByIndex(this.maintrack.fileKeys.length - 1);
@@ -89,7 +101,10 @@ export default class TrackController {
         }
         return lastObject;
     }
-
+/**
+ * Returns the next Audio on the Audiotrack, if possible
+ * @returns {object} object containing fileKey, startTime and duration
+ */
     getNextAudio() {
         let nextObject = this.audiotrack.next();
         if(nextObject != null) {
@@ -101,6 +116,10 @@ export default class TrackController {
         return nextObject;
     }
 
+/**
+ * Returns the Audio that corresponds with the current Videoelement on the Audiotrack, if possible
+ * @returns {object} object containing fileKey, startTime and duration
+ */    
     getCurrentAudio(video = document.querySelector("#video")) {
         let currentTime = this.getCurrentTime(video);
         let index = this.audiotrack.currentElement;
@@ -111,7 +130,10 @@ export default class TrackController {
         }
         return currentObject;
     }
-
+/**
+ * Returns the Effec that corresponds with the current Videoelement on the Effecttrack, if possible
+ * @returns {object} object containing fileKey, startTime and duration
+ */ 
     getCurrentFilter(video = document.querySelector("#video")) {
         let index = this.effecttrack.currentElement;
         let currentTime = this.getCurrentTime(video);
