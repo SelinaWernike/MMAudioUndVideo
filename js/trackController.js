@@ -51,34 +51,74 @@ export default class TrackController {
     }
 
     getNextVideo() {
-        return this.maintrack.next();
+        let nextObject = this.maintrack.next();
+        if(nextObject != null) {
+            if(this.maintrack.currentElement > 0) {
+            dehighlightContainer(this.maintrack.currentElement - 1, this.maintrack);
+            }
+            highlightContainer(this.maintrack.currentElement, this.maintrack)
+        }
+        return nextObject;
     }
 
     getPreviousVideo() {
-        return this.maintrack.previous();
+        let previousObject = this.maintrack.previous();
+        if(nextObject != null) {
+            dehighlightContainer(this.maintrack.currentElement + 1, this.maintrack);
+            highlightContainer(this.maintrack.currentElement, this.maintrack)
+        }
+        return previousObject;
     }
 
     getFirstVideo() {
-        return this.maintrack.getElementByIndex(0);
+        let index = this.maintrack.currentElement;
+        let firstObject = this.maintrack.getElementByIndex(0);
+        if(firstObject != null) {
+            dehighlightContainer(index, this.maintrack);
+            highlightContainer(this.maintrack.currentElement, this.maintrack);
+        }
+        return firstObject;
     }
 
     getLastVideo() {
-        return this.maintrack.getElementByIndex(this.maintrack.fileKeys.length - 1);
+        let index = this.maintrack.currentElement;
+        let lastObject = this.maintrack.getElementByIndex(this.maintrack.fileKeys.length - 1);
+        if(lastObject != null) {
+            dehighlightContainer(index, this.maintrack);
+            highlightContainer(this.maintrack.currentElement, this.maintrack);
+        }
+        return lastObject;
     }
 
     getNextAudio() {
-        return this.audiotrack.next();
+        let nextObject = this.audiotrack.next();
+        if(nextObject != null) {
+            if(this.audiotrack.currentElement > 0) {
+                dehighlightContainer(this.audiotrack.currentElement - 1, this.audiotrack);
+            }
+            highlightContainer(this.audiotrack.currentElement, this.audiotrack)
+        }
+        return nextObject;
     }
 
     getCurrentAudio(video = document.querySelector("#video")) {
         let currentTime = this.getCurrentTime(video);
-        return this.audiotrack.getElementByTime(currentTime);
+        let index = this.audiotrack.currentElement;
+        let currentObject = this.audiotrack.getElementByTime(currentTime);
+        if(currentObject != null) {
+            dehighlightContainer(index, this.audiotrack);
+            highlightContainer(this.audiotrack.currentElement, this.audiotrack);
+        }
+        return currentObject;
     }
 
     getCurrentFilter(video = document.querySelector("#video")) {
+        let index = this.effecttrack.currentElement;
         let currentTime = this.getCurrentTime(video);
         let current = this.effecttrack.getElementByTime(currentTime);
-        if (current) {
+        if (current || current != null) {
+            dehighlightContainer(index, this.effecttrack);
+            highlightContainer(this.effecttrack.currentElement, this.effecttrack);
             return current.fileKey;
         }
         return null;
@@ -92,6 +132,18 @@ export default class TrackController {
         }
         return time;
     }
+
+    
+}
+
+function highlightContainer(index, track) {
+    let element = track.elements[index];
+    element.style.backgroundColor = "yellow";
+}
+
+function dehighlightContainer(index, track) {
+    let element = track.elements[index];
+    element.style.backgroundColor = "white";
 }
 
 function setTrackLength(track, endTime) {

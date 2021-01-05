@@ -243,8 +243,8 @@ export default class EditManager {
     next() {
         if (this.currentElement < this.elements.length - 1) {
             this.currentElement++;
-            return {fileKey : this.fileKeys[this.currentElement], startTime : this.durationMap.get("item" + this.currentElement).startTime,
-                                duration : this.durationMap.get("item" + this.currentElement).duration }
+            return {fileKey : this.fileKeys[this.currentElement], startTime : this.durationMap.get(this.elements[this.currentElement].id).startTime,
+                                duration : this.durationMap.get(this.elements[this.currentElement].id).duration }
         }
         return null;
     }
@@ -252,8 +252,8 @@ export default class EditManager {
     previous() {
         if (this.currentElement > 0) {
             this.currentElement--;
-            return {fileKey : this.fileKeys[this.currentElement], startTime : this.durationMap.get("item" + this.currentElement).startTime,
-                        duration : this.durationMap.get("item" + this.currentElement).duration }
+            return {fileKey : this.fileKeys[this.currentElement], startTime : this.durationMap.get(this.elements[this.currentElement].id).startTime,
+                        duration : this.durationMap.get(this.elements[this.currentElement].id).duration }
         }
         return null;
     }
@@ -261,8 +261,8 @@ export default class EditManager {
     getElementByIndex(index) {
         if (this.elements.length > index && index >= 0) {
             this.currentElement = index;
-            return {fileKey : this.fileKeys[this.currentElement], startTime : this.durationMap.get("item" + this.currentElement).startTime,
-            duration : this.durationMap.get("item" + this.currentElement).duration }
+            return {fileKey : this.fileKeys[this.currentElement], startTime : this.durationMap.get(this.elements[this.currentElement].id).startTime,
+            duration : this.durationMap.get(this.elements[this.currentElement].id).duration }
         }
         return null;
     }
@@ -277,7 +277,7 @@ export default class EditManager {
                     fileKey: this.fileKeys[i], 
                     startTime: this.durationMap.get("item" + i).startTime,
                     duration: this.durationMap.get("item" + i).duration,
-                    time: time - startTime + this.durationMap.get("item" + i).startTime,
+                    time: time - startTime + this.durationMap.get(this.elements[this.currentElement].id).startTime,
                 }
             }
         }
