@@ -76,6 +76,7 @@ export default class TrackController {
     getFirstVideo() {
         let index = this.maintrack.currentElement;
         let firstObject = this.maintrack.getElementByIndex(0);
+        console.log(firstObject);
         if(firstObject != null) {
             if(index > 0) {
             dehighlightContainer(index, this.maintrack);
@@ -171,7 +172,7 @@ export default class TrackController {
             }
             globalTime += track.durationMap.get(track.elements[i].id).duration;
         }
-        console.log(globalTime);
+        console.log(globalTime + ", " + parseFloat(time));
         let videoElement = this.maintrack.getElementByTime(globalTime + parseFloat(time));
         console.log(videoElement);
         //help ich kenn an dieser Stelle videoController noch nicht

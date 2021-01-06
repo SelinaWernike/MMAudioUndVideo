@@ -324,13 +324,14 @@ export default class EditManager {
         for (let i = 0; i < this.elements.length; i++) {
             const startTime = this.startMap.get(this.elements[i].id);
             const endTime = startTime + this.durationMap.get(this.elements[i].id).duration;
+            console.log("start: " + startTime + ", end: " + endTime);
             if (time >= startTime && time <= endTime) {
                 this.currentElement = i;
-                console.log(this.durationMap);
+               
                 return {
                     fileKey: this.fileKeys[i], 
-                    startTime: this.durationMap.get("item" + i).startTime,
-                    duration: this.durationMap.get("item" + i).duration,
+                    startTime: this.durationMap.get(this.elements[this.currentElement].id).startTime,
+                    duration: this.durationMap.get(this.elements[this.currentElement].id).duration,
                     time: time - startTime + this.durationMap.get(this.elements[this.currentElement].id).startTime,
                 }
             }
