@@ -174,6 +174,7 @@ export default class TrackController {
         }
         console.log(globalTime + ", " + parseFloat(time));
         let videoElement = this.maintrack.getElementByTime(globalTime + parseFloat(time));
+        console.log(this.maintrack.durationMap)
         console.log(videoElement);
         //help ich kenn an dieser Stelle videoController noch nicht
         this.videoController.changeVideoSource(videoElement);

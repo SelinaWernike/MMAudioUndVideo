@@ -79,14 +79,23 @@ export default class EditManager {
         this.durationMap.set(container.id, { get duration() { return trackObject.duration }, startTime: 0.00});
         if (this.resizable) {
             this.startMap.set(container.id, function () { return trackObject.start });
-        } else if (dropIndex > 0) {
-            const previousElement = this.elements[dropIndex - 1];
-            const previousDuration = this.durationMap.get(previousElement.id);
-            this.startMap.set(container.id, previousDuration.duration)
         } else {
-            this.startMap.set(container.id, 0);
+            this.startMap.set(container.id, this.getGlobalStartTime.bind(this, container.id));
         }
     }
+
+    getGlobalStartTime(elementId) {
+        let globalTime = 0;
+        for (let i = 0; i < this.elements.length; i++) {
+            if (this.elements[i].id === elementId) {
+                return globalTime;
+            }
+            globalTime += this.durationMap.get(this.elements[i].id).duration;
+        }
+        return globalTime;
+    }
+
+
 /**
  * Adds EventListener to the Element on the Track
  * @param {HTML} container 
@@ -219,7 +228,6 @@ export default class EditManager {
     setItemDuration(element, id) {
         // this.durationMap.set(id,element.duration)
         this.durationMap.set(id,{duration: element.duration, startTime: 0.00})
-        console.log(this.durationMap);
         this.trackNode.dispatchEvent(TrackChange);
     } 
 
@@ -327,7 +335,6 @@ export default class EditManager {
             console.log("start: " + startTime + ", end: " + endTime);
             if (time >= startTime && time <= endTime) {
                 this.currentElement = i;
-               
                 return {
                     fileKey: this.fileKeys[i], 
                     startTime: this.durationMap.get(this.elements[this.currentElement].id).startTime,
