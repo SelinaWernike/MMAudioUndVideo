@@ -63,7 +63,7 @@ export default class TrackController {
  */
     getPreviousVideo() {
         let previousObject = this.maintrack.previous();
-        if(nextObject != null) {
+        if(previousObject != null) {
             dehighlightContainer(this.maintrack.currentElement + 1, this.maintrack);
             highlightContainer(this.maintrack.currentElement, this.maintrack)
         }
