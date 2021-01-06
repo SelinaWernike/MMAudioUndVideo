@@ -31,11 +31,20 @@ resizeCanvas()
 videoManager.initializeTrack();
 audioManager.initializeTrack();
 effectManager.initializeTrack();
+
+trackController.setVideoController(videoController);
+trackController.setAudioController(audioController);
+
 //Add Event Listener
 document.querySelector("#videotrack").addEventListener("trackChange", function() {
     trackController.setEndTime();
     trackController.setTrackLength();
+    videoController.reset();
 });
+
+document.querySelector("#audiotrack").addEventListener("trackChange", function() {
+    videoController.reset();
+})
 
 video.addEventListener("play", () => {
     requestAnimationFrame(renderVideo)

@@ -12,8 +12,6 @@ export default class SettingsManager {
             let button = document.querySelector("#settingsConfirm");
 
             if(START_INPUT.checkValidity() && END_INPUT.checkValidity()){
-                console.log(START_INPUT.checkValidity());
-                console.log(END_INPUT.checkValidity());
                 let track = SettingsManager.getTrackByString(settingsTrack, trackController);
                 track.changeTime(settingsKey, {duration: Number(END_INPUT.value) - Number(START_INPUT.value), startTime:Number(START_INPUT.value)});
                 SettingsManager.closeSettings();
@@ -23,17 +21,25 @@ export default class SettingsManager {
             }
         }
 
-        window.validateStartInput = function(){
+        window.onSettingsCancel = function(){
+        SettingsManager.closeSettings();
+        }
+
+        window.processStartInput = function(){
             if(Number(START_INPUT.value) > Number(END_INPUT.value)) {
                 START_INPUT.setCustomValidity("Startzeit darf nicht größer als Endzeit sein!");
                 START_INPUT.reportValidity();
             }else{
+                let settingsKey = document.querySelector(".settingsContainer").getAttribute("settingsKey");
+                let settingsTrack = document.querySelector(".settingsContainer").getAttribute("settingsTrack");
                 START_INPUT.setCustomValidity('');
                 START_INPUT.reportValidity();
+                const track = SettingsManager.getTrackByString(settingsTrack, trackController);
+                trackController.jumpToTime(START_INPUT.value, track, settingsKey);
             }
         }
 
-        window.validateEndInput = function(){
+        window.processEndInput = function(){
             let settingsKey = document.querySelector(".settingsContainer").getAttribute("settingsKey");
             let settingsTrack = document.querySelector(".settingsContainer").getAttribute("settingsTrack");
             let track = SettingsManager.getTrackByString(settingsTrack, trackController);
@@ -41,15 +47,21 @@ export default class SettingsManager {
 
             if(Number(START_INPUT.value) > Number(END_INPUT.value)) {
                  endInput.setCustomValidity("Endzeit darf nicht kleiner als Startzeit sein!");
-            //TODO syntax nach merge prüfen!
-            //}else if(Number(otherEndValue) > (durationMapEntry.start + durationMap.duration)){
-                 //endInput.setCustomValidity("Endzeit darf nicht größer als Länge des Videos sein!");
+            }else if(Number(END_INPUT.value) > (durationMapEntry.startTime + durationMapEntry.duration)){
+                 //problem: ich kenne Original-Endzeit/duration nicht
+                 //wie komme ich am effizientesten an Daten aus fileMap?
+                 //(da müsste die echte duration drinstehen)
+                 endInput.setCustomValidity("Endzeit darf nicht größer als Länge des Videos sein!");
             }else{
                  endInput.setCustomValidity("");
+                 START_INPUT.reportValidity();
+                 const track = SettingsManager.getTrackByString(settingsTrack, trackController);
+                 trackController.jumpToTime(END_INPUT.value, track, settingsKey);
             }
             endInput.reportValidity();
-        }
 
+        }
+        //todo zu Zeitpunkt springen (sobald das bei processStartInput funktioniert)
     }
 
     static getTrackByString(trackName, trackController){
@@ -61,8 +73,7 @@ export default class SettingsManager {
                return trackController.audiotrack;
                break;
             default:
-               //TODO is not returning anything a good idea in this case
-               console.log("forbidden track name " + settingsTrack);
+               console.log("forbidden track name " + trackName);
                break;
         }
     }
@@ -81,8 +92,6 @@ export default class SettingsManager {
         grid.style.gridTemplateAreas = ("\'header auto\'\'track1 settings\'\' track2 settings\'\'track3 settings\'");
         grid.style.gridTemplateColumns = "70% 30%"
         let settingsContainer = document.querySelector(".settingsContainer");
-        //let settingsStartTime = document.querySelector("#startInput");
-        //let settingsEndTime = document.querySelector("#endInput");
         let settingsTrack = event.currentTarget.parentNode.parentNode.parentNode.getAttribute("id");
         let settingsKey = event.currentTarget.parentNode.parentNode.getAttribute("id");
         settingsContainer.style.display = 'block';

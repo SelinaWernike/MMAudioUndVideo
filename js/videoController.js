@@ -36,6 +36,15 @@ export default class VideoController {
         return this;
     }
 
+    reset() {
+        const wasPlaying = !this.video.paused
+        this.video.pause()
+        this.changeVideoSource(this.trackController.getFirstVideo())
+        if (wasPlaying) {
+            this.video.play();
+        }
+    }
+
     onUpdate() {
         if (this.video.currentTime > this.video.endTime) {
             this.video.pause();
@@ -191,10 +200,17 @@ export default class VideoController {
         const url = this.fileManager.fileMap.get(data.fileKey);
         this.video.startTime = data.startTime;
         this.video.endTime = data.startTime + data.duration;
+        if (!url) {
+            debugger;
+        }
         if (this.video.src !== url) {
             this.video.src = url
             this.video.load()
         }
         this.video.currentTime = data.startTime;
+    }
+
+    setCurrentTime(time){
+        this.video.currentTime = parseFloat(time);
     }
 }

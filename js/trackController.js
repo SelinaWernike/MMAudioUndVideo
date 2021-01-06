@@ -21,19 +21,13 @@ export default class TrackController {
         this.videoController = videoController;
     }
 
-    setAudioController(effectController) {
-        this.effectController = effectController;
-    }
-
     /**
      * Sets the End Time of the Time Bar. By calling the VideoTrack.
      */
     setEndTime(userInterface = true) {
         let time = 0;
         for (const [key, value] of this.maintrack.durationMap) {
-            // if(value >= 0) {
             if (value.duration >= 0) {
-                // time = time + value;
                 time = time + value.duration;
             }
         }
@@ -155,6 +149,28 @@ export default class TrackController {
         return time;
     }
 
+    jumpToTime(time, track, key){
+        //unterscheidung zwischen Videotrack und Audiotrack?
+        // wenn ja, müsste es noch eine "getElementByKey" Methode oder so geben,
+        // um gleiches Format zu haben wie bei getElementByTime/getElementByIndex
+
+        console.log("jumpToTime");
+        let globalTime = 0;
+        //evtl könnte man hier die editManager-startmap nutzen?
+        for (let i = 0; i < track.elements.length; i++) {
+            if (track.elements[i].id === key) {
+                break;
+            }
+            globalTime += track.durationMap.get(track.elements[i].id).duration;
+        }
+        console.log(globalTime);
+        let videoElement = this.maintrack.getElementByTime(globalTime + parseFloat(time));
+        console.log(videoElement);
+        //help ich kenn an dieser Stelle videoController noch nicht
+        this.videoController.changeVideoSource(videoElement);
+        this.videoController.setCurrentTime(time);
+        console.log("done! .. i hope.");
+    }
     
 }
 
