@@ -10,11 +10,12 @@ export default class AudioController {
         this.volumeSlider = document.querySelector("#audioVolumeSlider")
         this.previousVolume = this.audio.volume
         this.changeVolume(this.volumeSlider.value)
-        audio.addEventListener("timeupdate", this.onUpdate.bind(this));
-        audio.addEventListener("ended", this.onEnded.bind(this));
-        video.addEventListener("play", this.onPlayClick.bind(this));
-        video.addEventListener("pause", () => audio.pause());
-        video.addEventListener("seeked", this.onVideoSeek.bind(this));
+        this.audio.addEventListener("timeupdate", this.onUpdate.bind(this));
+        this.audio.addEventListener("ended", this.onEnded.bind(this));
+        this.video.addEventListener("play", this.onPlayClick.bind(this));
+        this.video.addEventListener("pause", () => this.audio.pause());
+        this.video.addEventListener("trackEnded", () => this.audio.removeAttribute("src"));
+        this.video.addEventListener("seeked", this.onVideoSeek.bind(this));
         window.onAudioVolumeOnClick = this.onVolumeClick.bind(this);
         window.onAudioVolumeOffClick = this.onVolumeOffClick.bind(this);
         window.onAudioVolumeChange = (event) => this.changeVolume(event.target.value);
@@ -32,7 +33,6 @@ export default class AudioController {
             const data = this.trackController.getCurrentAudio()
             if (data) {
                 this.changeAudioSource(data)
-                this.audio.currentTime = data.time
             }
         }
         if (this.audio.src !== "") {

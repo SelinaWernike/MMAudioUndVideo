@@ -25,7 +25,8 @@ export default class RenderToFile {
         recorder.addEventListener("dataavailable", event => {
             this.resolve(URL.createObjectURL(event.data))
         })
-        new VideoController(fileManager, trackController, video, recorder.stop.bind(recorder)).onPlayClick();
+        video.addEventListener("trackEnded", recorder.stop.bind(recorder));
+        new VideoController(fileManager, trackController, video).onPlayClick();
         recorder.start();
         const promise = new Promise(resolve => {
             this.resolve = resolve;

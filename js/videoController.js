@@ -2,11 +2,10 @@ export default class VideoController {
 
     static JUMP_TIME_SECONDS = 5
 
-    constructor(fileManager, trackController, video = document.querySelector("#video"), onFinalEnd) {
+    constructor(fileManager, trackController, video = document.querySelector("#video")) {
         this.fileManager = fileManager;
         this.trackController = trackController;
         this.video = video;
-        this.onFinalEnd = onFinalEnd;
         this.looping = false
         this.previousVolume = video.volume
         this.userControlled = false;
@@ -75,13 +74,11 @@ export default class VideoController {
             this.changeVideoSource(nextKey)
             this.video.play()
         } else {
+            this.video.dispatchEvent(new Event("trackEnded"));
             this.changeVideoSource(this.trackController.getFirstVideo())
             if (!forcePause && this.looping) {
                 this.video.play()
-            } else {
-                if (this.onFinalEnd) {
-                    this.onFinalEnd();
-                }
+            } else {                
                 if (this.userControlled) {
                     this.pauseIcon.setAttribute("hidden", "")
                     this.playIcon.removeAttribute("hidden")

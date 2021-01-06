@@ -22,7 +22,7 @@ export default class TrackController {
     }
 
     /**
-     * Sets the Time of the Time Bar. By calling the Videomanager.
+     * Sets the End Time of the Time Bar. By calling the VideoTrack.
      */
     setEndTime(userInterface = true) {
         let time = 0;
@@ -43,36 +43,98 @@ export default class TrackController {
         setTrackLength(this.audiotrack, this.endTime)
         setTrackLength(this.effecttrack, this.endTime)
     }
-
+/**
+ * Returns the next video on the maintrack, if possible
+ * @returns {object} object containing fileKey, startTime and duration
+ */
     getNextVideo() {
-        return this.maintrack.next();
+        let nextObject = this.maintrack.next();
+        if(nextObject != null) {
+            if(this.maintrack.currentElement > 0) {
+            dehighlightContainer(this.maintrack.currentElement - 1, this.maintrack);
+            }
+            highlightContainer(this.maintrack.currentElement, this.maintrack)
+        }
+        return nextObject;
     }
-
+/**
+ * Returns the previous video on the maintrack, if possible
+ * @returns {object} object containing fileKey, startTime and duration
+ */
     getPreviousVideo() {
-        return this.maintrack.previous();
+        let previousObject = this.maintrack.previous();
+        if(nextObject != null) {
+            dehighlightContainer(this.maintrack.currentElement + 1, this.maintrack);
+            highlightContainer(this.maintrack.currentElement, this.maintrack)
+        }
+        return previousObject;
     }
-
+/**
+ * Returns the first video on the maintrack, if possible
+ * @returns {object} object containing fileKey, startTime and duration
+ */
     getFirstVideo() {
-        return this.maintrack.getElementByIndex(0);
+        let index = this.maintrack.currentElement;
+        let firstObject = this.maintrack.getElementByIndex(0);
+        if(firstObject != null) {
+            dehighlightContainer(index, this.maintrack);
+            highlightContainer(this.maintrack.currentElement, this.maintrack);
+        }
+        return firstObject;
     }
-
+/**
+ * Returns the last video on the maintrack, if possible
+ * @returns {object} object containing fileKey, startTime and duration
+ */
     getLastVideo() {
-        return this.maintrack.getElementByIndex(this.maintrack.fileKeys.length - 1);
+        let index = this.maintrack.currentElement;
+        let lastObject = this.maintrack.getElementByIndex(this.maintrack.fileKeys.length - 1);
+        if(lastObject != null) {
+            dehighlightContainer(index, this.maintrack);
+            highlightContainer(this.maintrack.currentElement, this.maintrack);
+        }
+        return lastObject;
     }
-
+/**
+ * Returns the next Audio on the Audiotrack, if possible
+ * @returns {object} object containing fileKey, startTime and duration
+ */
     getNextAudio() {
-        return this.audiotrack.next();
+        let nextObject = this.audiotrack.next();
+        if(nextObject != null) {
+            if(this.audiotrack.currentElement > 0) {
+                dehighlightContainer(this.audiotrack.currentElement - 1, this.audiotrack);
+            }
+            highlightContainer(this.audiotrack.currentElement, this.audiotrack)
+        }
+        return nextObject;
     }
 
+/**
+ * Returns the Audio that corresponds with the current Videoelement on the Audiotrack, if possible
+ * @returns {object} object containing fileKey, startTime and duration
+ */    
     getCurrentAudio(video = document.querySelector("#video")) {
         let currentTime = this.getCurrentTime(video);
-        return this.audiotrack.getElementByTime(currentTime);
+        let index = this.audiotrack.currentElement;
+        let currentObject = this.audiotrack.getElementByTime(currentTime);
+        if(currentObject != null) {
+            dehighlightContainer(index, this.audiotrack);
+            highlightContainer(this.audiotrack.currentElement, this.audiotrack);
+        }
+        return currentObject;
     }
-
+/**
+ * Returns the Effec that corresponds with the current Videoelement on the Effecttrack, if possible
+ * @returns {object} object containing fileKey, startTime and duration
+ */ 
     getCurrentFilter(video = document.querySelector("#video")) {
+        let index = this.effecttrack.currentElement;
         let currentTime = this.getCurrentTime(video);
         let current = this.effecttrack.getElementByTime(currentTime);
-        if (current) {
+        if (current || current != null) {
+            dehighlightContainer(index, this.effecttrack);
+            highlightContainer(this.effecttrack.currentElement, this.effecttrack);
             return current.fileKey;
         }
         return null;
@@ -109,6 +171,17 @@ export default class TrackController {
         this.videoController.setCurrentTime(time);
         console.log("done! .. i hope.");
     }
+    
+}
+
+function highlightContainer(index, track) {
+    let element = track.elements[index];
+    element.style.backgroundColor = "yellow";
+}
+
+function dehighlightContainer(index, track) {
+    let element = track.elements[index];
+    element.style.backgroundColor = "white";
 }
 
 function setTrackLength(track, endTime) {

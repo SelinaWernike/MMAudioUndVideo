@@ -31,6 +31,10 @@ export default class EditManager {
         this.currentElement = -1;
     }
 
+    /**
+     * Adds Dragover and Drop Eventlistener to the track. When deopped over the Track
+     * the Element will be added to the Track
+     */
     initializeTrack() {
         this.trackNode.addEventListener("dragover", (ev) => {
             ev.preventDefault();
@@ -62,7 +66,13 @@ export default class EditManager {
             }
         });
     }
-
+/**
+ * Saves the data of the added Element into the class attributes filrKeys, Elements and durationMap
+ * @param {HTML} container The html-Element whisch is added as a Child of trackNode
+ * @param {string} fileKey The fileKey used to load the File
+ * @param {HTML} trackObject The video, audio or effect element
+ * @param {i} dropIndex the index on which the element is dropped
+ */
     addElementData(container, fileKey, trackObject, dropIndex) {
         this.fileKeys.splice(dropIndex, 0, fileKey);
         this.elements.splice(dropIndex, 0, container);
@@ -77,7 +87,10 @@ export default class EditManager {
             this.startMap.set(container.id, 0);
         }
     }
-
+/**
+ * Adds EventListener to the Element on the Track
+ * @param {HTML} container 
+ */
     addElementEvents(container) {
         this.addDragNDrop(container);
         this.addOptionsEvent(container, this.elements.length - 1);
@@ -108,7 +121,11 @@ export default class EditManager {
         }
         return this.elements.length;
     }
-
+/**
+ * Adds an EventListener for removal
+ * @param {*} item 
+ * @param {Index} index Index of the Element that should be removed
+ */
     addRemoveEvent(item, index) {
         let close = item.querySelector(".close")
         if (!close) {
@@ -146,7 +163,7 @@ export default class EditManager {
     }
 
     /**
-     * removes an element from the track
+     * Removes an element from the track
      */
     removeElement(item, index) {
         item.parentNode.removeChild(item);
@@ -157,6 +174,9 @@ export default class EditManager {
         this.resizeElements();
     }
 
+    /**
+     * Resizes an Element according to the number of Elements on the track
+     */
     resizeElements() {
         let width = 100 / this.elements.length;
         this.elements.forEach(element => {
@@ -191,6 +211,11 @@ export default class EditManager {
         return item;
     }
 
+    /**
+     * Sets the playtime of an element when first loaded
+     * @param {HTML} element  
+     * @param {int} id 
+     */
     setItemDuration(element, id) {
         // this.durationMap.set(id,element.duration)
         this.durationMap.set(id,{duration: element.duration, startTime: 0.00})
@@ -198,12 +223,19 @@ export default class EditManager {
         this.trackNode.dispatchEvent(TrackChange);
     } 
 
+    /**
+     * Changes the position of two elements on the track
+     * @param {*} array The array in which the elements lay
+     * @param {*} item1 
+     * @param {*} item2 
+     * @param {function} comperator How the two elements need to be compared
+     * @see  compareHTML(item1, item2), compareKeys(item1, item2) 
+     */
     changePosition(array, item1, item2,comperator) {
         let indexTarget;
         let indexThis;
         for(let i = 0; i < array.length;i++) {
             if(comperator(array[i],item1)) {
-                console.log(array + ", index= " + i);
                 indexThis = i;
                 break;
             }
@@ -235,38 +267,59 @@ export default class EditManager {
         makeResizable(element, leftResize, rightResize, 10)
     }
 
+    /**
+     * Changes StartTime or Duration of an Element
+     * @param {string} key 
+     * @param {*} timeObject Object containing startTime and duartion
+     */
     changeTime(key, timeObject) {
         this.durationMap.set(key,timeObject);
         this.trackNode.dispatchEvent(TrackChange);
     }
 
+    /**
+     * Returns next Element in the Track if possible
+     * @returns {object} object containing fileKey, startTime and duration
+     */
     next() {
         if (this.currentElement < this.elements.length - 1) {
             this.currentElement++;
-            return {fileKey : this.fileKeys[this.currentElement], startTime : this.durationMap.get("item" + this.currentElement).startTime,
-                                duration : this.durationMap.get("item" + this.currentElement).duration }
+            return {fileKey : this.fileKeys[this.currentElement], startTime : this.durationMap.get(this.elements[this.currentElement].id).startTime,
+                                duration : this.durationMap.get(this.elements[this.currentElement].id).duration }
         }
         return null;
     }
-
+/**
+     * Returns previous Element in the Track if possible
+     * @returns {object} object containing fileKey, startTime and duration
+     */
     previous() {
         if (this.currentElement > 0) {
             this.currentElement--;
-            return {fileKey : this.fileKeys[this.currentElement], startTime : this.durationMap.get("item" + this.currentElement).startTime,
-                        duration : this.durationMap.get("item" + this.currentElement).duration }
+            return {fileKey : this.fileKeys[this.currentElement], startTime : this.durationMap.get(this.elements[this.currentElement].id).startTime,
+                        duration : this.durationMap.get(this.elements[this.currentElement].id).duration }
         }
         return null;
     }
 
+    /**
+     * Returns Element according to Index in the Track if possible
+     * @param {int} Index of the Element
+     * @returns {object} object containing fileKey, startTime and duration
+     */
     getElementByIndex(index) {
         if (this.elements.length > index && index >= 0) {
             this.currentElement = index;
-            return {fileKey : this.fileKeys[this.currentElement], startTime : this.durationMap.get("item" + this.currentElement).startTime,
-            duration : this.durationMap.get("item" + this.currentElement).duration }
+            return {fileKey : this.fileKeys[this.currentElement], startTime : this.durationMap.get(this.elements[this.currentElement].id).startTime,
+            duration : this.durationMap.get(this.elements[this.currentElement].id).duration }
         }
         return null;
     }
-
+/**
+     * Returns Element according to given time in the Track if possible
+     * @param {int} Time in seconds
+     * @returns {object} object containing fileKey, startTime and duration
+     */
     getElementByTime(time) {
         for (let i = 0; i < this.elements.length; i++) {
             const startTime = this.startMap.get(this.elements[i].id);
@@ -277,7 +330,7 @@ export default class EditManager {
                     fileKey: this.fileKeys[i], 
                     startTime: this.durationMap.get("item" + i).startTime,
                     duration: this.durationMap.get("item" + i).duration,
-                    time: time - startTime + this.durationMap.get("item" + i).startTime,
+                    time: time - startTime + this.durationMap.get(this.elements[this.currentElement].id).startTime,
                 }
             }
         }
@@ -285,7 +338,7 @@ export default class EditManager {
     }
 }
 let TrackChange = new Event("trackChange", {bubbles: true});
-
+// Two Comperators
 function compareHTML(item1, item2) {
     return item1.id == item2.id;
 }
