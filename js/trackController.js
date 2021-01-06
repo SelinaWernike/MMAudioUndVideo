@@ -77,7 +77,9 @@ export default class TrackController {
         let index = this.maintrack.currentElement;
         let firstObject = this.maintrack.getElementByIndex(0);
         if(firstObject != null) {
+            if(index > 0) {
             dehighlightContainer(index, this.maintrack);
+            }
             highlightContainer(this.maintrack.currentElement, this.maintrack);
         }
         return firstObject;
@@ -90,7 +92,9 @@ export default class TrackController {
         let index = this.maintrack.currentElement;
         let lastObject = this.maintrack.getElementByIndex(this.maintrack.fileKeys.length - 1);
         if(lastObject != null) {
+            if(index > 0) {
             dehighlightContainer(index, this.maintrack);
+            }
             highlightContainer(this.maintrack.currentElement, this.maintrack);
         }
         return lastObject;
@@ -119,7 +123,9 @@ export default class TrackController {
         let index = this.audiotrack.currentElement;
         let currentObject = this.audiotrack.getElementByTime(currentTime);
         if(currentObject != null) {
+            if(index > 0) {
             dehighlightContainer(index, this.audiotrack);
+            }
             highlightContainer(this.audiotrack.currentElement, this.audiotrack);
         }
         return currentObject;
@@ -133,7 +139,9 @@ export default class TrackController {
         let currentTime = this.getCurrentTime(video);
         let current = this.effecttrack.getElementByTime(currentTime);
         if (current || current != null) {
+            if(index > 0) {
             dehighlightContainer(index, this.effecttrack);
+            }
             highlightContainer(this.effecttrack.currentElement, this.effecttrack);
             return current.fileKey;
         }
