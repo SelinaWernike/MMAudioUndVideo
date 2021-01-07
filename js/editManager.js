@@ -35,7 +35,8 @@ export default class EditManager {
      * Adds Dragover and Drop Eventlistener to the track. When deopped over the Track
      * the Element will be added to the Track
      */
-    initializeTrack() {
+    initializeTrack(controller) {
+        this.controller = controller;
         this.trackNode.addEventListener("dragover", (ev) => {
             ev.preventDefault();
         })
@@ -45,7 +46,7 @@ export default class EditManager {
             if (childData) {
                 let container = document.createElement('div');
                 container.classList.add('column');
-                container.id = "item" + this.id;
+                container.id = "item" + this.id++;
                 container.innerHTML = childData;
                 container.children[0].removeAttribute("draggable")
                 const fileKey = container.children[0].getAttribute("fileKey")
@@ -60,8 +61,6 @@ export default class EditManager {
                     } else {
                         this.trackNode.insertBefore(container, this.elements[dropIndex + 1])
                     }
-                    this.id++;
-                    this.trackNode.dispatchEvent(TrackChange);
                 }
             }
         });

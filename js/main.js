@@ -28,12 +28,9 @@ let settingsManager = new SettingsManager(trackController);
 const downloadManager = new DownloadManager(fileManager, filterManager, videoManager, effectManager);
 resizeCanvas()
 
-videoManager.initializeTrack();
-audioManager.initializeTrack();
+videoManager.initializeTrack(videoController);
+audioManager.initializeTrack(audioController);
 effectManager.initializeTrack();
-
-trackController.setVideoController(videoController);
-trackController.setAudioController(audioController);
 
 //Add Event Listener
 document.querySelector("#videotrack").addEventListener("trackChange", function() {
