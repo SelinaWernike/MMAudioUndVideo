@@ -37,11 +37,18 @@ export default class VideoController {
     }
 
     reset() {
-        const wasPlaying = !this.video.paused
-        this.video.pause()
-        this.changeVideoSource(this.trackController.getFirstVideo())
-        if (wasPlaying) {
-            this.video.play();
+        const nextKey = this.trackController.getFirstVideo();
+        if (nextKey) {
+            const wasPlaying = !this.video.paused
+            this.video.pause()
+            this.changeVideoSource(nextKey)
+            if (wasPlaying) {
+                this.video.play();
+            }
+        } else {
+            this.video.removeAttribute("src")
+            this.video.dispatchEvent(new Event("trackEmpty"))
+            this.onPauseClick();
         }
     }
 

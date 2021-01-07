@@ -54,6 +54,10 @@ video.addEventListener("seeked", () => {
     renderCurrentFrame()
 })
 
+video.addEventListener("trackEmpty", () => {
+    context.clearRect(0, 0, canvas.width, canvas.height);
+})
+
 window.addEventListener("resize", () => {
     resizeCanvas()
 })
