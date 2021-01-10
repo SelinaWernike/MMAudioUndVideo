@@ -1,5 +1,6 @@
 const START_INPUT = document.querySelector("#startInput");
 const END_INPUT = document.querySelector("#endInput");
+let closeBtn;
 
 export default class SettingsManager {
 
@@ -100,6 +101,10 @@ export default class SettingsManager {
         END_INPUT.value = timeObject.startTime + timeObject.duration;
         settingsContainer.setAttribute("settingsKey", settingsKey);
         settingsContainer.setAttribute("settingsTrack", settingsTrack);
+        closeBtn = document.querySelector("#" + settingsKey).childNodes[0].childNodes[2];
+        closeBtn.style.display = "none";
+        
+        
     }
 
     static closeSettings(){
@@ -110,6 +115,9 @@ export default class SettingsManager {
         grid.style.gridTemplateColumns = "70% 30%";
         settingsContainer.removeAttribute("settingsKey");
         settingsContainer.removeAttribute("settingsTrack");
+        if(closeBtn) {
+            closeBtn.style.display = "inline";
+        }
     }
 }
 
