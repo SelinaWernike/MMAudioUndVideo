@@ -181,6 +181,7 @@ export default class EditManager {
         this.durationMap.delete(item.id);
         this.startMap.delete(item.id);
         this.resizeElements();
+        this.trackNode.dispatchEvent(TrackChange);
     }
 
     /**
@@ -237,6 +238,7 @@ export default class EditManager {
         let indexThis = this.elements.findIndex(element => element.id === item2.id);
         swap(this.elements, indexTarget, indexThis);
         swap(this.fileKeys, indexTarget, indexThis);
+        
         this.trackNode.dispatchEvent(TrackChange);
     }
 
@@ -284,6 +286,7 @@ export default class EditManager {
      * @returns {object} object containing fileKey, startTime and duration
      */
     getElementByIndex(index) {
+        console.log(index);
         if (this.elements.length > index && index >= 0) {
             this.currentElement = index;
             const duration = this.durationMap.get(this.elements[index].id);
@@ -326,3 +329,4 @@ function swap(array, index1, index2) {
     array[index1] = array[index2];
     array[index2] = temp;
 }
+
