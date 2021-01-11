@@ -18,7 +18,6 @@ export default class AudioController {
             this.audio.removeAttribute("src")
             this.audio.load()
         });
-        this.video.addEventListener("sourceChanged", this.onVideoSeek.bind(this));
         this.video.addEventListener("seeked", this.onVideoSeek.bind(this));
         window.onAudioVolumeOnClick = this.onVolumeClick.bind(this);
         window.onAudioVolumeOffClick = this.onVolumeOffClick.bind(this);
@@ -95,7 +94,6 @@ export default class AudioController {
             this.audio.src = url
             this.audio.load()
         }
-        console.log("Jumping to: " + data.time || data.startTime)
         this.audio.currentTime = data.time || data.startTime;
         if (forcePlay || wasPlaying) {
             this.audio.play();

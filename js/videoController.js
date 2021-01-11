@@ -41,6 +41,7 @@ export default class VideoController {
         const nextKey = this.trackController.getFirstVideo();
         if (nextKey) {
             this.changeSource(nextKey)
+            this.video.dispatchEvent(new Event("seeked"))
         } else {
             this.video.removeAttribute("src")
             this.video.load()
@@ -104,6 +105,7 @@ export default class VideoController {
             const previous = this.trackController.getPreviousVideo();
             if (previous) {
                 this.changeSource(previous)
+                this.video.dispatchEvent(new Event("seeked"))
             } else {
                 this.video.currentTime = 0;
             }
@@ -115,6 +117,7 @@ export default class VideoController {
             const next = this.trackController.getNextVideo()
             if (next) {
                 this.changeSource(next)
+                this.video.dispatchEvent(new Event("seeked"))
             } else {
                 this.onEnded(this.video.paused);
             }
@@ -200,8 +203,7 @@ export default class VideoController {
         this.video.endTime = data.startTime + data.duration;
         if (this.video.src !== url) {
             this.video.src = url
-            this.video.load()
-            this.video.dispatchEvent(new Event("sourceChanged"))
+            this.video.load()            
         }
         this.video.currentTime = data.time || data.startTime;
         if (forcePlay || wasPlaying && !forcePause) {
