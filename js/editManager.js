@@ -1,5 +1,5 @@
 import FunctionMap from "./util/functionMap.js"
-import settingsManager from "./settingsManager.js";
+import SettingsManager from "./settingsManager.js";
 import makeResizable from "./util/resize.js"
 
 /**
@@ -157,7 +157,7 @@ export default class EditManager {
 
         if(options){
             options.addEventListener("click", (event) => {
-               settingsManager.onSettingsClick(event, this.durationMap)
+               SettingsManager.onSettingsClick(event, this.durationMap)
             })
         }
     }
@@ -172,6 +172,10 @@ export default class EditManager {
         this.durationMap.delete(item.id);
         this.startMap.delete(item.id);
         this.resizeElements();
+        console.log(SettingsManager.isSettingsOpen());
+        if(SettingsManager.isSettingsOpen()){
+            SettingsManager.closeSettings();
+        }
     }
 
     /**

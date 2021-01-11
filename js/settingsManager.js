@@ -1,5 +1,6 @@
 const START_INPUT = document.querySelector("#startInput");
 const END_INPUT = document.querySelector("#endInput");
+var SETTINGS_OPEN;
 
 /**
 This class is responsible for the settings widget that lets you change the start/end time of a video or audio element.
@@ -7,7 +8,8 @@ This class is responsible for the settings widget that lets you change the start
 export default class SettingsManager {
 
     constructor(trackController){
-        this.display = false;
+        //this.display = false;
+        SETTINGS_OPEN = false;
 
         //called when pressing "OK" button - saves input field values (if valid) & closes settings widget
         window.onSettingsOK = function(){
@@ -106,14 +108,17 @@ Responds to click on settings button according to current state of settings widg
 @param {Object} durationMap - contains information to be displayed in settings widget
 */
     static onSettingsClick(event, durationMap) {
-         let settingsContainer = document.querySelector(".settingsContainer");
-         if (settingsContainer.style.display == 'none') {
+         if (!SETTINGS_OPEN) {
             this.openSettings(event, durationMap);
+            event.currentTarget.style.backgroundColor = "#666666";
          }else{
-            let settingsKey = document.querySelector(".settingsContainer").getAttribute("settingsKey");
             if(settingsKey != event.currentTarget.parentNode.parentNode.getAttribute("id")){
+                let settingsKey = document.querySelector(".settingsContainer").getAttribute("settingsKey");
+                let trackElement = document.querySelector(('#'+settingsKey));
+                trackElement.childNodes[0].childNodes[1].style.backgroundColor = "transparent";
                 this.openSettings(event, durationMap);
             }else{
+                event.currentTarget.style.backgroundColor = "transparent";
                 this.closeSettings();
             }
          }
@@ -140,8 +145,11 @@ according to element the settings button was clicked on.
         END_INPUT.value = timeObject.startTime + timeObject.duration;
         settingsContainer.setAttribute("settingsKey", settingsKey);
         settingsContainer.setAttribute("settingsTrack", settingsTrack);
-        closeBtn = document.querySelector("#" + settingsKey).childNodes[0].childNodes[2];
-        closeBtn.style.display = "none";
+        //closeBtn = document.querySelector("#" + settingsKey).childNodes[0].childNodes[2];
+        //closeBtn.style.display = "none";
+
+        SETTINGS_OPEN = true;
+        event.currentTarget.style.backgroundColor = "#666666";
     }
 
 /**
@@ -155,5 +163,16 @@ Rearranges CSS to hide settings widget.
         grid.style.gridTemplateColumns = "70% 30%";
         settingsContainer.removeAttribute("settingsKey");
         settingsContainer.removeAttribute("settingsTrack");
+
+        SETTINGS_OPEN = false;
+        event.currentTarget.style.backgroundColor = "transparent";
+    }
+
+    /**
+    Are settings currently open or not?
+    returns boolean settingsOpen
+    */
+    static isSettingsOpen(){
+        return SETTINGS_OPEN;
     }
 }
