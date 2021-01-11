@@ -69,10 +69,8 @@ export default class SettingsManager {
         switch(trackName){
             case "videotrack":
                return trackController.maintrack;
-               break;
             case "audiotrack":
                return trackController.audiotrack;
-               break;
             default:
                console.log("forbidden track name " + trackName);
                break;
