@@ -173,12 +173,14 @@ export default class TrackController {
 
 function highlightContainer(index, track) {
     let element = track.elements[index];
-    element.style.backgroundColor = "yellow";
+    element.style.backgroundColor = "#78ecd1";
+    element.style.color = "black"
 }
 
 function dehighlightContainer(index, track) {
     let element = track.elements[index];
-    element.style.backgroundColor = "white";
+    element.style.backgroundColor = "#555555";
+    element.style.color = "#eaeaea"
 }
 
 function setTrackLength(track, endTime) {

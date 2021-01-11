@@ -13,7 +13,15 @@
 .settingsContainer {
     grid-area: settings;
     display: block;
+    border-style: solid;
+    border-color: #78ecd1;
+    margin-left: 1em;
+    
     }
+
+#innerSettingsContainer {
+    padding-left: 2em;
+}
 
 
 

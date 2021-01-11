@@ -91,7 +91,7 @@ export default class SettingsManager {
     static openSettings(event, durationMap){
         let grid =  document.querySelector("#lowerArea");
         grid.style.gridTemplateAreas = ("\'header auto\'\'track1 settings\'\' track2 settings\'\'track3 settings\'");
-        grid.style.gridTemplateColumns = "70% 30%"
+        grid.style.gridTemplateColumns = "80% 20%"
         let settingsContainer = document.querySelector(".settingsContainer");
         let settingsTrack = event.currentTarget.parentNode.parentNode.parentNode.getAttribute("id");
         let settingsKey = event.currentTarget.parentNode.parentNode.getAttribute("id");
@@ -112,7 +112,7 @@ export default class SettingsManager {
         let settingsContainer = document.querySelector(".settingsContainer");
         settingsContainer.style.display = 'none';
         grid.style.gridTemplateAreas = "\' header header\'\' track1 track1\'\' track2 track2\'\' track3 track3\'";
-        grid.style.gridTemplateColumns = "70% 30%";
+        grid.style.gridTemplateColumns = "80% 20%";
         settingsContainer.removeAttribute("settingsKey");
         settingsContainer.removeAttribute("settingsTrack");
         if(closeBtn) {
