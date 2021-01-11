@@ -19,10 +19,19 @@ export default class FilterManager {
         this.filters.set("BlueFilter", new BlueFilter())
     }
 
+    /**
+     * Applies current image filter to current video frame.
+     * @param currentFrame
+     * @param currentFilter
+     */
     apply(currentFrame, currentFilter) {
         this.filters.get(currentFilter).apply(currentFrame);
     }
 
+    /**
+     * Displays available filters.
+     * @returns {FilterManager}
+     */
     fillHtmlFilterList() {
         const filterList = document.getElementById("filterList");
         for (const key of this.filters.keys()) {
