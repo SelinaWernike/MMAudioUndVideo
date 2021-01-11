@@ -115,7 +115,7 @@ export default class TrackController {
         let current = this.effecttrack.getElementByTime(currentTime);
         if (current || current != null) {
             if(this.effecttrack.elements.length > 1) {
-            this.dehighlightAll(this.effecttrack);
+                this.dehighlightAll(this.effecttrack);
             }
             highlightContainer(this.effecttrack.currentElement, this.effecttrack);
             return current.fileKey;
@@ -130,6 +130,11 @@ export default class TrackController {
             time += this.maintrack.durationMap.get(this.maintrack.elements[i].id).duration;
         }
         return time;
+    }
+
+    jumpToIndex(index, track) {
+        let current = track.getElementByIndex(index);
+        this.maintrack.changeSource(current)
     }
 
     jumpToTime(time, track, key) {

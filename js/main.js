@@ -16,10 +16,10 @@ let video = document.querySelector("video")
 let fileInput = document.querySelector("#fileInput");
 let filterManager = new FilterManager().fillHtmlFilterList();
 let fileManager = new FileManager()
-let videoManager = new EditManager("videotrack", new VideoLoader(fileManager), false)
-let audioManager = new EditManager("audiotrack", new AudioLoader(fileManager), false)
+let videoManager = new EditManager("videotrack", new VideoLoader(fileManager), false, true)
+let audioManager = new EditManager("audiotrack", new AudioLoader(fileManager), false, false)
 const effectLoader = new EffectLoader(filterManager);
-let effectManager = new EditManager("effecttrack", effectLoader, true)
+let effectManager = new EditManager("effecttrack", effectLoader, true, false)
 const trackController = new TrackController(videoManager, audioManager, effectManager);
 effectLoader.setTrackManager(trackController);
 const videoController = new VideoController(fileManager, trackController).addWindowListener();
