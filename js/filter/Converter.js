@@ -2,27 +2,25 @@ var cfColor = document.getElementById("colorFilterColor");
 var cfColorHEX = cfColor.value;
 var ckColor = document.getElementById("ckFilterColor");
 var ckColorHEX = ckColor.value;
-var colorHSV = convertHEX2RGB2HSV("cf");
+var cfColorHSV = convertHEX2RGB2HSV("cf");
+export var ckColorHSV = convertHEX2RGB2HSV("ck");
 
 // converts from rgb to hsv and back to rgb
 // hue of color gets changed
 // returns array of rgb values
 export function convertRGB_HSV_RGB(rgb) {
     let rt, gt, bt, h, s, v, j, p, q, t, r, g, b;
-    r = rgb[0];
-    g = rgb[1];
-    b = rgb[2];
 
     // converting RGB to HSV
-    rt = r / 255;
-    gt = g / 255;
-    bt = b / 255;
+    rt = rgb[0] / 255;
+    gt = rgb[1] / 255;
+    bt = rgb[2] / 255;
 
-    let cMax = Math.max(rt, Math.max(gt, bt))
-    let cMin = Math.min(rt, Math.min(gt, bt));
+    let cMin = Math.min(rt, gt, bt);
+    let cMax = Math.max(rt, gt, bt);
     let diff = cMax - cMin;
 
-    h = colorHSV[0];
+    h = cfColorHSV[0];
 
     if (cMax == 0) { s = 0; }
     else { s = (diff / cMax) * 100; }
@@ -82,8 +80,8 @@ export function convertToHSV(rgb) {
     gt = rgb[1] / 255;
     bt = rgb[2] / 255;
 
-    let cMax = Math.max(rt, Math.max(gt, bt))
-    let cMin = Math.min(rt, Math.min(gt, bt));
+    let cMin = Math.min(rt, gt, bt);
+    let cMax = Math.max(rt, gt, bt);
     let diff = cMax - cMin;
     v = cMax;
 
@@ -96,19 +94,21 @@ export function convertToHSV(rgb) {
         g = (((cMax - gt) / 6) + (diff / 2)) / diff;
         b = (((cMax - bt) / 6) + (diff / 2)) / diff;
 
-        if (r == cMax) { h = b - gt; }
-        else if (g == cMax) { h = (1 / 3) + r - b; }
-        else if (b == cMax) { h = (1 / 3) + g - r; }
+        if (rt == cMax) { h = b - g; }
+        else if (gt == cMax) { h = (1 / 3) + r - b; }
+        else if (bt == cMax) { h = (1 / 3) + g - r; }
 
         if (h < 0) { h += 1; }
         if (h > 1) { h -= 1; }
     }
 
-    hsv[0] = Math.round(h * 360);
-    hsv[1] = Math.round(s * 100);
-    hsv[2] = Math.round(v * 100);
+    h = h * 320;
+    s = s * 100;
+    v = v * 100;
 
-    console.log(hsv[0]);
+    hsv[0] = Math.round(h);
+    hsv[1] = Math.round(s);
+    hsv[2] = Math.round(v);
 
     return hsv;
 }
@@ -137,16 +137,17 @@ export function convertHEX2RGB2HSV(filter) {
     rgb[1] = g;
     rgb[2] = b;
 
-    console.log(r,g,b);
+    console.log(r, g, b);
 
     return convertToHSV(rgb);
 }
 
 cfColor.addEventListener("change", function () {
     cfColorHEX = cfColor.value;
-    colorHSV = convertHEX2RGB2HSV("cf");
+    cfColorHSV = convertHEX2RGB2HSV("cf");
 }, false);
 
 ckColor.addEventListener("change", function () {
     ckColorHEX = ckColor.value;
+    ckColorHSV = convertHEX2RGB2HSV("ck");
 }, false);
