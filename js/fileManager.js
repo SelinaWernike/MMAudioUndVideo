@@ -17,10 +17,8 @@ export default class FileManager {
     /**
      * adds files of html <input> element both to frontend list and to backend map
      */
-     addFile() {
-        let input = document.querySelector('input');
-        const fileList = input.files;
-        if (!( fileList.length === 0)){
+     addFiles(fileList) {
+        if (fileList.length !== 0){
             for(const file of fileList){
                 this.addToFileMap(file);
                 const listItem = document.createElement('li');

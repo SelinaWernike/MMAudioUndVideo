@@ -20,6 +20,16 @@
     overflow-x: hidden;
 }
 
+#canvas {
+    position: absolute;
+    z-index: 20;
+}
+
+#backgroundImgCanvas {
+    position: absolute;
+    z-index: -1;
+}
+
 #videoArea {
     display: flex;
     flex-direction: column;
@@ -57,7 +67,7 @@ ul li:nth-child(odd) {
 }
 
 .pointer {
-    cursor: pointer;    
+    cursor: pointer;
 }
 
 #time {
