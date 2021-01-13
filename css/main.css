@@ -1,4 +1,13 @@
+body {
+    background-color: #323232;
+    color: #eaeaea;
+    font-family: Calibri;
+    
+}
+
 #upperArea {
+    padding-top: 0.5em;
+    border-top: solid #a0d840;
     display: flex;
     flex-direction: row;
     height: 50%;
@@ -9,8 +18,8 @@
     display: grid;
     grid-template-areas: 'header'
     'track1'
-    'track2'
-    'track3';
+    'track3'
+    'track2';
     height: 50%;
 }
 
@@ -34,6 +43,7 @@
     display: flex;
     flex-direction: column;
     width: 50%;
+    border: 0.2em ;
 }
 
 #videoControls {
@@ -41,6 +51,9 @@
     flex-direction: row;
     margin-top: 3px;
     justify-content: center;
+    padding-top: 0.5em;
+    border-top: 0.2em solid #555555;
+    
 }
 
 #videoControls * {
@@ -53,9 +66,15 @@
     min-width: 0;
 }
 
+h3 {
+    font-family: Verdana;
+    font-size: 16px;
+}
+
 ul {
     padding: 0;
     margin: 0;
+    margin-top: 0.7em;
 }
 
 li {
@@ -63,16 +82,34 @@ li {
 }
 
 ul li:nth-child(odd) {
-    background: #dfdfdf;
+    background:#555555;
+}
+
+ul li:nth-child(even) {
+    background: #3d3d3d;
+}
+
+ul li:hover {
+    border: 3px solid#a0d840;
+    
 }
 
 .pointer {
     cursor: pointer;
+
+    filter: brightness(0.75);
+}
+
+.pointer:hover {
+    filter: brightness(1.5);
+
+
 }
 
 #time {
     display: inline;
-    bottom: 0%
+    bottom: 0%;
+    height: 1em;
 }
 
 #startTime {
@@ -90,3 +127,5 @@ input:invalid {
 .jqinvalid {
     border: 2px solid #b40000;
 }
+
+

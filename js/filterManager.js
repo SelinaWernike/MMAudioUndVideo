@@ -13,6 +13,7 @@ export default class FilterManager {
         this.filters.set("SerpiaFilter", new SepiaFilter())
         this.filters.set("ColorFilter", new ColorFilter())
         this.filters.set("ChromaKeyFilter", new ChromaKeyFilter());
+
     }
 
     /**
