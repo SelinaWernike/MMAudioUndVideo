@@ -146,8 +146,6 @@ according to element the settings button was clicked on.
         END_INPUT.value = timeObject.startTime + timeObject.duration;
         settingsContainer.setAttribute("settingsKey", settingsKey);
         settingsContainer.setAttribute("settingsTrack", settingsTrack);
-        //closeBtn = document.querySelector("#" + settingsKey).childNodes[0].childNodes[2];
-        //closeBtn.style.display = "none";
 
         SETTINGS_OPEN = true;
         event.currentTarget.style.backgroundColor = "#666666";

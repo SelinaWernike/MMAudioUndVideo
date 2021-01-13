@@ -32,7 +32,7 @@ export default class AudioController {
         if (this.audio.src === "") {
             const data = this.trackController.getCurrentAudio()
             if (data) {
-                this.changeAudioSource(data)
+                this.changeSource(data)
             }
         }
         if (this.audio.src !== "") {
@@ -43,7 +43,7 @@ export default class AudioController {
     onEnded() {
         const data = this.trackController.getNextAudio()
         if (data) {
-            this.changeAudioSource(data)
+            this.changeSource(data)
             this.audio.play()
         } else {
             this.audio.removeAttribute("src")
@@ -55,8 +55,7 @@ export default class AudioController {
         if (data) {
             const wasPlaying = !this.video.paused
             this.audio.pause()
-            this.changeAudioSource(data)
-            this.audio.currentTime = data.time
+            this.changeSource(data)
             if (wasPlaying) {
                 this.audio.play()
             }
@@ -85,7 +84,7 @@ export default class AudioController {
         this.audio.volume = volume
     }
 
-    changeAudioSource(data) {
+    changeSource(data) {
         const url = this.fileManager.fileMap.get(data.fileKey);
         this.audio.startTime = data.startTime;
         this.audio.endTime = data.startTime + data.duration;
@@ -93,6 +92,6 @@ export default class AudioController {
             this.audio.src = url
             this.audio.load()
         }
-        this.audio.currentTime = data.startTime;
+        this.audio.currentTime = data.time || data.startTime;
     }
 }

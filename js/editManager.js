@@ -35,7 +35,8 @@ export default class EditManager {
      * Adds Dragover and Drop Eventlistener to the track. When deopped over the Track
      * the Element will be added to the Track
      */
-    initializeTrack() {
+    initializeTrack(controller) {
+        this.controller = controller;
         this.trackNode.addEventListener("dragover", (ev) => {
             ev.preventDefault();
         })
@@ -45,7 +46,7 @@ export default class EditManager {
             if (childData) {
                 let container = document.createElement('div');
                 container.classList.add('column');
-                container.id = "item" + this.id;
+                container.id = "item" + this.id++;
                 container.innerHTML = childData;
                 container.children[0].removeAttribute("draggable")
                 const fileKey = container.children[0].getAttribute("fileKey")
@@ -60,8 +61,6 @@ export default class EditManager {
                     } else {
                         this.trackNode.insertBefore(container, this.elements[dropIndex + 1])
                     }
-                    this.id++;
-                    this.trackNode.dispatchEvent(TrackChange);
                 }
             }
         });
@@ -79,22 +78,31 @@ export default class EditManager {
         this.durationMap.set(container.id, { get duration() { return trackObject.duration }, startTime: 0.00, origDuration: trackObject.duration});
         if (this.resizable) {
             this.startMap.set(container.id, function () { return trackObject.start });
-        } else if (dropIndex > 0) {
-            const previousElement = this.elements[dropIndex - 1];
-            const previousDuration = this.durationMap.get(previousElement.id);
-            this.startMap.set(container.id, previousDuration.duration)
         } else {
-            this.startMap.set(container.id, 0);
+            this.startMap.set(container.id, this.getGlobalStartTime.bind(this, container.id));
         }
     }
+
+    getGlobalStartTime(elementId) {
+        let globalTime = 0;
+        for (let i = 0; i < this.elements.length; i++) {
+            if (this.elements[i].id === elementId) {
+                return globalTime;
+            }
+            globalTime += this.durationMap.get(this.elements[i].id).duration;
+        }
+        return globalTime;
+    }
+
+
 /**
  * Adds EventListener to the Element on the Track
  * @param {HTML} container 
  */
     addElementEvents(container) {
         this.addDragNDrop(container);
-        this.addOptionsEvent(container, this.elements.length - 1);
-        this.addRemoveEvent(container, this.elements.length - 1);
+        this.addOptionsEvent(container);
+        this.addRemoveEvent(container);
         if (this.resizable) {
             this.addResizeEvents(container)
         }
@@ -126,7 +134,7 @@ export default class EditManager {
  * @param {*} item 
  * @param {Index} index Index of the Element that should be removed
  */
-    addRemoveEvent(item, index) {
+    addRemoveEvent(item) {
         let close = item.querySelector(".close")
         if (!close) {
             close = document.createElement("span");
@@ -135,7 +143,7 @@ export default class EditManager {
             item.appendChild(close)
         }
         close.addEventListener("click", () => {
-            this.removeElement(item, index)
+            this.removeElement(item)
         })
     }
 
@@ -165,17 +173,18 @@ export default class EditManager {
     /**
      * Removes an element from the track
      */
-    removeElement(item, index) {
+    removeElement(item) {
         item.parentNode.removeChild(item);
+        const index = this.elements.findIndex(element => element.id === item.id);
         this.elements.splice(index, 1);
         this.fileKeys.splice(index, 1);
         this.durationMap.delete(item.id);
         this.startMap.delete(item.id);
         this.resizeElements();
-        console.log(SettingsManager.isSettingsOpen());
         if(SettingsManager.isSettingsOpen()){
             SettingsManager.closeSettings();
         }
+        this.trackNode.dispatchEvent(TrackChange);
     }
 
     /**
@@ -204,12 +213,8 @@ export default class EditManager {
         item.addEventListener("drop", (ev) => {
             if (ev.dataTransfer.getData("trackItem")) {
                 let targetElement = this.trackNode.querySelector("#" + ev.dataTransfer.getData("trackItem"));
-                const childFileKeyIndex = this.resizable ? 1 : 0;
-                let fileKeyThis = item.children[childFileKeyIndex].getAttribute("fileKey")
-                let fileKeyTarget = targetElement.children[childFileKeyIndex].getAttribute("fileKey")
                 item.parentNode.insertBefore(targetElement, item);
-                this.elements = this.changePosition(this.elements, targetElement, item, compareHTML);
-                this.fileKeys = this.changePosition(this.fileKeys, fileKeyThis, fileKeyTarget, compareKeys);
+                this.changePosition(targetElement, item);
             }
         });
         return item;
@@ -227,33 +232,16 @@ export default class EditManager {
 
     /**
      * Changes the position of two elements on the track
-     * @param {*} array The array in which the elements lay
      * @param {*} item1 
      * @param {*} item2 
-     * @param {function} comperator How the two elements need to be compared
-     * @see  compareHTML(item1, item2), compareKeys(item1, item2) 
      */
-    changePosition(array, item1, item2,comperator) {
-        let indexTarget;
-        let indexThis;
-        for(let i = 0; i < array.length;i++) {
-            if(comperator(array[i],item1)) {
-                indexThis = i;
-                break;
-            }
-        }
-
-        for(let i = 0; i < array.length;i++) {
-            if(comperator(array[i], item2)) {
-                indexTarget = i;
-                break;
-            }
-        }
-        let temp = array[indexThis];
-        array[indexThis] = array[indexTarget];
-        array[indexTarget] = temp;
+    changePosition(item1, item2) {
+        let indexTarget = this.elements.findIndex(element => element.id === item1.id);
+        let indexThis = this.elements.findIndex(element => element.id === item2.id);
+        swap(this.elements, indexTarget, indexThis);
+        swap(this.fileKeys, indexTarget, indexThis);
+        
         this.trackNode.dispatchEvent(TrackChange);
-        return array;
     }
 
     addResizeEvents(element) {
@@ -284,24 +272,14 @@ export default class EditManager {
      * @returns {object} object containing fileKey, startTime and duration
      */
     next() {
-        if (this.currentElement < this.elements.length - 1) {
-            this.currentElement++;
-            return {fileKey : this.fileKeys[this.currentElement], startTime : this.durationMap.get(this.elements[this.currentElement].id).startTime,
-                                duration : this.durationMap.get(this.elements[this.currentElement].id).duration }
-        }
-        return null;
+        return this.getElementByIndex(this.currentElement + 1)
     }
 /**
      * Returns previous Element in the Track if possible
      * @returns {object} object containing fileKey, startTime and duration
      */
     previous() {
-        if (this.currentElement > 0) {
-            this.currentElement--;
-            return {fileKey : this.fileKeys[this.currentElement], startTime : this.durationMap.get(this.elements[this.currentElement].id).startTime,
-                        duration : this.durationMap.get(this.elements[this.currentElement].id).duration }
-        }
-        return null;
+        return this.getElementByIndex(this.currentElement - 1)
     }
 
     /**
@@ -310,10 +288,15 @@ export default class EditManager {
      * @returns {object} object containing fileKey, startTime and duration
      */
     getElementByIndex(index) {
+        console.log(index);
         if (this.elements.length > index && index >= 0) {
             this.currentElement = index;
-            return {fileKey : this.fileKeys[this.currentElement], startTime : this.durationMap.get(this.elements[this.currentElement].id).startTime,
-            duration : this.durationMap.get(this.elements[this.currentElement].id).duration }
+            const duration = this.durationMap.get(this.elements[index].id);
+            return {
+                fileKey: this.fileKeys[this.currentElement], 
+                startTime: duration.startTime,
+                duration: duration.duration
+            }
         }
         return null;
     }
@@ -325,27 +308,27 @@ export default class EditManager {
     getElementByTime(time) {
         for (let i = 0; i < this.elements.length; i++) {
             const startTime = this.startMap.get(this.elements[i].id);
-            const endTime = startTime + this.durationMap.get(this.elements[i].id).duration;
+            const duration = this.durationMap.get(this.elements[i].id);
+            const endTime = startTime + duration.duration;
             if (time >= startTime && time <= endTime) {
-                this.currentElement = i;
+                this.currentElement = i;                
                 return {
                     fileKey: this.fileKeys[i], 
-                    startTime: this.durationMap.get("item" + i).startTime,
-                    duration: this.durationMap.get("item" + i).duration,
-                    time: time - startTime + this.durationMap.get(this.elements[this.currentElement].id).startTime,
+                    startTime: duration.startTime,
+                    duration: duration.duration,
+                    time: time - startTime + duration.startTime,
                 }
             }
         }
         return null;
     }
 }
-let TrackChange = new Event("trackChange", {bubbles: true});
-// Two Comperators
-function compareHTML(item1, item2) {
-    return item1.id == item2.id;
-}
 
-function compareKeys(item1, item2) {
-    return item1 == item2;
+let TrackChange = new Event("trackChange", {bubbles: true});
+
+function swap(array, index1, index2) {
+    const temp = array[index1];
+    array[index1] = array[index2];
+    array[index2] = temp;
 }
 

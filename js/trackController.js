@@ -50,7 +50,7 @@ export default class TrackController {
     getNextVideo() {
         let nextObject = this.maintrack.next();
         if(nextObject != null) {
-            if(this.maintrack.currentElement > 0) {
+            if(this.maintrack.elements.length > 1) {
             dehighlightContainer(this.maintrack.currentElement - 1, this.maintrack);
             }
             highlightContainer(this.maintrack.currentElement, this.maintrack)
@@ -63,7 +63,7 @@ export default class TrackController {
  */
     getPreviousVideo() {
         let previousObject = this.maintrack.previous();
-        if(nextObject != null) {
+        if(previousObject != null) {
             dehighlightContainer(this.maintrack.currentElement + 1, this.maintrack);
             highlightContainer(this.maintrack.currentElement, this.maintrack)
         }
@@ -74,10 +74,11 @@ export default class TrackController {
  * @returns {object} object containing fileKey, startTime and duration
  */
     getFirstVideo() {
-        let index = this.maintrack.currentElement;
         let firstObject = this.maintrack.getElementByIndex(0);
         if(firstObject != null) {
-            dehighlightContainer(index, this.maintrack);
+            if(this.maintrack.elements.length > 1) {
+            this.dehighlightAll(this.maintrack);
+            }
             highlightContainer(this.maintrack.currentElement, this.maintrack);
         }
         return firstObject;
@@ -87,10 +88,12 @@ export default class TrackController {
  * @returns {object} object containing fileKey, startTime and duration
  */
     getLastVideo() {
-        let index = this.maintrack.currentElement;
-        let lastObject = this.maintrack.getElementByIndex(this.maintrack.fileKeys.length - 1);
+        let lastObject = this.maintrack.getElementByIndex(this.maintrack.elements.length - 1);
         if(lastObject != null) {
-            dehighlightContainer(index, this.maintrack);
+            if(this.maintrack.elements.length > 1) {
+                console.log("Activate");
+                this.dehighlightAll(this.maintrack);
+            }
             highlightContainer(this.maintrack.currentElement, this.maintrack);
         }
         return lastObject;
@@ -102,7 +105,7 @@ export default class TrackController {
     getNextAudio() {
         let nextObject = this.audiotrack.next();
         if(nextObject != null) {
-            if(this.audiotrack.currentElement > 0) {
+            if(this.audiotrack.elements.length > 1) {
                 dehighlightContainer(this.audiotrack.currentElement - 1, this.audiotrack);
             }
             highlightContainer(this.audiotrack.currentElement, this.audiotrack)
@@ -116,10 +119,11 @@ export default class TrackController {
  */    
     getCurrentAudio(video = document.querySelector("#video")) {
         let currentTime = this.getCurrentTime(video);
-        let index = this.audiotrack.currentElement;
         let currentObject = this.audiotrack.getElementByTime(currentTime);
         if(currentObject != null) {
-            dehighlightContainer(index, this.audiotrack);
+            if(this.audiotrack.elements.length > 1) {
+            this.dehighlightAll(this.audiotrack);
+            }
             highlightContainer(this.audiotrack.currentElement, this.audiotrack);
         }
         return currentObject;
@@ -129,11 +133,12 @@ export default class TrackController {
  * @returns {object} object containing fileKey, startTime and duration
  */ 
     getCurrentFilter(video = document.querySelector("#video")) {
-        let index = this.effecttrack.currentElement;
         let currentTime = this.getCurrentTime(video);
         let current = this.effecttrack.getElementByTime(currentTime);
         if (current || current != null) {
-            dehighlightContainer(index, this.effecttrack);
+            if(this.effecttrack.elements.length > 1) {
+            this.dehighlightAll(this.effecttrack);
+            }
             highlightContainer(this.effecttrack.currentElement, this.effecttrack);
             return current.fileKey;
         }
@@ -149,29 +154,21 @@ export default class TrackController {
         return time;
     }
 
-    jumpToTime(time, track, key){
-        //unterscheidung zwischen Videotrack und Audiotrack?
-        // wenn ja, müsste es noch eine "getElementByKey" Methode oder so geben,
-        // um gleiches Format zu haben wie bei getElementByTime/getElementByIndex
-
-        console.log("jumpToTime");
-        let globalTime = 0;
-        //evtl könnte man hier die editManager-startmap nutzen?
-        for (let i = 0; i < track.elements.length; i++) {
-            if (track.elements[i].id === key) {
-                break;
+    jumpToTime(time, track, key) {
+        let globalTime = track.getGlobalStartTime(key);
+        let trackElement = track.getElementByTime(globalTime + parseFloat(time));
+        track.controller.changeSource(trackElement);
+        if(track.elements.length > 1) {
+            this.dehighlightAll(track);
             }
-            globalTime += track.durationMap.get(track.elements[i].id).duration;
-        }
-        console.log(globalTime);
-        let videoElement = this.maintrack.getElementByTime(globalTime + parseFloat(time));
-        console.log(videoElement);
-        //help ich kenn an dieser Stelle videoController noch nicht
-        this.videoController.changeVideoSource(videoElement);
-        this.videoController.setCurrentTime(time);
-        console.log("done! .. i hope.");
+            highlightContainer(track.currentElement, track);
     }
-    
+
+    dehighlightAll(track) {
+        for (let i = 0; i < track.elements.length; i++) {
+                dehighlightContainer(i,track)  
+        }
+    }
 }
 
 function highlightContainer(index, track) {

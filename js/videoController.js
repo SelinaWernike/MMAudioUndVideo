@@ -37,11 +37,18 @@ export default class VideoController {
     }
 
     reset() {
-        const wasPlaying = !this.video.paused
-        this.video.pause()
-        this.changeVideoSource(this.trackController.getFirstVideo())
-        if (wasPlaying) {
-            this.video.play();
+        const nextKey = this.trackController.getFirstVideo();
+        if (nextKey) {
+            const wasPlaying = !this.video.paused
+            this.video.pause()
+            this.changeSource(nextKey)
+            if (wasPlaying) {
+                this.video.play();
+            }
+        } else {
+            this.video.removeAttribute("src")
+            this.video.dispatchEvent(new Event("trackEmpty"))
+            this.onPauseClick();
         }
     }
 
@@ -56,7 +63,7 @@ export default class VideoController {
         if (this.video.src === '') {
             const nextKey = this.trackController.getNextVideo()
             if (nextKey) {
-                this.changeVideoSource(nextKey)
+                this.changeSource(nextKey)
             }
         }
         if (this.video.src !== '') {
@@ -71,11 +78,11 @@ export default class VideoController {
     onEnded(forcePause) {
         const nextKey = this.trackController.getNextVideo()
         if (nextKey) {
-            this.changeVideoSource(nextKey)
+            this.changeSource(nextKey)
             this.video.play()
         } else {
             this.video.dispatchEvent(new Event("trackEnded"));
-            this.changeVideoSource(this.trackController.getFirstVideo())
+            this.changeSource(this.trackController.getFirstVideo())
             if (!forcePause && this.looping) {
                 this.video.play()
             } else {                
@@ -99,7 +106,7 @@ export default class VideoController {
         if (this.video.src !== "") {
             const wasPlaying = !this.video.paused
             this.video.pause()
-            this.changeVideoSource(this.trackController.getFirstVideo())
+            this.changeSource(this.trackController.getFirstVideo())
             if (wasPlaying) {
                 this.video.play()
             }
@@ -110,7 +117,7 @@ export default class VideoController {
         if (this.video.src !== "") {
             const wasPlaying = !this.video.paused
             this.video.pause()
-            this.changeVideoSource(this.trackController.getLastVideo())
+            this.changeSource(this.trackController.getLastVideo())
             this.onEnded(!wasPlaying);
         }
     }
@@ -123,7 +130,7 @@ export default class VideoController {
                 if (previousKey) {
                     const wasPlaying = !this.video.paused
                     this.video.pause()
-                    this.changeVideoSource(previousKey)
+                    this.changeSource(previousKey)
                     this.video.currentTime = this.video.endTime + overhang
                     if (wasPlaying) {
                         this.video.play()
@@ -145,7 +152,7 @@ export default class VideoController {
                 if (nextKey) {
                     const wasPlaying = !this.video.paused
                     this.video.pause()
-                    this.changeVideoSource(nextKey)
+                    this.changeSource(nextKey)
                     this.video.currentTime = this.video.startTime + overhang
                     if (wasPlaying) {
                         video.play()
@@ -196,21 +203,14 @@ export default class VideoController {
         }
     }
 
-    changeVideoSource(data) {
+    changeSource(data) {
         const url = this.fileManager.fileMap.get(data.fileKey);
         this.video.startTime = data.startTime;
         this.video.endTime = data.startTime + data.duration;
-        if (!url) {
-            debugger;
-        }
         if (this.video.src !== url) {
             this.video.src = url
             this.video.load()
         }
-        this.video.currentTime = data.startTime;
-    }
-
-    setCurrentTime(time){
-        this.video.currentTime = parseFloat(time);
+        this.video.currentTime = data.time || data.startTime;
     }
 }
