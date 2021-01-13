@@ -1,5 +1,5 @@
 import FunctionMap from "./util/functionMap.js"
-import settingsManager from "./settingsManager.js";
+import SettingsManager from "./settingsManager.js";
 import makeResizable from "./util/resize.js"
 
 /**
@@ -75,7 +75,7 @@ export default class EditManager {
     addElementData(container, fileKey, trackObject, dropIndex) {
         this.fileKeys.splice(dropIndex, 0, fileKey);
         this.elements.splice(dropIndex, 0, container);
-        this.durationMap.set(container.id, { get duration() { return trackObject.duration }, startTime: 0.00});
+        this.durationMap.set(container.id, { get duration() { return trackObject.duration }, startTime: 0.00, origDuration: trackObject.duration});
         if (this.resizable) {
             this.startMap.set(container.id, function () { return trackObject.start });
         } else {
@@ -165,7 +165,7 @@ export default class EditManager {
 
         if(options){
             options.addEventListener("click", (event) => {
-               settingsManager.onSettingsClick(event, this.durationMap)
+               SettingsManager.onSettingsClick(event, this.durationMap)
             })
         }
     }
@@ -181,6 +181,9 @@ export default class EditManager {
         this.durationMap.delete(item.id);
         this.startMap.delete(item.id);
         this.resizeElements();
+        if(SettingsManager.isSettingsOpen()){
+            SettingsManager.closeSettings();
+        }
         this.trackNode.dispatchEvent(TrackChange);
     }
 
@@ -223,8 +226,7 @@ export default class EditManager {
      * @param {int} id 
      */
     setItemDuration(element, id) {
-        // this.durationMap.set(id,element.duration)
-        this.durationMap.set(id,{duration: element.duration, startTime: 0.00})
+        this.durationMap.set(id,{duration: element.duration, startTime: 0.00, origDuration: element.duration})
         this.trackNode.dispatchEvent(TrackChange);
     } 
 

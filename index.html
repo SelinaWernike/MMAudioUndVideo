@@ -1,4 +1,5 @@
 <html>
+
 <head>
     <title>ViMa</title>
     <script type="module" src="./js/main.js"></script>
@@ -8,6 +9,7 @@
     <link rel="stylesheet" href="./css/file.css" type="text/css">
     <link rel="stylesheet" href="./css/settings.css" type="text/css">
 </head>
+
 <body>
     <video id="video" crossorigin="anonymous" hidden=""></video>
     <audio id="audio" crossorigin="anonymous" hidden=""></audio>
@@ -20,9 +22,11 @@
         </div>
         <div id="videoArea">
             <div id="canvasContainer">
+                <img id="backgroundImgCanvas" src="" alt="">
                 <canvas id="canvas"></canvas>
             </div>
             <div id="videoControls">
+
                 <img src="./images/toStart_white.png" width="24" height="24" onclick="onToStartClick()" class="pointer">
                 <img src="./images/rewind_white.png" width="24" height="24" onclick="onRewindClick()" class="pointer">
                 <img id="playIcon" src="./images/play_white.png" width="24" height="24" onclick="onPlayClick()" class="pointer">
@@ -32,11 +36,23 @@
                 <img id="loopIcon" src="./images/loop_white.png" width="24" height="24" onclick="onLoopClick()" class="pointer" hidden="">
                 <img id="noLoopIcon" src="./images/no_loop_white.png" width="24" height="24" onclick="onLoopClick()" class="pointer">
                 <img id="saveIcon" src="./images/save_white.png" width="24" height="24" onclick="onSaveClick()" class="pointer">
+
                 <progress id="downloadProgress" max="100" value="0" hidden=""></progress>
             </div>
         </div>
         <div id="filterArea">
             <ul id="filterList">
+            </ul>
+            <ul id="colorPickers">
+                <li>
+                    <input type="color" id="colorFilterColor" value="#FF00FF">
+                </li>
+                <li>
+                    <input type="color" id="ckFilterColor" value="#00FF00">
+                    <label for="imageInput" id="imageLabel">+ Hintergrundbild hinzufügen</label>
+                    <input id="imageInput" hidden="" name="imageInput" type="file" accept="image/*">
+                </li>
+
             </ul>
         </div>
     </div>
@@ -83,8 +99,10 @@
 
             <button id="settingsConfirm" onclick="onSettingsOK()">OK</button>
             <button id="settingsCancel" onclick="onSettingsCancel()">Abbrechen</button>
+            <button id="settingsReset" onclick="onSettingsReset()">Zurücksetzen</button>
         </div>
         </div>
     </div>
 </body>
+
 </html>

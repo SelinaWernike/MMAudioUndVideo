@@ -1,3 +1,6 @@
+/**
+ * Takes care of uploaded file data.
+ */
 export default class FileManager {
 
     static fromCopy(copy) {
@@ -6,10 +9,7 @@ export default class FileManager {
 
     constructor(fileMap = new Map()) {
         this.fileMap = fileMap; //key: getfileKey(), value: Data URLs for the file data
-        // Check for the various File API support.
-        if (window.File && window.FileReader && window.FileList && window.Blob) {
-            // Great success! All the File APIs are supported.
-        } else {
+        if (! (window.File && window.FileReader && window.FileList && window.Blob) ) {
             alert('The File APIs are not fully supported in this browser.');
         }
     }
@@ -17,10 +17,8 @@ export default class FileManager {
     /**
      * adds files of html <input> element both to frontend list and to backend map
      */
-     addFile() {
-        let input = document.querySelector('input');
-        const fileList = input.files;
-        if (!( fileList.length === 0)){
+     addFiles(fileList) {
+        if (fileList.length !== 0){
             for(const file of fileList){
                 this.addToFileMap(file);
                 const listItem = document.createElement('li');
@@ -57,7 +55,7 @@ export default class FileManager {
      }
 
     /**
-     *
+     * Creates an identifier for a file
      * @param file - element of html input element files list
      * @returns {string} - value for key of fileMap
      */
