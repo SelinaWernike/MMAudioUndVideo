@@ -18,7 +18,7 @@ let fileInput = document.querySelector("#fileInput");
 
 let filterManager = new FilterManager().fillHtmlFilterList();
 let imageInput = document.querySelector("#imageInput");
-let imageInput = document.querySelector("#imageInput");
+
 
 let fileManager = new FileManager()
 let videoManager = new EditManager("videotrack", new VideoLoader(fileManager), false)
