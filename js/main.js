@@ -15,12 +15,11 @@ let context = canvas.getContext("2d")
 let video = document.querySelector("#video")
 let bgImage = document.querySelector("#backgroundImgCanvas")
 let fileInput = document.querySelector("#fileInput");
-<<<<<<< HEAD
+
 let filterManager = new FilterManager().fillHtmlFilterList();
-=======
 let imageInput = document.querySelector("#imageInput");
-let filterManager = new FilterManager()
->>>>>>> remotes/origin/chromaKey
+let imageInput = document.querySelector("#imageInput");
+
 let fileManager = new FileManager()
 let videoManager = new EditManager("videotrack", new VideoLoader(fileManager), false)
 let audioManager = new EditManager("audiotrack", new AudioLoader(fileManager), false)

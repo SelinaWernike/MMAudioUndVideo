@@ -96,11 +96,13 @@ ul li:hover {
 
 .pointer {
     cursor: pointer;
+
     filter: brightness(0.75);
 }
 
 .pointer:hover {
     filter: brightness(1.5);
+
 
 }
 
