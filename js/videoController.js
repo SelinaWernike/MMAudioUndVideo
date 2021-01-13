@@ -9,7 +9,7 @@ export default class VideoController {
         this.looping = false
         this.previousVolume = video.volume
         this.userControlled = false;
-        video.addEventListener("ended", this.onEnded.bind(this));
+        video.addEventListener("ended", this.onEnded.bind(this, false));
         video.addEventListener("timeupdate", this.onUpdate.bind(this));
     }
 
@@ -25,8 +25,9 @@ export default class VideoController {
         this.changeVolume(this.volumeSlider.value)
         window.onPlayClick = this.onPlayClick.bind(this)
         window.onPauseClick = this.onPauseClick.bind(this)
-        window.onToStartClick = this.onToStartClick.bind(this, false)
-        window.onToEndClick = this.onToEndClick.bind(this, true)
+        window.onToStartClick = this.onToStartClick.bind(this)
+        window.onToPreviousClick = this.onToPreviousClick.bind(this)
+        window.onToNextClick = this.onToNextClick.bind(this)
         window.onRewindClick = this.onRewindClick.bind(this)
         window.onForwardClick = this.onForwardClick.bind(this)
         window.onVideoVolumeOnClick = this.onVolumeClick.bind(this);
@@ -39,22 +40,18 @@ export default class VideoController {
     reset() {
         const nextKey = this.trackController.getFirstVideo();
         if (nextKey) {
-            const wasPlaying = !this.video.paused
-            this.video.pause()
             this.changeSource(nextKey)
-            if (wasPlaying) {
-                this.video.play();
-            }
+            this.video.dispatchEvent(new Event("seeked"))
         } else {
             this.video.removeAttribute("src")
+            this.video.load()
             this.video.dispatchEvent(new Event("trackEmpty"))
-            this.onPauseClick();
+            this.onPauseClick()
         }
     }
 
     onUpdate() {
         if (this.video.currentTime > this.video.endTime) {
-            this.video.pause();
             this.onEnded();
         }
     }
@@ -75,21 +72,16 @@ export default class VideoController {
         }
     }
 
-    onEnded(forcePause) {
+    onEnded(forceEnd) {
         const nextKey = this.trackController.getNextVideo()
-        if (nextKey) {
-            this.changeSource(nextKey)
-            this.video.play()
+        if (nextKey && !forceEnd) {
+            this.changeSource(nextKey, true)
         } else {
             this.video.dispatchEvent(new Event("trackEnded"));
-            this.changeSource(this.trackController.getFirstVideo())
-            if (!forcePause && this.looping) {
-                this.video.play()
-            } else {                
-                if (this.userControlled) {
-                    this.pauseIcon.setAttribute("hidden", "")
-                    this.playIcon.removeAttribute("hidden")
-                }
+            this.changeSource(this.trackController.getFirstVideo(), !forceEnd && this.looping, forceEnd || !this.looping)
+            if (this.video.paused && this.userControlled) {
+                this.pauseIcon.setAttribute("hidden", "")
+                this.playIcon.removeAttribute("hidden")
             }
         }
     }
@@ -104,37 +96,42 @@ export default class VideoController {
 
     onToStartClick() {
         if (this.video.src !== "") {
-            const wasPlaying = !this.video.paused
-            this.video.pause()
-            this.changeSource(this.trackController.getFirstVideo())
-            if (wasPlaying) {
-                this.video.play()
+            this.onEnded(true)
+        }
+    }
+
+    onToPreviousClick() {
+        if (this.video.src !== "") {
+            const previous = this.trackController.getPreviousVideo();
+            if (previous) {
+                this.changeSource(previous)
+                this.video.dispatchEvent(new Event("seeked"))
+            } else {
+                this.video.currentTime = 0;
             }
         }
     }
 
-    onToEndClick() {
+    onToNextClick() {
         if (this.video.src !== "") {
-            const wasPlaying = !this.video.paused
-            this.video.pause()
-            this.changeSource(this.trackController.getLastVideo())
-            this.onEnded(!wasPlaying);
+            const next = this.trackController.getNextVideo()
+            if (next) {
+                this.changeSource(next)
+                this.video.dispatchEvent(new Event("seeked"))
+            } else {
+                this.onEnded(this.video.paused);
+            }
         }
     }
 
     onRewindClick() {
         if (this.video.src !== "") {
-            const overhang = this.video.startTime - this.video.currentTime - VideoController.JUMP_TIME_SECONDS
+            const overhang = this.video.currentTime - this.video.startTime - VideoController.JUMP_TIME_SECONDS
             if (overhang < 0) {
                 const previousKey = this.trackController.getPreviousVideo()
                 if (previousKey) {
-                    const wasPlaying = !this.video.paused
-                    this.video.pause()
                     this.changeSource(previousKey)
-                    this.video.currentTime = this.video.endTime + overhang
-                    if (wasPlaying) {
-                        this.video.play()
-                    }
+                    this.video.currentTime = this.video.endTime + overhang;
                 } else {
                     this.video.currentTime = this.video.startTime
                 }
@@ -150,13 +147,8 @@ export default class VideoController {
             if (overhang < 0) {
                 const nextKey = this.trackController.getNextVideo();
                 if (nextKey) {
-                    const wasPlaying = !this.video.paused
-                    this.video.pause()
                     this.changeSource(nextKey)
-                    this.video.currentTime = this.video.startTime + overhang
-                    if (wasPlaying) {
-                        video.play()
-                    }
+                    this.video.currentTime = this.video.startTime + overhang;
                 } else {
                     video.currentTime = this.video.endTime;
                 }
@@ -203,14 +195,19 @@ export default class VideoController {
         }
     }
 
-    changeSource(data) {
+    changeSource(data, forcePlay, forcePause) {
+        const wasPlaying = !this.video.paused
+        this.video.pause();
         const url = this.fileManager.fileMap.get(data.fileKey);
         this.video.startTime = data.startTime;
         this.video.endTime = data.startTime + data.duration;
         if (this.video.src !== url) {
             this.video.src = url
-            this.video.load()
+            this.video.load()            
         }
         this.video.currentTime = data.time || data.startTime;
+        if (forcePlay || wasPlaying && !forcePause) {
+            this.video.play();
+        }
     }
 }

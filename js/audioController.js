@@ -14,7 +14,10 @@ export default class AudioController {
         this.audio.addEventListener("ended", this.onEnded.bind(this));
         this.video.addEventListener("play", this.onPlayClick.bind(this));
         this.video.addEventListener("pause", () => this.audio.pause());
-        this.video.addEventListener("trackEnded", () => this.audio.removeAttribute("src"));
+        this.video.addEventListener("trackEnded", () => {
+            this.audio.removeAttribute("src")
+            this.audio.load()
+        });
         this.video.addEventListener("seeked", this.onVideoSeek.bind(this));
         window.onAudioVolumeOnClick = this.onVolumeClick.bind(this);
         window.onAudioVolumeOffClick = this.onVolumeOffClick.bind(this);
@@ -23,7 +26,6 @@ export default class AudioController {
 
     onUpdate() {
         if (this.audio.currentTime > this.audio.endTime) {
-            this.audio.pause();
             this.onEnded();
         }
     }
@@ -43,22 +45,20 @@ export default class AudioController {
     onEnded() {
         const data = this.trackController.getNextAudio()
         if (data) {
-            this.changeSource(data)
-            this.audio.play()
+            this.changeSource(data, true)
         } else {
             this.audio.removeAttribute("src")
+            this.audio.load()
         }
     }
 
     onVideoSeek() {
         const data = this.trackController.getCurrentAudio()
         if (data) {
-            const wasPlaying = !this.video.paused
-            this.audio.pause()
             this.changeSource(data)
-            if (wasPlaying) {
-                this.audio.play()
-            }
+        } else {
+            this.audio.removeAttribute("src")
+            this.audio.load()
         }
     }
 
@@ -84,7 +84,9 @@ export default class AudioController {
         this.audio.volume = volume
     }
 
-    changeSource(data) {
+    changeSource(data, forcePlay) {
+        const wasPlaying = !this.video.paused
+        this.audio.pause();
         const url = this.fileManager.fileMap.get(data.fileKey);
         this.audio.startTime = data.startTime;
         this.audio.endTime = data.startTime + data.duration;
@@ -93,5 +95,8 @@ export default class AudioController {
             this.audio.load()
         }
         this.audio.currentTime = data.time || data.startTime;
+        if (forcePlay || wasPlaying) {
+            this.audio.play();
+        }
     }
 }

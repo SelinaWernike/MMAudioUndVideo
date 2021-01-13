@@ -93,10 +93,8 @@ Returns appropriate track object of trackController for input string.
         switch(trackName){
             case "videotrack":
                return trackController.maintrack;
-               break;
             case "audiotrack":
                return trackController.audiotrack;
-               break;
             default:
                console.log("forbidden track name " + trackName);
                break;
@@ -113,8 +111,8 @@ Responds to click on settings button according to current state of settings widg
             this.openSettings(event, durationMap);
             event.currentTarget.style.backgroundColor = "#666666";
          }else{
+            let settingsKey = document.querySelector(".settingsContainer").getAttribute("settingsKey");
             if(settingsKey != event.currentTarget.parentNode.parentNode.getAttribute("id")){
-                let settingsKey = document.querySelector(".settingsContainer").getAttribute("settingsKey");
                 let trackElement = document.querySelector(('#'+settingsKey));
                 trackElement.childNodes[0].childNodes[1].style.backgroundColor = "transparent";
                 this.openSettings(event, durationMap);

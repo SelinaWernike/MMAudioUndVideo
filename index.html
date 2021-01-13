@@ -26,17 +26,16 @@
                 <canvas id="canvas"></canvas>
             </div>
             <div id="videoControls">
-
-                <img src="./images/toStart_white.png" width="24" height="24" onclick="onToStartClick()" class="pointer">
+                <img src="./images/toStart_white.png" width="24" height="24" onclick="onToPreviousClick()" class="pointer">
                 <img src="./images/rewind_white.png" width="24" height="24" onclick="onRewindClick()" class="pointer">
+                <img src="./images/stop.png" width="24" height="24" onclick="onToStartClick()" class="pointer">
                 <img id="playIcon" src="./images/play_white.png" width="24" height="24" onclick="onPlayClick()" class="pointer">
                 <img id="pauseIcon" src="./images/pause_white.png" width="24" height="24" onclick="onPauseClick()" class="pointer" hidden="">
                 <img src="./images/fast_forward_white.png" width="24" height="24" onclick="onForwardClick()" class="pointer">
-                <img src="./images/toEnd_white.png" width="24" height="24" onclick="onToEndClick()" class="pointer">
+                <img src="./images/toEnd_white.png" width="24" height="24" onclick="onToNextClick()" class="pointer">
                 <img id="loopIcon" src="./images/loop_white.png" width="24" height="24" onclick="onLoopClick()" class="pointer" hidden="">
                 <img id="noLoopIcon" src="./images/no_loop_white.png" width="24" height="24" onclick="onLoopClick()" class="pointer">
                 <img id="saveIcon" src="./images/save_white.png" width="24" height="24" onclick="onSaveClick()" class="pointer">
-
                 <progress id="downloadProgress" max="100" value="0" hidden=""></progress>
             </div>
         </div>
