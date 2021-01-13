@@ -1,12 +1,17 @@
 const START_INPUT = document.querySelector("#startInput");
 const END_INPUT = document.querySelector("#endInput");
-let closeBtn;
+var SETTINGS_OPEN;
 
+/**
+This class is responsible for the settings widget that lets you change the start/end time of a video or audio element.
+*/
 export default class SettingsManager {
 
     constructor(trackController){
-        this.display = false;
+        //this.display = false;
+        SETTINGS_OPEN = false;
 
+        //called when pressing "OK" button - saves input field values (if valid) & closes settings widget
         window.onSettingsOK = function(){
             let settingsKey = document.querySelector(".settingsContainer").getAttribute("settingsKey");
             let settingsTrack = document.querySelector(".settingsContainer").getAttribute("settingsTrack");
@@ -14,7 +19,9 @@ export default class SettingsManager {
 
             if(START_INPUT.checkValidity() && END_INPUT.checkValidity()){
                 let track = SettingsManager.getTrackByString(settingsTrack, trackController);
-                track.changeTime(settingsKey, {duration: Number(END_INPUT.value) - Number(START_INPUT.value), startTime:Number(START_INPUT.value)});
+                let origDuration = track.durationMap.get(settingsKey).origDuration;
+                console.log(origDuration);
+                track.changeTime(settingsKey, {duration: Number(END_INPUT.value) - Number(START_INPUT.value), startTime:Number(START_INPUT.value), origDuration: origDuration});
                 SettingsManager.closeSettings();
                 button.setCustomValidity("");
             }else{
@@ -22,24 +29,39 @@ export default class SettingsManager {
             }
         }
 
+        //called when pressing "Abbrechen" Button - closes settings widget without saving input field values.
         window.onSettingsCancel = function(){
         SettingsManager.closeSettings();
         }
 
+        //called when pressing "Zurücksetzen" Button - resets input field values to initial audio/video length
+        window.onSettingsReset = function(){
+        let settingsTrack = document.querySelector(".settingsContainer").getAttribute("settingsTrack");
+        let settingsKey = document.querySelector(".settingsContainer").getAttribute("settingsKey");
+        let durationMapEntry = SettingsManager.getTrackByString(settingsTrack, trackController).durationMap.get(settingsKey);
+
+        START_INPUT.value = 0;
+        END_INPUT.value = durationMapEntry.origDuration;
+        }
+
+        //validates value of start time input field
         window.processStartInput = function(){
             if(Number(START_INPUT.value) > Number(END_INPUT.value)) {
                 START_INPUT.setCustomValidity("Startzeit darf nicht größer als Endzeit sein!");
-                START_INPUT.reportValidity();
+            }else if(Number(START_INPUT.value) == Number(END_INPUT.value)){
+                START_INPUT.setCustomValidity("Startzeit darf nicht gleich groß wie Endzeit sein!");
             }else{
                 let settingsKey = document.querySelector(".settingsContainer").getAttribute("settingsKey");
                 let settingsTrack = document.querySelector(".settingsContainer").getAttribute("settingsTrack");
                 START_INPUT.setCustomValidity('');
-                START_INPUT.reportValidity();
+                //START_INPUT.reportValidity();
                 const track = SettingsManager.getTrackByString(settingsTrack, trackController);
                 trackController.jumpToTime(START_INPUT.value, track, settingsKey);
             }
+             START_INPUT.reportValidity();
         }
 
+        //validates value of end time input field
         window.processEndInput = function(){
             let settingsKey = document.querySelector(".settingsContainer").getAttribute("settingsKey");
             let settingsTrack = document.querySelector(".settingsContainer").getAttribute("settingsTrack");
@@ -47,24 +69,26 @@ export default class SettingsManager {
             let durationMapEntry = track.durationMap.get(settingsKey);
 
             if(Number(START_INPUT.value) > Number(END_INPUT.value)) {
-                 endInput.setCustomValidity("Endzeit darf nicht kleiner als Startzeit sein!");
-            }else if(Number(END_INPUT.value) > (durationMapEntry.startTime + durationMapEntry.duration)){
-                 //problem: ich kenne Original-Endzeit/duration nicht
-                 //wie komme ich am effizientesten an Daten aus fileMap?
-                 //(da müsste die echte duration drinstehen)
-                 endInput.setCustomValidity("Endzeit darf nicht größer als Länge des Videos sein!");
+                 END_INPUT.setCustomValidity("Endzeit darf nicht kleiner als Startzeit sein!");
+            }else if(Number(END_INPUT.value) > durationMapEntry.origDuration){
+                 END_INPUT.setCustomValidity("Endzeit darf nicht größer als Länge des Audios/Videos sein!");
+            }else if(Number(START_INPUT.value) == Number(END_INPUT.value)){
+                 END_INPUT.setCustomValidity("Endzeit darf nicht gleich groß wie Startzeit sein!");
             }else{
-                 endInput.setCustomValidity("");
-                 START_INPUT.reportValidity();
-                 const track = SettingsManager.getTrackByString(settingsTrack, trackController);
+                 END_INPUT.setCustomValidity("");
+                 //END_INPUT.reportValidity();
                  trackController.jumpToTime(END_INPUT.value, track, settingsKey);
             }
             endInput.reportValidity();
-
         }
-        //todo zu Zeitpunkt springen (sobald das bei processStartInput funktioniert)
     }
 
+/**
+Returns appropriate track object of trackController for input string.
+@param String trackName
+@param {Object} trackController - knows track objects
+@returns {Object} track - track object associated with input String
+*/
     static getTrackByString(trackName, trackController){
         switch(trackName){
             case "videotrack":
@@ -79,34 +103,57 @@ export default class SettingsManager {
         }
     }
 
+/**
+Responds to click on settings button according to current state of settings widget.
+@param {Object} event - event created by click on settings icon
+@param {Object} durationMap - contains information to be displayed in settings widget
+*/
     static onSettingsClick(event, durationMap) {
-         let settingsContainer = document.querySelector(".settingsContainer");
-         if (settingsContainer.style.display == 'none') {
+         if (!SETTINGS_OPEN) {
             this.openSettings(event, durationMap);
+            event.currentTarget.style.backgroundColor = "#666666";
          }else{
-            this.closeSettings();
+            if(settingsKey != event.currentTarget.parentNode.parentNode.getAttribute("id")){
+                let settingsKey = document.querySelector(".settingsContainer").getAttribute("settingsKey");
+                let trackElement = document.querySelector(('#'+settingsKey));
+                trackElement.childNodes[0].childNodes[1].style.backgroundColor = "transparent";
+                this.openSettings(event, durationMap);
+            }else{
+                event.currentTarget.style.backgroundColor = "transparent";
+                this.closeSettings();
+            }
          }
     }
 
+/**
+Rearranges CSS to display settings widget and fills fields with values
+according to element the settings button was clicked on.
+@param {Object} event - triggered by settings button click
+@param {Object} durationMap - contains values necessary to displaying start and end time
+*/
     static openSettings(event, durationMap){
-        let grid =  document.querySelector("#lowerArea");
-        grid.style.gridTemplateAreas = ("\'header auto\'\'track1 settings\'\' track2 settings\'\'track3 settings\'");
-        grid.style.gridTemplateColumns = "70% 30%"
         let settingsContainer = document.querySelector(".settingsContainer");
+        if(settingsContainer.style.display == 'none'){
+            let grid =  document.querySelector("#lowerArea");
+            grid.style.gridTemplateAreas = ("\'header auto\'\'track1 settings\'\' track2 settings\'\'track3 settings\'");
+            grid.style.gridTemplateColumns = "70% 30%"
+            settingsContainer.style.display = 'block';
+        }
         let settingsTrack = event.currentTarget.parentNode.parentNode.parentNode.getAttribute("id");
         let settingsKey = event.currentTarget.parentNode.parentNode.getAttribute("id");
-        settingsContainer.style.display = 'block';
         let timeObject = durationMap.get(settingsKey);
         START_INPUT.value = timeObject.startTime;
         END_INPUT.value = timeObject.startTime + timeObject.duration;
         settingsContainer.setAttribute("settingsKey", settingsKey);
         settingsContainer.setAttribute("settingsTrack", settingsTrack);
-        closeBtn = document.querySelector("#" + settingsKey).childNodes[0].childNodes[2];
-        closeBtn.style.display = "none";
-        
-        
+
+        SETTINGS_OPEN = true;
+        event.currentTarget.style.backgroundColor = "#666666";
     }
 
+/**
+Rearranges CSS to hide settings widget.
+*/
     static closeSettings(){
         let grid =  document.querySelector("#lowerArea");
         let settingsContainer = document.querySelector(".settingsContainer");
@@ -115,9 +162,16 @@ export default class SettingsManager {
         grid.style.gridTemplateColumns = "70% 30%";
         settingsContainer.removeAttribute("settingsKey");
         settingsContainer.removeAttribute("settingsTrack");
-        if(closeBtn) {
-            closeBtn.style.display = "inline";
-        }
+
+        SETTINGS_OPEN = false;
+        event.currentTarget.style.backgroundColor = "transparent";
+    }
+
+    /**
+    Are settings currently open or not?
+    returns boolean settingsOpen
+    */
+    static isSettingsOpen(){
+        return SETTINGS_OPEN;
     }
 }
-
