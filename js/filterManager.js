@@ -2,21 +2,17 @@ import ChromaKeyFilter from "./filter/ChromaKeyFilter.js"
 import BWFilter from "./filter/BWFilter.js"
 import InvertFilter from "./filter/InvertFilter.js"
 import SepiaFilter from "./filter/SepiaFilter.js"
-import RedFilter from "./filter/RedFilter.js"
-import GreenFilter from "./filter/GreenFilter.js"
-import BlueFilter from "./filter/BlueFilter.js"
+import ColorFilter from './filter/ColorFilter.js'
 
 export default class FilterManager {
 
     constructor() {
         this.filters = new Map()
-        this.filters.set("ChromaKeyFilter", new ChromaKeyFilter())
         this.filters.set("BWFilter", new BWFilter())
         this.filters.set("InvertFilter", new InvertFilter())
-        this.filters.set("SepiaFilter", new SepiaFilter())
-        this.filters.set("RedFilter", new RedFilter())
-        this.filters.set("GreenFilter", new GreenFilter())
-        this.filters.set("BlueFilter", new BlueFilter())
+        this.filters.set("SerpiaFilter", new SepiaFilter())
+        this.filters.set("ColorFilter", new ColorFilter())
+        this.filters.set("ChromaKeyFilter", new ChromaKeyFilter());
     }
 
     /**
