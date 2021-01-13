@@ -48,15 +48,17 @@ export default class SettingsManager {
         window.processStartInput = function(){
             if(Number(START_INPUT.value) > Number(END_INPUT.value)) {
                 START_INPUT.setCustomValidity("Startzeit darf nicht größer als Endzeit sein!");
-                START_INPUT.reportValidity();
+            }else if(Number(START_INPUT.value) == Number(END_INPUT.value)){
+                START_INPUT.setCustomValidity("Startzeit darf nicht gleich groß wie Endzeit sein!");
             }else{
                 let settingsKey = document.querySelector(".settingsContainer").getAttribute("settingsKey");
                 let settingsTrack = document.querySelector(".settingsContainer").getAttribute("settingsTrack");
                 START_INPUT.setCustomValidity('');
-                START_INPUT.reportValidity();
+                //START_INPUT.reportValidity();
                 const track = SettingsManager.getTrackByString(settingsTrack, trackController);
                 trackController.jumpToTime(START_INPUT.value, track, settingsKey);
             }
+             START_INPUT.reportValidity();
         }
 
         //validates value of end time input field
@@ -66,19 +68,18 @@ export default class SettingsManager {
             let track = SettingsManager.getTrackByString(settingsTrack, trackController);
             let durationMapEntry = track.durationMap.get(settingsKey);
 
-
             if(Number(START_INPUT.value) > Number(END_INPUT.value)) {
                  END_INPUT.setCustomValidity("Endzeit darf nicht kleiner als Startzeit sein!");
             }else if(Number(END_INPUT.value) > durationMapEntry.origDuration){
                  END_INPUT.setCustomValidity("Endzeit darf nicht größer als Länge des Audios/Videos sein!");
+            }else if(Number(START_INPUT.value) == Number(END_INPUT.value)){
+                 END_INPUT.setCustomValidity("Endzeit darf nicht gleich groß wie Startzeit sein!");
             }else{
                  END_INPUT.setCustomValidity("");
-                 END_INPUT.reportValidity();
-                 const track = SettingsManager.getTrackByString(settingsTrack, trackController);
+                 //END_INPUT.reportValidity();
                  trackController.jumpToTime(END_INPUT.value, track, settingsKey);
             }
             endInput.reportValidity();
-
         }
     }
 
