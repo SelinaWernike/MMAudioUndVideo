@@ -34,7 +34,12 @@
 >>>>>>> Add volume slider for audio and video track
     grid-column: 1 / 4
 } */
-
+#videoContainer {
+    padding-top: 0%;
+    margin-top: 0%;
+    border-top: 0%;
+    
+}
 #effecttrack .column {
     display: flex;
     flex-direction: row;

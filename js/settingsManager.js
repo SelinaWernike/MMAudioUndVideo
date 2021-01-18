@@ -93,10 +93,8 @@ Returns appropriate track object of trackController for input string.
         switch(trackName){
             case "videotrack":
                return trackController.maintrack;
-               break;
             case "audiotrack":
                return trackController.audiotrack;
-               break;
             default:
                console.log("forbidden track name " + trackName);
                break;
@@ -113,8 +111,8 @@ Responds to click on settings button according to current state of settings widg
             this.openSettings(event, durationMap);
             event.currentTarget.style.backgroundColor = "#666666";
          }else{
+            let settingsKey = document.querySelector(".settingsContainer").getAttribute("settingsKey");
             if(settingsKey != event.currentTarget.parentNode.parentNode.getAttribute("id")){
-                let settingsKey = document.querySelector(".settingsContainer").getAttribute("settingsKey");
                 let trackElement = document.querySelector(('#'+settingsKey));
                 trackElement.childNodes[0].childNodes[1].style.backgroundColor = "transparent";
                 this.openSettings(event, durationMap);
@@ -135,8 +133,8 @@ according to element the settings button was clicked on.
         let settingsContainer = document.querySelector(".settingsContainer");
         if(settingsContainer.style.display == 'none'){
             let grid =  document.querySelector("#lowerArea");
-            grid.style.gridTemplateAreas = ("\'header auto\'\'track1 settings\'\' track2 settings\'\'track3 settings\'");
-            grid.style.gridTemplateColumns = "70% 30%"
+             grid.style.gridTemplateAreas = ("\'header auto\'\'track1 settings\'\'track3 settings\'\' track2 settings\'");
+              grid.style.gridTemplateColumns = "80% 20%"
             settingsContainer.style.display = 'block';
         }
         let settingsTrack = event.currentTarget.parentNode.parentNode.parentNode.getAttribute("id");
@@ -158,8 +156,8 @@ Rearranges CSS to hide settings widget.
         let grid =  document.querySelector("#lowerArea");
         let settingsContainer = document.querySelector(".settingsContainer");
         settingsContainer.style.display = 'none';
-        grid.style.gridTemplateAreas = "\' header header\'\' track1 track1\'\' track2 track2\'\' track3 track3\'";
-        grid.style.gridTemplateColumns = "70% 30%";
+        grid.style.gridTemplateAreas = "\' header header\'\' track1 track1\'\' track3 track3\'\' track2 track2\'";
+        grid.style.gridTemplateColumns = "80% 20%";
         settingsContainer.removeAttribute("settingsKey");
         settingsContainer.removeAttribute("settingsTrack");
 

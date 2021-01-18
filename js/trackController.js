@@ -13,14 +13,6 @@ export default class TrackController {
         this.currentTime = 0.0;
     }
 
-    setAudioController(audioController) {
-        this.audioController = audioController;
-    }
-
-    setVideoController(videoController) {
-        this.videoController = videoController;
-    }
-
     /**
      * Sets the End Time of the Time Bar. By calling the VideoTrack.
      */
@@ -48,9 +40,10 @@ export default class TrackController {
  * @returns {object} object containing fileKey, startTime and duration
  */
     getNextVideo() {
+        let index = this.maintrack.currentElement;
         let nextObject = this.maintrack.next();
         if(nextObject != null) {
-            if(this.maintrack.elements.length > 1) {
+            if(this.maintrack.elements.length > 1 || index || index < 0) {
             dehighlightContainer(this.maintrack.currentElement - 1, this.maintrack);
             }
             highlightContainer(this.maintrack.currentElement, this.maintrack)
@@ -83,21 +76,7 @@ export default class TrackController {
         }
         return firstObject;
     }
-/**
- * Returns the last video on the maintrack, if possible
- * @returns {object} object containing fileKey, startTime and duration
- */
-    getLastVideo() {
-        let lastObject = this.maintrack.getElementByIndex(this.maintrack.elements.length - 1);
-        if(lastObject != null) {
-            if(this.maintrack.elements.length > 1) {
-                console.log("Activate");
-                this.dehighlightAll(this.maintrack);
-            }
-            highlightContainer(this.maintrack.currentElement, this.maintrack);
-        }
-        return lastObject;
-    }
+    
 /**
  * Returns the next Audio on the Audiotrack, if possible
  * @returns {object} object containing fileKey, startTime and duration
@@ -160,25 +139,31 @@ export default class TrackController {
         track.controller.changeSource(trackElement);
         if(track.elements.length > 1) {
             this.dehighlightAll(track);
-            }
-            highlightContainer(track.currentElement, track);
+        }
+        highlightContainer(track.currentElement, track);
     }
 
     dehighlightAll(track) {
         for (let i = 0; i < track.elements.length; i++) {
-                dehighlightContainer(i,track)  
+            dehighlightContainer(i,track)  
         }
     }
 }
 
 function highlightContainer(index, track) {
     let element = track.elements[index];
-    element.style.backgroundColor = "yellow";
+    if(element) {
+        element.style.backgroundColor = "#a0d840";
+        element.style.color = "black"
+    }
 }
 
 function dehighlightContainer(index, track) {
     let element = track.elements[index];
-    element.style.backgroundColor = "white";
+    if(element) {
+        element.style.backgroundColor = "#555555";
+        element.style.color = "#eaeaea"
+    }
 }
 
 function setTrackLength(track, endTime) {

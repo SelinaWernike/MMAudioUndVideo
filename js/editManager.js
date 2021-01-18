@@ -19,7 +19,7 @@ export default class EditManager {
         return editManager;
     }
 
-    constructor(trackname, loader, resizable) {
+    constructor(trackname, loader, resizable, clickable) {
         this.trackNode = document.querySelector('#' + trackname);
         this.loader = loader;
         this.elements = [];
@@ -27,6 +27,7 @@ export default class EditManager {
         this.durationMap = new FunctionMap();
         this.startMap = new FunctionMap();
         this.resizable = resizable;
+        this.clickable = clickable;
         this.id = 0;
         this.currentElement = -1;
     }
@@ -106,6 +107,9 @@ export default class EditManager {
         if (this.resizable) {
             this.addResizeEvents(container)
         }
+        if (this.clickable) {
+            this.addJumpEvent(container)
+        }
     }
 
     /**
@@ -142,8 +146,9 @@ export default class EditManager {
             close.className = "pointer close"
             item.appendChild(close)
         }
-        close.addEventListener("click", () => {
+        close.addEventListener("click", (event) => {
             this.removeElement(item)
+            event.stopPropagation()
         })
     }
 
@@ -166,6 +171,7 @@ export default class EditManager {
         if(options){
             options.addEventListener("click", (event) => {
                SettingsManager.onSettingsClick(event, this.durationMap)
+               event.stopPropagation()
             })
         }
     }
@@ -255,6 +261,16 @@ export default class EditManager {
         rightResize.className = "resize resize-right"
         element.appendChild(rightResize)
         makeResizable(element, leftResize, rightResize, 10)
+    }
+
+    addJumpEvent(element) {
+        element.addEventListener("click", () => {
+            const index = this.elements.findIndex(check => element.id === check.id)
+            if (index !== this.currentElement) {
+                const current = this.getElementByIndex(index)
+                this.controller.changeSource(current)
+            }
+        })
     }
 
     /**

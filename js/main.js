@@ -10,16 +10,21 @@ import VideoLoader from "./videoloader.js"
 import EffectLoader from "./effectLoader.js"
 import TrackController from "./trackController.js"
 
-let canvas = document.querySelector("canvas")
+let canvas = document.querySelector("#canvas")
 let context = canvas.getContext("2d")
-let video = document.querySelector("video")
+let video = document.querySelector("#video")
+let bgImage = document.querySelector("#backgroundImgCanvas")
 let fileInput = document.querySelector("#fileInput");
+
 let filterManager = new FilterManager().fillHtmlFilterList();
+let imageInput = document.querySelector("#imageInput");
+
+
 let fileManager = new FileManager()
-let videoManager = new EditManager("videotrack", new VideoLoader(fileManager), false)
-let audioManager = new EditManager("audiotrack", new AudioLoader(fileManager), false)
+let videoManager = new EditManager("videotrack", new VideoLoader(fileManager), false, true)
+let audioManager = new EditManager("audiotrack", new AudioLoader(fileManager), false, false)
 const effectLoader = new EffectLoader(filterManager);
-let effectManager = new EditManager("effecttrack", effectLoader, true)
+let effectManager = new EditManager("effecttrack", effectLoader, true, false)
 const trackController = new TrackController(videoManager, audioManager, effectManager);
 effectLoader.setTrackManager(trackController);
 const videoController = new VideoController(fileManager, trackController).addWindowListener();
@@ -60,12 +65,22 @@ window.addEventListener("resize", () => {
 })
 
 fileInput.addEventListener("change", () => {
-    fileManager.addFile();
+    fileManager.addFiles(fileInput.files);
+})
+
+imageInput.addEventListener("change", () => {
+    const reader = new FileReader();
+    reader.onloadend = (event) => {
+        bgImage.src = event.target.result;
+    }
+    reader.readAsDataURL(imageInput.files[0]);
 })
 
 function resizeCanvas() {
     canvas.width = canvas.parentNode.clientWidth;
     canvas.height = canvas.parentNode.clientHeight;
+    bgImage.width = canvas.width;
+    bgImage.height = canvas.height;
 }
 
 function renderVideo() {
