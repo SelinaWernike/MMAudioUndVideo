@@ -23,6 +23,32 @@
     padding-left: 2em;
 }
 
+input:invalid {
+    border: 2px solid #b40000;
+}
+
+.jqinvalid {
+    border: 2px solid #b40000;
+}
+
+.button {
+    background-color: #56565b;
+    color: #cae9eb;
+    border-radius: 5px;
+    border-color: #56565b;
+    padding: 5px;
+    width: 125px;
+    margin-bottom: 10px;
+}
+
+.button:hover {
+    background-color: #747479;
+    border-color: #747479;
+}
+
+
+
+
 
 
 
