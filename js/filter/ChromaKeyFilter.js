@@ -1,4 +1,4 @@
-import { convertToHSV, ckColorHSV } from './Converter.js';
+import { convertHEX2RGB2HSV, convertToHSV } from './Converter.js';
 
 /**
  * checks if hue value of all pixels in a frame fit in threshhold of picked color hue
@@ -6,12 +6,16 @@ import { convertToHSV, ckColorHSV } from './Converter.js';
  */
 export default class ChromaKeyFilter {
 
+    constructor() {
+        this.bgImage = document.querySelector("#backgroundImgCanvas")
+    }
+
     apply(frame) {
         let rgb = [];
         let hsv = [];
         let l = frame.data.length / 4;
         let x = 20;
-        let ckh = ckColorHSV[0];
+        let ckh = this.ckColorHSV[0];
         let h = 0;
 
         let hMin = ckh - x;
@@ -38,4 +42,41 @@ export default class ChromaKeyFilter {
             }
         }
     }
+
+    setColor(event) {
+        this.ckColorHSV = convertHEX2RGB2HSV(event.target.value);
+    }
+
+    setBackgroundImage(event) {
+        const reader = new FileReader();
+        reader.onloadend = (e) => {
+            this.bgImage.src = e.target.result;
+        }
+        reader.readAsDataURL(event.target.files[0]);
+    }
+
+    getAdditionalInputs() {
+        const ckFilterColor = document.createElement("input");
+        ckFilterColor.addEventListener("change", this.setColor.bind(this))
+        ckFilterColor.setAttribute("type", "color");
+        ckFilterColor.setAttribute("value", "#00FF00");
+        ckFilterColor.dispatchEvent(new Event("change"))
+        ckFilterColor.className = "pointer"
+        const bgImageInput = document.createElement("input")
+        bgImageInput.setAttribute("type", "file")
+        bgImageInput.setAttribute("accept", "image/*")
+        bgImageInput.setAttribute("hidden", "")
+        bgImageInput.addEventListener("change", this.setBackgroundImage.bind(this))
+        const bgImageIcon = document.createElement("img")
+        bgImageIcon.setAttribute("src", "./images/bgImage.png")
+        bgImageIcon.setAttribute("width", 24)
+        bgImageIcon.setAttribute("height", 24)
+        bgImageIcon.className = "pointer"
+        bgImageIcon.addEventListener("click", () => {
+            bgImageInput.click();
+        })
+        return [ckFilterColor, bgImageInput, bgImageIcon]
+    }
+
+
 }
