@@ -246,7 +246,6 @@ export default class EditManager {
         let indexThis = this.elements.findIndex(element => element.id === item2.id);
         swap(this.elements, indexTarget, indexThis);
         swap(this.fileKeys, indexTarget, indexThis);
-        
         this.trackNode.dispatchEvent(TrackChange);
     }
 
@@ -268,7 +267,9 @@ export default class EditManager {
             const index = this.elements.findIndex(check => element.id === check.id)
             if (index !== this.currentElement) {
                 const current = this.getElementByIndex(index)
-                this.controller.changeSource(current)
+                this.controller.changeSource(current).then(() => {
+                    this.controller.video.dispatchEvent(new Event("seeked"))
+                })
             }
         })
     }
@@ -307,6 +308,7 @@ export default class EditManager {
         console.log(index);
         if (this.elements.length > index && index >= 0) {
             this.currentElement = index;
+            this.highlight(this.currentElement)
             const duration = this.durationMap.get(this.elements[index].id);
             return {
                 fileKey: this.fileKeys[this.currentElement], 
@@ -327,7 +329,8 @@ export default class EditManager {
             const duration = this.durationMap.get(this.elements[i].id);
             const endTime = startTime + duration.duration;
             if (time >= startTime && time <= endTime) {
-                this.currentElement = i;                
+                this.currentElement = i;
+                this.highlight(this.currentElement)
                 return {
                     fileKey: this.fileKeys[i], 
                     startTime: duration.startTime,
@@ -338,6 +341,32 @@ export default class EditManager {
         }
         return null;
     }
+
+    highlight(index) {
+        const element = this.elements[index];
+        if (this.elements.length > 1) {
+            for (let i = 0; i < this.elements.length; i++) {
+                if (i !== index) {
+                    this.dehighlight(this.elements[i])
+                }
+            }
+        }
+        let pictures = element.querySelectorAll(".fileListImage");
+        pictures.forEach(pic => {
+            pic.style.webkitFilter = "brightness(0)";
+        });
+        element.style.backgroundColor = "#a0d840";
+        element.style.color = "black"
+    }
+
+    dehighlight(element) {
+        let pictures = element.querySelectorAll(".fileListImage");
+        pictures.forEach(pic => {
+            pic.style.webkitFilter = "brightness(0.75)";
+        });
+        element.style.backgroundColor = "#555555";
+        element.style.color = "#eaeaea"
+    }
 }
 
 let TrackChange = new Event("trackChange", {bubbles: true});
@@ -347,4 +376,3 @@ function swap(array, index1, index2) {
     array[index1] = array[index2];
     array[index2] = temp;
 }
-
