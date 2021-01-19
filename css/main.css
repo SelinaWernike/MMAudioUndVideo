@@ -39,6 +39,10 @@ body {
     z-index: -1;
 }
 
+#backgroundImgCanvas[src=""]{
+    display: none;
+}
+
 #videoArea {
     display: flex;
     flex-direction: column;

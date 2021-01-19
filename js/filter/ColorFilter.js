@@ -1,5 +1,8 @@
 import { convertRGB_HSV_RGB } from './Converter.js';
 
+/**
+ * changeing hue value in each pixel per frame to fit selected color hue
+ */
 export default class ColorFilter {
 
     apply(frame) {

@@ -1,3 +1,6 @@
+/**
+ * converts each pixel of a frame to greyscale
+ */
 export default class BWFilter {
 
     apply(frame) {

@@ -5,9 +5,13 @@ var ckColorHEX = ckColor.value;
 var cfColorHSV = convertHEX2RGB2HSV("cf");
 export var ckColorHSV = convertHEX2RGB2HSV("ck");
 
-// converts from rgb to hsv and back to rgb
-// hue of color gets changed
-// returns array of rgb values
+// collection of different rgb/hsv/hex converters and color values used in filters
+
+/**
+ * converts from rgb to hsv and back to rgb
+ * hue of color gets changed to selected hue
+ * @param {*} rgb array of rgb value of pixel
+ */
 export function convertRGB_HSV_RGB(rgb) {
     let rt, gt, bt, h, s, v, j, p, q, t, r, g, b;
 
@@ -71,6 +75,11 @@ export function convertRGB_HSV_RGB(rgb) {
     return rgb;
 }
 
+/**
+ * convert rgb to hsv
+ * @param rgb color value of current pixel
+ * @returns hsv array
+ */
 export function convertToHSV(rgb) {
     let h, s, v, r, g, b, rt, gt, bt;
     let hsv = [];
@@ -113,6 +122,10 @@ export function convertToHSV(rgb) {
     return hsv;
 }
 
+/**
+ * coverts hex values of color input to rgb and hsv
+ * @param {*} filter determines which filters color input object gets changed
+ */
 export function convertHEX2RGB2HSV(filter) {
     let rgb = [];
     var hex = "#000000";
@@ -137,16 +150,20 @@ export function convertHEX2RGB2HSV(filter) {
     rgb[1] = g;
     rgb[2] = b;
 
-    console.log(r, g, b);
-
     return convertToHSV(rgb);
 }
 
+/**
+ * listens to ColorFilter color input
+ */
 cfColor.addEventListener("change", function () {
     cfColorHEX = cfColor.value;
     cfColorHSV = convertHEX2RGB2HSV("cf");
 }, false);
 
+/**
+ * listens to ChromaKeyFilter color input
+ */
 ckColor.addEventListener("change", function () {
     ckColorHEX = ckColor.value;
     ckColorHSV = convertHEX2RGB2HSV("ck");

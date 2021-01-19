@@ -1,5 +1,9 @@
 import { convertToHSV, ckColorHSV } from './Converter.js';
 
+/**
+ * checks if hue value of all pixels in a frame fit in threshhold of picked color hue
+ * if they do, alpha value gets changed to 0
+ */
 export default class ChromaKeyFilter {
 
     apply(frame) {
@@ -14,6 +18,7 @@ export default class ChromaKeyFilter {
         let hMax = ckh + x;
         var mode = 1;
 
+        // needed to handle overflow of hue values
         if (hMin < 0) { hMin = 395 - (x - ckh); mode = 2; }
         if (hMax > 359) { hMax = x - (359 - ckh); mode = 2; }
 
