@@ -68,8 +68,8 @@ export default class ChromaKeyFilter {
         bgImageInput.setAttribute("hidden", "")
         bgImageInput.addEventListener("change", this.setBackgroundImage.bind(this))
         const bgImageIcon = document.createElement("img")
-        bgImageIcon.setAttribute("src", "./images/bgImage.png")
-        bgImageIcon.setAttribute("width", 24)
+        bgImageIcon.setAttribute("src", "./images/bgImage_white.png")
+        bgImageIcon.setAttribute("width", 40)
         bgImageIcon.setAttribute("height", 24)
         bgImageIcon.className = "pointer"
         bgImageIcon.addEventListener("click", () => {
