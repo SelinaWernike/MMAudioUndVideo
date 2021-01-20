@@ -4,6 +4,11 @@
     
 }
 
+#fileLabel:hover {
+    cursor: pointer;
+    background-color: #555555;
+}
+
 #fileLabel {
     margin-bottom: 0.3em;
     border-bottom:thin solid#a0d840;
