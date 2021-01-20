@@ -14,7 +14,7 @@ export default class ChromaKeyFilter {
         let rgb = [];
         let hsv = [];
         let l = frame.data.length / 4;
-        let x = 20;
+        let x = 10;
         let ckh = this.ckColorHSV[0];
         let h = 0;
 
