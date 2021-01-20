@@ -9,7 +9,7 @@ export default class SettingsManager {
 
     constructor(trackController){
         //this.display = false;
-        SETTINGS_OPEN = false;
+        settingsOpen = false;
 
         //called when pressing "OK" button - saves input field values (if valid) & closes settings widget
         window.onSettingsOK = function(){
