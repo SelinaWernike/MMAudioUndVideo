@@ -20,13 +20,14 @@ body {
     'track1'
     'track3'
     'track2';
-    height: 50%;
+    height: 46%;
 }
 
 #fileArea, #filterArea {
     width: 25%;
     overflow-y: auto;
     overflow-x: hidden;
+
 }
 
 #canvas {
@@ -52,12 +53,15 @@ body {
     margin-top: 3px;
     justify-content: center;
     padding-top: 0.5em;
-    border-top: 0.2em solid #555555;
+    border-top: 0.2em solid #a0d840;
+    background-image: linear-gradient(#4b4a4a,#323232);
+
     
 }
 
 #videoControls * {
     margin-right: 5px;
+
 }
 
 #canvasContainer {
@@ -114,8 +118,10 @@ ul li:hover {
 
 #startTime {
     float: left;
+    text-decoration: underline #eaeaea;
 }
 
 #endTime {
     float: right;
+    text-decoration: underline #eaeaea;
 }
