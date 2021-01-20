@@ -16,7 +16,7 @@
     <audio id="audio" crossorigin="anonymous" hidden=""></audio>
     <div id="upperArea">
         <div id="fileArea">
-            <label for="fileInput" id="fileLabel">+ Audio/Video hinzufügen</label>
+            <label for="fileInput" id="fileLabel">+ Audio/Video hinzufügen:</label>
             <input id="fileInput" multiple="" hidden="" name="fileInput" type="file" accept="audio/*, video/*">
             <ul id="fileList">
             </ul>
@@ -41,7 +41,7 @@
             </div>
         </div>
         <div id="filterArea">
-            <label for="filterList" id="filterLable">Filter:</label>
+            <label for="filterList" id="filterLable">Effekt:</label>
             <ul id="filterList">
             </ul>
             <ul id="colorPickers">
@@ -64,7 +64,7 @@
         </div>
         <div class="trackContainer" id="videoContainer">
             <div class="trackHeader">
-                <h3>Videotrack</h3>
+                <h3>Video</h3>
                 <img id="videoVolumeOnIcon" src="./images/volume_white.png" width="24" height="24" onclick="onVideoVolumeOnClick()" class="pointer">
                 <img id="videoVolumeOffIcon" src="./images/mute_white.png" width="24" height="24" onclick="onVideoVolumeOffClick()" class="pointer" hidden="">
                 <input id="videoVolumeSlider" type="range" class="slider" min="0" max="1" value="1" step="0.01" oninput="onVideoVolumeChange(event)">
@@ -73,13 +73,13 @@
             </div>
         </div>
         <div class="trackContainer"  id="effectContainer">
-            <h3>Effecttrack</h3>
+            <h3>Effekt</h3>
             <div class="track" id="effecttrack">
             </div>
         </div>
         <div class="trackContainer" id="audioContainer">
             <div class="trackHeader">
-                <h3>Audiotrack</h3>
+                <h3>Audio</h3>
                 <img id="audioVolumeOnIcon" src="./images/volume_white.png" width="24" height="24" onclick="onAudioVolumeOnClick()" class="pointer">
                 <img id="audioVolumeOffIcon" src="./images/mute_white.png" width="24" height="24" onclick="onAudioVolumeOffClick()" class="pointer" hidden="">
                 <input id="audioVolumeSlider" type="range" class="slider" min="0" max="1" value="1" step="0.01" oninput="onAudioVolumeChange(event)">
@@ -89,7 +89,7 @@
         </div>
         <div class="settingsContainer" style="display: none">
             <div id="innerSettingsContainer">
-            <h3>Settings</h3>
+            <h3>Zuschneiden</h3>
             <label placeholder="0.00" for="startInput">Startzeit</label><br/>
             <input type="text" onchange="processStartInput()" id="startInput" pattern="[0-9]*\.*[0-9]*"/><br/>
             <br/>
