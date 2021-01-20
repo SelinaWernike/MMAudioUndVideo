@@ -50,6 +50,7 @@ export default class TrackController {
         }
         return nextObject;
     }
+
 /**
  * Returns the previous video on the maintrack, if possible
  * @returns {object} object containing fileKey, startTime and duration
