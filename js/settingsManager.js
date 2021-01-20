@@ -108,16 +108,12 @@ Responds to click on settings button according to current state of settings widg
 */
     static onSettingsClick(event, durationMap) {
          if (!SETTINGS_OPEN) {
-            this.openSettings(event, durationMap);
-            event.currentTarget.style.backgroundColor = "#666666";
+            this.openSettings(event, durationMap);   
          }else{
             let settingsKey = document.querySelector(".settingsContainer").getAttribute("settingsKey");
             if(settingsKey != event.currentTarget.parentNode.parentNode.getAttribute("id")){
-                let trackElement = document.querySelector(('#'+settingsKey));
-                trackElement.childNodes[0].childNodes[1].style.backgroundColor = "transparent";
                 this.openSettings(event, durationMap);
             }else{
-                event.currentTarget.style.backgroundColor = "transparent";
                 this.closeSettings();
             }
          }
@@ -146,7 +142,8 @@ according to element the settings button was clicked on.
         settingsContainer.setAttribute("settingsTrack", settingsTrack);
 
         SETTINGS_OPEN = true;
-        event.currentTarget.style.backgroundColor = "#666666";
+        event.currentTarget.parentNode.parentNode.classList.add('highlight');
+        //event.currentTarget.style.backgroundColor = "#666666";
     }
 
 /**
@@ -162,7 +159,8 @@ Rearranges CSS to hide settings widget.
         settingsContainer.removeAttribute("settingsTrack");
 
         SETTINGS_OPEN = false;
-        event.currentTarget.style.backgroundColor = "transparent";
+        let highlightedElement = document.querySelector(".highlight");
+        highlightedElement.classList.remove("highlight");
     }
 
     /**
