@@ -1,6 +1,6 @@
 const START_INPUT = document.querySelector("#startInput");
 const END_INPUT = document.querySelector("#endInput");
-var SETTINGS_OPEN;
+var settingsOpen;
 
 /**
 This class is responsible for the settings widget that lets you change the start/end time of a video or audio element.
@@ -9,7 +9,7 @@ export default class SettingsManager {
 
     constructor(trackController){
         //this.display = false;
-        SETTINGS_OPEN = false;
+        settingsOpen = false;
 
         //called when pressing "OK" button - saves input field values (if valid) & closes settings widget
         window.onSettingsOK = function(){
@@ -107,8 +107,8 @@ Responds to click on settings button according to current state of settings widg
 @param {Object} durationMap - contains information to be displayed in settings widget
 */
     static onSettingsClick(event, durationMap) {
-         if (!SETTINGS_OPEN) {
-            this.openSettings(event, durationMap);   
+         if (!settingsOpen) {
+            this.openSettings(event, durationMap);
          }else{
             let settingsKey = document.querySelector(".settingsContainer").getAttribute("settingsKey");
             if(settingsKey != event.currentTarget.parentNode.parentNode.getAttribute("id")){
@@ -141,9 +141,8 @@ according to element the settings button was clicked on.
         settingsContainer.setAttribute("settingsKey", settingsKey);
         settingsContainer.setAttribute("settingsTrack", settingsTrack);
 
-        SETTINGS_OPEN = true;
+        settingsOpen = true;
         event.currentTarget.parentNode.parentNode.classList.add('highlight');
-        //event.currentTarget.style.backgroundColor = "#666666";
     }
 
 /**
@@ -158,7 +157,7 @@ Rearranges CSS to hide settings widget.
         settingsContainer.removeAttribute("settingsKey");
         settingsContainer.removeAttribute("settingsTrack");
 
-        SETTINGS_OPEN = false;
+        settingsOpen = false;
         let highlightedElement = document.querySelector(".highlight");
         highlightedElement.classList.remove("highlight");
     }
@@ -168,6 +167,6 @@ Rearranges CSS to hide settings widget.
     returns boolean settingsOpen
     */
     static isSettingsOpen(){
-        return SETTINGS_OPEN;
+        return settingsOpen;
     }
 }

@@ -195,19 +195,28 @@ export default class VideoController {
         }
     }
 
-    changeSource(data, forcePlay, forcePause) {
+    async changeSource(data, forcePlay, forcePause) {
         const wasPlaying = !this.video.paused
         this.video.pause();
         const url = this.fileManager.fileMap.get(data.fileKey);
         this.video.startTime = data.startTime;
         this.video.endTime = data.startTime + data.duration;
-        if (this.video.src !== url) {
+        const urlChanged = this.video.src !== url;
+        if (urlChanged) {
             this.video.src = url
-            this.video.load()            
+            this.video.load()
         }
         this.video.currentTime = data.time || data.startTime;
         if (forcePlay || wasPlaying && !forcePause) {
             this.video.play();
+        }
+        if (urlChanged) {
+            let callback;
+            const promise = new Promise(resolve => callback = resolve)
+            this.video.addEventListener("loadeddata", () => { callback() }, { once: true })
+            return promise;
+        } else {
+            return Promise.resolve()
         }
     }
 }

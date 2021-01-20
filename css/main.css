@@ -125,19 +125,3 @@ ul li:hover {
     float: right;
     text-decoration: underline #eaeaea;
 }
-
-input:invalid {
-    border: 2px solid #b40000;
-}
-
-.jqinvalid {
-    border: 2px solid #b40000;
-}
-
-.close {
-    font-size: 20px;
-    font-weight: bold;
-}
-
-
-

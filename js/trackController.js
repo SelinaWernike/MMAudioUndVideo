@@ -40,41 +40,22 @@ export default class TrackController {
  * @returns {object} object containing fileKey, startTime and duration
  */
     getNextVideo() {
-        let index = this.maintrack.currentElement;
-        let nextObject = this.maintrack.next();
-        if(nextObject != null) {
-            if(this.maintrack.elements.length > 1 || index || index < 0) {
-            dehighlightContainer(this.maintrack.currentElement - 1, this.maintrack);
-            }
-            highlightContainer(this.maintrack.currentElement, this.maintrack)
-        }
-        return nextObject;
+        return this.maintrack.next();
     }
+
 /**
  * Returns the previous video on the maintrack, if possible
  * @returns {object} object containing fileKey, startTime and duration
  */
     getPreviousVideo() {
-        let previousObject = this.maintrack.previous();
-        if(previousObject != null) {
-            dehighlightContainer(this.maintrack.currentElement + 1, this.maintrack);
-            highlightContainer(this.maintrack.currentElement, this.maintrack)
-        }
-        return previousObject;
+        return this.maintrack.previous();
     }
 /**
  * Returns the first video on the maintrack, if possible
  * @returns {object} object containing fileKey, startTime and duration
  */
     getFirstVideo() {
-        let firstObject = this.maintrack.getElementByIndex(0);
-        if(firstObject != null) {
-            if(this.maintrack.elements.length > 1) {
-            this.dehighlightAll(this.maintrack);
-            }
-            highlightContainer(this.maintrack.currentElement, this.maintrack);
-        }
-        return firstObject;
+        return this.maintrack.getElementByIndex(0);
     }
     
 /**
@@ -82,14 +63,7 @@ export default class TrackController {
  * @returns {object} object containing fileKey, startTime and duration
  */
     getNextAudio() {
-        let nextObject = this.audiotrack.next();
-        if(nextObject != null) {
-            if(this.audiotrack.elements.length > 1) {
-                dehighlightContainer(this.audiotrack.currentElement - 1, this.audiotrack);
-            }
-            highlightContainer(this.audiotrack.currentElement, this.audiotrack)
-        }
-        return nextObject;
+        return this.audiotrack.next();
     }
 
 /**
@@ -99,12 +73,6 @@ export default class TrackController {
     getCurrentAudio(video = document.querySelector("#video")) {
         let currentTime = this.getCurrentTime(video);
         let currentObject = this.audiotrack.getElementByTime(currentTime);
-        if(currentObject != null) {
-            if(this.audiotrack.elements.length > 1) {
-            this.dehighlightAll(this.audiotrack);
-            }
-            highlightContainer(this.audiotrack.currentElement, this.audiotrack);
-        }
         return currentObject;
     }
 /**
@@ -114,11 +82,7 @@ export default class TrackController {
     getCurrentFilter(video = document.querySelector("#video")) {
         let currentTime = this.getCurrentTime(video);
         let current = this.effecttrack.getElementByTime(currentTime);
-        if (current || current != null) {
-            if(this.effecttrack.elements.length > 1) {
-            this.dehighlightAll(this.effecttrack);
-            }
-            highlightContainer(this.effecttrack.currentElement, this.effecttrack);
+        if (current) {
             return current.fileKey;
         }
         return null;
@@ -137,40 +101,6 @@ export default class TrackController {
         let globalTime = track.getGlobalStartTime(key);
         let trackElement = track.getElementByTime(globalTime + parseFloat(time));
         track.controller.changeSource(trackElement);
-        if(track.elements.length > 1) {
-            this.dehighlightAll(track);
-        }
-        highlightContainer(track.currentElement, track);
-    }
-
-    dehighlightAll(track) {
-        for (let i = 0; i < track.elements.length; i++) {
-            dehighlightContainer(i,track)  
-        }
-    }
-}
-
-function highlightContainer(index, track) {
-    let element = track.elements[index];
-    if(element) {
-        let pictures = element.querySelectorAll(".fileListImage");
-        pictures.forEach(pic => {
-            pic.style.webkitFilter = "brightness(0)";
-        });
-        element.style.backgroundColor = "#a0d840";
-        element.style.color = "black"
-    }
-}
-
-function dehighlightContainer(index, track) {
-    let element = track.elements[index];
-    if(element) {
-        let pictures = element.querySelectorAll(".fileListImage");
-            pictures.forEach(pic => {
-                pic.style.webkitFilter = "brightness(0.75)";
-            });
-        element.style.backgroundColor = "#555555";
-        element.style.color = "#eaeaea"
     }
 }
 
