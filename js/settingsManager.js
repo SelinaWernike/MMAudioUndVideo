@@ -112,8 +112,10 @@ Responds to click on settings button according to current state of settings widg
             this.openSettings(event, durationMap);
          }else{
             let settingsKey = document.querySelector(".settingsContainer").getAttribute("settingsKey");
+            let settingsTrackName = document.querySelector(".settingsContainer").getAttribute("settingsTrack");
             this.closeSettings();
-            if(settingsKey != event.currentTarget.parentNode.parentNode.getAttribute("id")){
+            if(settingsKey != event.currentTarget.parentNode.parentNode.getAttribute("id")
+             || settingsTrackName != event.currentTarget.parentNode.parentNode.parentNode.getAttribute("id")){
                 this.openSettings(event, durationMap);
             }
          }
