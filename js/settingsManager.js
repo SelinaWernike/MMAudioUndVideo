@@ -107,7 +107,7 @@ Responds to click on settings button according to current state of settings widg
 @param {Object} durationMap - contains information to be displayed in settings widget
 */
     static onSettingsClick(event, durationMap) {
-         if (!settings_open) {
+         if (!settingsOpen) {
             this.openSettings(event, durationMap);
             event.currentTarget.style.backgroundColor = "#666666";
          }else{
