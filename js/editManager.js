@@ -159,7 +159,7 @@ export default class EditManager {
             options = document.createElement("div");
             options.className = "pointer options"
             const image = document.createElement('img');
-            image.src = '/../images/cut.png';
+            image.src = '/../images/cut_white.png';
             image.width = 30;
             image.className = 'fileListImage';
             image.setAttribute("draggable", false);

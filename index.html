@@ -2,6 +2,7 @@
 
 <head>
     <title>ViMa</title>
+    <link rel="icon" href="./images/VimaNew2.png">
     <script type="module" src="./js/main.js"></script>
     <link rel="stylesheet" href="./css/main.css" type="text/css">
     <link rel="stylesheet" href="./css/track.css" type="text/css">
@@ -28,7 +29,7 @@
             <div id="videoControls">
                 <img src="./images/toStart_white.png" width="24" height="24" onclick="onToPreviousClick()" class="pointer">
                 <img src="./images/rewind_white.png" width="24" height="24" onclick="onRewindClick()" class="pointer">
-                <img src="./images/stop.png" width="24" height="24" onclick="onToStartClick()" class="pointer">
+                <img src="./images/stop_white.png" width="24" height="24" onclick="onToStartClick()" class="pointer">
                 <img id="playIcon" src="./images/play_white.png" width="24" height="24" onclick="onPlayClick()" class="pointer">
                 <img id="pauseIcon" src="./images/pause_white.png" width="24" height="24" onclick="onPauseClick()" class="pointer" hidden="">
                 <img src="./images/fast_forward_white.png" width="24" height="24" onclick="onForwardClick()" class="pointer">
@@ -40,6 +41,7 @@
             </div>
         </div>
         <div id="filterArea">
+            <label for="filterList" id="filterLable">Filter:</label>
             <ul id="filterList">
             </ul>
             <ul id="colorPickers">
@@ -65,7 +67,7 @@
                 <h3>Videotrack</h3>
                 <img id="videoVolumeOnIcon" src="./images/volume_white.png" width="24" height="24" onclick="onVideoVolumeOnClick()" class="pointer">
                 <img id="videoVolumeOffIcon" src="./images/mute_white.png" width="24" height="24" onclick="onVideoVolumeOffClick()" class="pointer" hidden="">
-                <input id="videoVolumeSlider" type="range" min="0" max="1" value="1" step="0.01" oninput="onVideoVolumeChange(event)">
+                <input id="videoVolumeSlider" type="range" class="slider" min="0" max="1" value="1" step="0.01" oninput="onVideoVolumeChange(event)">
             </div>
             <div class="track" id="videotrack">
             </div>
@@ -80,7 +82,7 @@
                 <h3>Audiotrack</h3>
                 <img id="audioVolumeOnIcon" src="./images/volume_white.png" width="24" height="24" onclick="onAudioVolumeOnClick()" class="pointer">
                 <img id="audioVolumeOffIcon" src="./images/mute_white.png" width="24" height="24" onclick="onAudioVolumeOffClick()" class="pointer" hidden="">
-                <input id="audioVolumeSlider" type="range" min="0" max="1" value="1" step="0.01" oninput="onAudioVolumeChange(event)">
+                <input id="audioVolumeSlider" type="range" class="slider" min="0" max="1" value="1" step="0.01" oninput="onAudioVolumeChange(event)">
             </div>
             <div class="track" id="audiotrack">
             </div>
