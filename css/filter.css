@@ -1,12 +1,20 @@
-#filterArea{
+#filterArea {
     margin-top: 0.2em;
     margin-left: 00.8em;
     margin-bottom: 0.3em;
 }
+
 .filterListItem {
     padding-top: 14.5px;
     padding-bottom: 14.5px;
-    text-align: center;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+}
+
+.filterListItem * {
+    margin-left: 10px;
 }
 
 #filterLable {

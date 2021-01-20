@@ -1,3 +1,7 @@
+
+/**
+ * inverts rgb value of each pixel in a frame
+ */
 export default class InvertFilter {
 
     apply(frame) {

@@ -1,3 +1,7 @@
+
+/**
+ * converts each pixel color value to sepia in a frame
+ */
 export default class SepiaFilter {
 
     apply(frame) {

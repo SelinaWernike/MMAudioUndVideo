@@ -15,11 +15,7 @@ let context = canvas.getContext("2d")
 let video = document.querySelector("#video")
 let bgImage = document.querySelector("#backgroundImgCanvas")
 let fileInput = document.querySelector("#fileInput");
-
 let filterManager = new FilterManager().fillHtmlFilterList();
-let imageInput = document.querySelector("#imageInput");
-
-
 let fileManager = new FileManager()
 let videoManager = new EditManager("videotrack", new VideoLoader(fileManager), false, true)
 let audioManager = new EditManager("audiotrack", new AudioLoader(fileManager), false, false)
@@ -38,13 +34,13 @@ audioManager.initializeTrack(audioController);
 effectManager.initializeTrack();
 
 //Add Event Listener
-document.querySelector("#videotrack").addEventListener("trackChange", function() {
+document.querySelector("#videotrack").addEventListener("trackChange", function () {
     trackController.setEndTime();
     trackController.setTrackLength();
     videoController.reset();
 });
 
-document.querySelector("#audiotrack").addEventListener("trackChange", function() {
+document.querySelector("#audiotrack").addEventListener("trackChange", function () {
     videoController.reset();
 })
 
@@ -66,14 +62,6 @@ window.addEventListener("resize", () => {
 
 fileInput.addEventListener("change", () => {
     fileManager.addFiles(fileInput.files);
-})
-
-imageInput.addEventListener("change", () => {
-    const reader = new FileReader();
-    reader.onloadend = (event) => {
-        bgImage.src = event.target.result;
-    }
-    reader.readAsDataURL(imageInput.files[0]);
 })
 
 function resizeCanvas() {
