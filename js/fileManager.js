@@ -88,9 +88,9 @@ export default class FileManager {
      */
     getImageForFileType(file){
         if(file.type.includes('audio/')){
-            return '/../images/audio.png';
+            return '/../images/audio_white.png';
         }else if(file.type.includes('video/')){
-            return '/../images/video.png';
+            return '/../images/video_white.png';
         }
     }
 }

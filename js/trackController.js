@@ -153,6 +153,10 @@ export default class TrackController {
 function highlightContainer(index, track) {
     let element = track.elements[index];
     if(element) {
+        let pictures = element.querySelectorAll(".fileListImage");
+        pictures.forEach(pic => {
+            pic.style.webkitFilter = "brightness(0)";
+        });
         element.style.backgroundColor = "#a0d840";
         element.style.color = "black"
     }
@@ -161,6 +165,10 @@ function highlightContainer(index, track) {
 function dehighlightContainer(index, track) {
     let element = track.elements[index];
     if(element) {
+        let pictures = element.querySelectorAll(".fileListImage");
+            pictures.forEach(pic => {
+                pic.style.webkitFilter = "brightness(0.75)";
+            });
         element.style.backgroundColor = "#555555";
         element.style.color = "#eaeaea"
     }
