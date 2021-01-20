@@ -42,6 +42,7 @@ export default class TrackController {
     getNextVideo() {
         return this.maintrack.next();
     }
+
 /**
  * Returns the previous video on the maintrack, if possible
  * @returns {object} object containing fileKey, startTime and duration
