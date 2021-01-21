@@ -16,7 +16,7 @@ export default class RenderToFile {
         fileManager = FileManager.fromCopy(Object.assign({}, fileManager));
         videoManager = EditManager.fromCopy(Object.assign({}, videoManager));
         effectManager = EditManager.fromCopy(Object.assign({}, effectManager));
-        const trackController = new TrackController(videoManager, null, effectManager);
+        const trackController = new TrackController(videoManager, null, effectManager, false);
         trackController.setEndTime(false);
         const video = document.createElement("video");
         video.muted = true;

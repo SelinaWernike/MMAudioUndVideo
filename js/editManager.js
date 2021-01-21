@@ -288,15 +288,15 @@ export default class EditManager {
      * Returns next Element in the Track if possible
      * @returns {object} object containing fileKey, startTime and duration
      */
-    next() {
-        return this.getElementByIndex(this.currentElement + 1)
+    next(highlight = true) {
+        return this.getElementByIndex(this.currentElement + 1, highlight)
     }
 /**
      * Returns previous Element in the Track if possible
      * @returns {object} object containing fileKey, startTime and duration
      */
-    previous() {
-        return this.getElementByIndex(this.currentElement - 1)
+    previous(highlight = true) {
+        return this.getElementByIndex(this.currentElement - 1, highlight)
     }
 
     /**
@@ -304,11 +304,13 @@ export default class EditManager {
      * @param {int} Index of the Element
      * @returns {object} object containing fileKey, startTime and duration
      */
-    getElementByIndex(index) {
+    getElementByIndex(index, highlight = true) {
         console.log(index);
         if (this.elements.length > index && index >= 0) {
             this.currentElement = index;
-            this.highlight(this.currentElement)
+            if (highlight) {
+                this.highlight(this.currentElement)
+            }
             const duration = this.durationMap.get(this.elements[index].id);
             return {
                 fileKey: this.fileKeys[this.currentElement], 
@@ -323,14 +325,16 @@ export default class EditManager {
      * @param {int} Time in seconds
      * @returns {object} object containing fileKey, startTime and duration
      */
-    getElementByTime(time) {
+    getElementByTime(time, highlight = true) {
         for (let i = 0; i < this.elements.length; i++) {
             const startTime = this.startMap.get(this.elements[i].id);
             const duration = this.durationMap.get(this.elements[i].id);
             const endTime = startTime + duration.duration;
             if (time >= startTime && time <= endTime) {
                 this.currentElement = i;
-                this.highlight(this.currentElement)
+                if (highlight) {
+                    this.highlight(this.currentElement)
+                }
                 return {
                     fileKey: this.fileKeys[i], 
                     startTime: duration.startTime,
