@@ -9,14 +9,19 @@ import TrackController from "./trackController.js"
 export default class RenderToFile {
 
     constructor(width, height, fileManager, filterManager, videoManager, effectManager) {
+        const bgImage = getBackgroundImage(width, height)
         const canvas = document.createElement("canvas")
-        const context = canvas.getContext("2d");
         canvas.width = width;
         canvas.height = height;
+        const context = canvas.getContext("2d");
+        const tmpCanvas = document.createElement("canvas")
+        tmpCanvas.width = width;
+        tmpCanvas.height = height;
+        const tmpContext = tmpCanvas.getContext("2d")
         fileManager = FileManager.fromCopy(Object.assign({}, fileManager));
         videoManager = EditManager.fromCopy(Object.assign({}, videoManager));
         effectManager = EditManager.fromCopy(Object.assign({}, effectManager));
-        const trackController = new TrackController(videoManager, null, effectManager);
+        const trackController = new TrackController(videoManager, null, effectManager, false);
         trackController.setEndTime(false);
         const video = document.createElement("video");
         video.muted = true;
@@ -36,14 +41,39 @@ export default class RenderToFile {
         }
         return promise;
 
+        function getBackgroundImage(width, height) {
+            let bgImage = document.querySelector("#backgroundImgCanvas")
+            if (bgImage.src) {
+                const newImage = document.createElement("img");
+                newImage.src = bgImage.src;
+                bgImage = newImage;
+                bgImage.width = width;
+                bgImage.height = height;
+            }
+            return bgImage
+        }
+
         function renderVideo() {
             if (!video.paused && !video.ended) {
-                context.drawImage(video, 0, 0, canvas.width, canvas.height)
                 const currentFilter = trackController.getCurrentFilter(video);
                 if (currentFilter) {
-                    const currentFrame = context.getImageData(0, 0, canvas.width, canvas.height)
-                    filterManager.apply(currentFrame, currentFilter)
-                    context.putImageData(currentFrame, 0, 0)
+                    if (bgImage.src) {
+                        // if we have a background image, we have to draw both to the recorded canvas
+                        // putImageData replaces everything, so we have to use it on a second canvas
+                        tmpContext.drawImage(video, 0, 0, tmpCanvas.width, tmpCanvas.height)
+                        const currentFrame = tmpContext.getImageData(0, 0, tmpCanvas.width, tmpCanvas.height)
+                        filterManager.apply(currentFrame, currentFilter)
+                        tmpContext.putImageData(currentFrame, 0, 0)
+                        context.drawImage(bgImage, 0, 0, canvas.width, canvas.height)
+                        context.drawImage(tmpCanvas, 0, 0, canvas.width, canvas.height)
+                    } else {
+                        context.drawImage(video, 0, 0, canvas.width, canvas.height)
+                        const currentFrame = context.getImageData(0, 0, canvas.width, canvas.height)
+                        filterManager.apply(currentFrame, currentFilter)
+                        context.putImageData(currentFrame, 0, 0)
+                    }
+                } else {
+                    context.drawImage(video, 0, 0, canvas.width, canvas.height)
                 }
                 requestAnimationFrame(renderVideo)
             }

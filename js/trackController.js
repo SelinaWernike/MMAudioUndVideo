@@ -5,10 +5,11 @@
  */
 export default class TrackController {
 
-    constructor(maintrack, audiotrack, effecttrack) {
+    constructor(maintrack, audiotrack, effecttrack, userInterface = true) {
         this.maintrack = maintrack;
         this.audiotrack = audiotrack;
         this.effecttrack = effecttrack;
+        this.userInterface = userInterface;
         this.endTime = 0.0;
         this.currentTime = 0.0;
     }
@@ -16,7 +17,7 @@ export default class TrackController {
     /**
      * Sets the End Time of the Time Bar. By calling the VideoTrack.
      */
-    setEndTime(userInterface = true) {
+    setEndTime() {
         let time = 0;
         for (const [key, value] of this.maintrack.durationMap) {
             if (value.duration >= 0) {
@@ -24,7 +25,7 @@ export default class TrackController {
             }
         }
         this.endTime = time;
-        if (userInterface) {
+        if (this.userInterface) {
             let endTime = document.querySelector("#endTime");
             endTime.textContent = toHHMMSS(this.endTime);
         }
@@ -40,7 +41,7 @@ export default class TrackController {
  * @returns {object} object containing fileKey, startTime and duration
  */
     getNextVideo() {
-        return this.maintrack.next();
+        return this.maintrack.next(this.userInterface);
     }
 
 /**
@@ -48,14 +49,14 @@ export default class TrackController {
  * @returns {object} object containing fileKey, startTime and duration
  */
     getPreviousVideo() {
-        return this.maintrack.previous();
+        return this.maintrack.previous(this.userInterface);
     }
 /**
  * Returns the first video on the maintrack, if possible
  * @returns {object} object containing fileKey, startTime and duration
  */
     getFirstVideo() {
-        return this.maintrack.getElementByIndex(0);
+        return this.maintrack.getElementByIndex(0, this.userInterface);
     }
     
 /**
@@ -63,7 +64,7 @@ export default class TrackController {
  * @returns {object} object containing fileKey, startTime and duration
  */
     getNextAudio() {
-        return this.audiotrack.next();
+        return this.audiotrack.next(this.userInterface);
     }
 
 /**
@@ -72,7 +73,7 @@ export default class TrackController {
  */    
     getCurrentAudio(video = document.querySelector("#video")) {
         let currentTime = this.getCurrentTime(video);
-        let currentObject = this.audiotrack.getElementByTime(currentTime);
+        let currentObject = this.audiotrack.getElementByTime(currentTime, this.userInterface);
         return currentObject;
     }
 /**
@@ -81,7 +82,7 @@ export default class TrackController {
  */ 
     getCurrentFilter(video = document.querySelector("#video")) {
         let currentTime = this.getCurrentTime(video);
-        let current = this.effecttrack.getElementByTime(currentTime);
+        let current = this.effecttrack.getElementByTime(currentTime, this.userInterface);
         if (current) {
             return current.fileKey;
         }
@@ -99,7 +100,7 @@ export default class TrackController {
 
     jumpToTime(time, track, key) {
         let globalTime = track.getGlobalStartTime(key);
-        let trackElement = track.getElementByTime(globalTime + parseFloat(time));
+        let trackElement = track.getElementByTime(globalTime + parseFloat(time), this.userInterface);
         track.controller.changeSource(trackElement);
     }
 }

@@ -20,7 +20,6 @@ export default class SettingsManager {
             if(START_INPUT.checkValidity() && END_INPUT.checkValidity()){
                 let track = SettingsManager.getTrackByString(settingsTrack, trackController);
                 let origDuration = track.durationMap.get(settingsKey).origDuration;
-                console.log(origDuration);
                 track.changeTime(settingsKey, {duration: Number(END_INPUT.value) - Number(START_INPUT.value), startTime:Number(START_INPUT.value), origDuration: origDuration});
                 SettingsManager.closeSettings();
                 button.setCustomValidity("");
@@ -42,6 +41,8 @@ export default class SettingsManager {
 
         START_INPUT.value = 0;
         END_INPUT.value = durationMapEntry.origDuration;
+
+        SettingsManager.resetAllValidity();
         }
 
         //validates value of start time input field
@@ -54,7 +55,7 @@ export default class SettingsManager {
                 let settingsKey = document.querySelector(".settingsContainer").getAttribute("settingsKey");
                 let settingsTrack = document.querySelector(".settingsContainer").getAttribute("settingsTrack");
                 START_INPUT.setCustomValidity('');
-                //START_INPUT.reportValidity();
+                SettingsManager.resetOKButtonValidity();
                 const track = SettingsManager.getTrackByString(settingsTrack, trackController);
                 trackController.jumpToTime(START_INPUT.value, track, settingsKey);
             }
@@ -76,7 +77,7 @@ export default class SettingsManager {
                  END_INPUT.setCustomValidity("Endzeit darf nicht gleich groß wie Startzeit sein!");
             }else{
                  END_INPUT.setCustomValidity("");
-                 //END_INPUT.reportValidity();
+                 SettingsManager.resetOKButtonValidity();
                  trackController.jumpToTime(END_INPUT.value, track, settingsKey);
             }
             endInput.reportValidity();
@@ -111,10 +112,11 @@ Responds to click on settings button according to current state of settings widg
             this.openSettings(event, durationMap);
          }else{
             let settingsKey = document.querySelector(".settingsContainer").getAttribute("settingsKey");
-            if(settingsKey != event.currentTarget.parentNode.parentNode.getAttribute("id")){
+            let settingsTrackName = document.querySelector(".settingsContainer").getAttribute("settingsTrack");
+            this.closeSettings();
+            if(settingsKey != event.currentTarget.parentNode.parentNode.getAttribute("id")
+             || settingsTrackName != event.currentTarget.parentNode.parentNode.parentNode.getAttribute("id")){
                 this.openSettings(event, durationMap);
-            }else{
-                this.closeSettings();
             }
          }
     }
@@ -160,6 +162,7 @@ Rearranges CSS to hide settings widget.
         settingsOpen = false;
         let highlightedElement = document.querySelector(".highlight");
         highlightedElement.classList.remove("highlight");
+        this.resetAllValidity();
     }
 
     /**
@@ -169,4 +172,25 @@ Rearranges CSS to hide settings widget.
     static isSettingsOpen(){
         return settingsOpen;
     }
+
+    /**
+    Resets OK button to not be highlighted red
+    */
+    static resetOKButtonValidity(){
+    let okButton = document.querySelector("#settingsConfirm");
+    okButton.setCustomValidity("");
+    okButton.reportValidity();
+    }
+
+    /**
+    Resets all inputs (OK button, start and end time input)
+    */
+    static resetAllValidity(){
+        START_INPUT.setCustomValidity('');
+        END_INPUT.setCustomValidity('');
+        START_INPUT.reportValidity();
+        END_INPUT.reportValidity();
+        SettingsManager.resetOKButtonValidity();
+    }
+
 }
