@@ -1,5 +1,5 @@
 export default class VideoLoader {
-    
+
     constructor(fileManager) {
         this.fileManager = fileManager;
     }
@@ -10,7 +10,7 @@ export default class VideoLoader {
         if (src && src.startsWith("data:video")) {
             video.src = src;
             video.load();
-            video.addEventListener("loadedmetadata", function(event) {editManager.setItemDuration(video,element.id);});
+            video.addEventListener("loadedmetadata", function () { editManager.setItemDuration(video, element.id); });
             return video;
         } else {
             return null;

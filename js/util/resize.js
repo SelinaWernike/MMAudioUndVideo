@@ -1,3 +1,10 @@
+/**
+ * Makes the given element horizontally resizable by dragging the mouse.
+ * 
+ * @param {HTMLElement} element the element to make resizeable
+ * @param {HTMLElement} leftResize the element used to drag the left side
+ * @param {HTMLElement} rightResize the element used to drag the right side
+ */
 export default function makeResizable(element, leftResize, rightResize) {
     let originalWidth = 0;
     let elementX = 0;

@@ -9,7 +9,7 @@ export default class FileManager {
 
     constructor(fileMap = new Map()) {
         this.fileMap = fileMap; //key: getfileKey(), value: Data URLs for the file data
-        if (! (window.File && window.FileReader && window.FileList && window.Blob) ) {
+        if (!(window.File && window.FileReader && window.FileList && window.Blob)) {
             alert('The File APIs are not fully supported in this browser.');
         }
     }
@@ -17,9 +17,9 @@ export default class FileManager {
     /**
      * adds files of html <input> element both to frontend list and to backend map
      */
-     addFiles(fileList) {
-        if (fileList.length !== 0){
-            for(const file of fileList){
+    addFiles(fileList) {
+        if (fileList.length !== 0) {
+            for (const file of fileList) {
                 this.addToFileMap(file);
                 const listItem = document.createElement('li');
                 listItem.className = "fileListItem"
@@ -52,16 +52,16 @@ export default class FileManager {
                 document.getElementById("fileList").appendChild(listItem);
             }
         }
-     }
+    }
 
     /**
      * Creates an identifier for a file
      * @param file - element of html input element files list
      * @returns {string} - value for key of fileMap
      */
-     getFileKey(file){
+    getFileKey(file) {
         return file.name.concat(file.size, file.type, file.lastModified);
-     }
+    }
 
     /**
      * adds specified file to file map, if not already added.
@@ -69,7 +69,7 @@ export default class FileManager {
      */
     addToFileMap(file) {
         const fileKey = this.getFileKey(file);
-        if(!this.fileMap.has(fileKey)){
+        if (!this.fileMap.has(fileKey)) {
             const reader = new FileReader();
             reader.onerror = (event) => {
                 console.error("File could not be read! Code " + event.target.error.code);
@@ -86,10 +86,10 @@ export default class FileManager {
      * @param file - element of html input element files list
      * @returns {string} - the right image icon according to file type
      */
-    getImageForFileType(file){
-        if(file.type.includes('audio/')){
+    getImageForFileType(file) {
+        if (file.type.includes('audio/')) {
             return '/../images/audio_white.png';
-        }else if(file.type.includes('video/')){
+        } else if (file.type.includes('video/')) {
             return '/../images/video_white.png';
         }
     }

@@ -1,3 +1,8 @@
+/**
+ * The video controller is responsible for playing/pausing/seeking of the video on the track. If needed,
+ * it reacts to user input on the video control bar below the video. It calls the trackController for video updates 
+ * if needed.
+ */
 export default class VideoController {
 
     static JUMP_TIME_SECONDS = 5
@@ -195,6 +200,14 @@ export default class VideoController {
         }
     }
 
+    /**
+     * Changes the source and sets the videos start and endTime. Unless overriden, this plays
+     * the video only if it was playing before. The returned promise resolves once data is available for playback.
+     * 
+     * @param {Object} data an object containing fileKey, startTime, duration and optionally a time
+     * @param {boolean} forcePlay whether to force play the video even it was not playing before
+     * @param {boolean} forcePause whether to force pause the video even it was playing before
+     */
     async changeSource(data, forcePlay, forcePause) {
         const wasPlaying = !this.video.paused
         this.video.pause();
@@ -216,6 +229,7 @@ export default class VideoController {
             this.video.addEventListener("loadeddata", () => { callback() }, { once: true })
             return promise;
         } else {
+            // since the url has not changed, the data is already loaded and the event will never be thrown
             return Promise.resolve()
         }
     }

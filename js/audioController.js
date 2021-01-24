@@ -1,3 +1,7 @@
+/**
+ * The audio controller is responsible for playing/pausing/seeking of the audio on the track. It
+ * synchronises with the video and calls the trackController for updates if needed.
+ */
 export default class AudioController {
 
     constructor(fileManager, trackController) {

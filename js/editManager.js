@@ -35,7 +35,7 @@ export default class EditManager {
     /**
      * Adds Dragover and Drop Eventlistener to the track. When deopped over the Track
      * the Element will be added to the Track.
-     * @param {object} The Controller that uses the element of the track
+     * @param {VideoController|AudioController} controller the controller that uses the element of the track
      */
     initializeTrack(controller) {
         this.controller = controller;
@@ -67,28 +67,28 @@ export default class EditManager {
             }
         });
     }
-/**
- * Saves the data of the added Element into the class attributes filrKeys, Elements and durationMap
- * @param {HTML} container The html-Element whisch is added as a Child of trackNode
- * @param {string} fileKey The fileKey used to load the File
- * @param {HTML} trackObject The video, audio or effect element
- * @param {i} dropIndex the index on which the element is dropped
- */
+    /**
+     * Saves the data of the added Element into the class attributes filrKeys, Elements and durationMap
+     * @param {HTMLElement} container The html-Element whisch is added as a Child of trackNode
+     * @param {String} fileKey The fileKey used to load the File
+     * @param {HTMLElement} trackObject The video, audio or effect element
+     * @param {int} dropIndex the index on which the element is dropped
+     */
     addElementData(container, fileKey, trackObject, dropIndex) {
         this.fileKeys.splice(dropIndex, 0, fileKey);
         this.elements.splice(dropIndex, 0, container);
-        this.durationMap.set(container.id, { get duration() { return trackObject.duration }, startTime: 0.00, origDuration: trackObject.duration});
+        this.durationMap.set(container.id, { get duration() { return trackObject.duration }, startTime: 0.00, origDuration: trackObject.duration });
         if (this.resizable) {
             this.startMap.set(container.id, function () { return trackObject.start });
         } else {
             this.startMap.set(container.id, this.getGlobalStartTime.bind(this, container.id));
         }
     }
-/**
- * Returns the global time of an elemnet on the track
- * @param {int} elementId 
- * @returns {int} Global time in seconds
- */
+    /**
+     * Returns the global start time of an elemnet on the track
+     * @param {int} elementId 
+     * @returns {int} Global time in seconds
+     */
     getGlobalStartTime(elementId) {
         let globalTime = 0;
         for (let i = 0; i < this.elements.length; i++) {
@@ -101,10 +101,10 @@ export default class EditManager {
     }
 
 
-/**
- * Adds EventListener to the Element on the Track
- * @param {HTML} container The container to wich the events need to be added.
- */
+    /**
+     * Adds EventListener to the Element on the Track
+     * @param {HTMLElement} container The container to wich the events need to be added.
+     */
     addElementEvents(container) {
         this.addDragNDrop(container);
         this.addOptionsEvent(container);
@@ -139,11 +139,10 @@ export default class EditManager {
         }
         return this.elements.length;
     }
-/**
- * Adds an EventListener for removal
- * @param {*} item 
- * @param {Index} index Index of the Element that should be removed
- */
+    /**
+     * Adds an EventListener for removal
+     * @param {HTMLElement} item The item to which the event is mapped
+     */
     addRemoveEvent(item) {
         let close = item.querySelector(".close")
         if (!close) {
@@ -157,13 +156,13 @@ export default class EditManager {
             event.stopPropagation()
         })
     }
-/**
- * Adds the settings event to an track element
- * @param {HTML} item The item to which the event is mapped
- */
-    addOptionsEvent(item){
+    /**
+     * Adds the settings event to an track element
+     * @param {HTMLElement} item The item to which the event is mapped
+     */
+    addOptionsEvent(item) {
         let options = item.querySelector(".options");
-        if(!options && this.trackNode.id != "effecttrack") {
+        if (!options && this.trackNode.id != "effecttrack") {
             let close = item.querySelector(".close");
             options = document.createElement("div");
             options.className = "pointer options"
@@ -177,17 +176,17 @@ export default class EditManager {
             item.children[0].appendChild(close);
         }
 
-        if(options){
+        if (options) {
             options.addEventListener("click", (event) => {
-               SettingsManager.onSettingsClick(event, this.durationMap)
-               event.stopPropagation()
+                SettingsManager.onSettingsClick(event, this.durationMap)
+                event.stopPropagation()
             })
         }
     }
 
     /**
      * Removes an element from the track
-     * @param {HTML} item Item that needs to be removed
+     * @param {HTMLElement} item Item that needs to be removed
      */
     removeElement(item) {
         item.parentNode.removeChild(item);
@@ -197,7 +196,7 @@ export default class EditManager {
         this.durationMap.delete(item.id);
         this.startMap.delete(item.id);
         this.resizeElements();
-        if(SettingsManager.isSettingsOpen()){
+        if (SettingsManager.isSettingsOpen()) {
             SettingsManager.closeSettings();
         }
         this.trackNode.dispatchEvent(TrackChange);
@@ -216,7 +215,7 @@ export default class EditManager {
 
     /**
      * Adds Drag and Drop to the Track elements
-     * @param {Node} item Sets the Drag and Drop event for the Track Elements. This enabels
+     * @param {HTMLElement} item Sets the Drag and Drop event for the Track Elements. This enabels
      * the Position change on the Track. 
      */
     addDragNDrop(item) {
@@ -238,18 +237,18 @@ export default class EditManager {
 
     /**
      * Sets the playtime of an element when first loaded
-     * @param {HTML} element  
+     * @param {HTMLElement} element  
      * @param {int} id 
      */
     setItemDuration(element, id) {
-        this.durationMap.set(id,{duration: element.duration, startTime: 0.00, origDuration: element.duration})
+        this.durationMap.set(id, { duration: element.duration, startTime: 0.00, origDuration: element.duration })
         this.trackNode.dispatchEvent(TrackChange);
-    } 
+    }
 
     /**
      * Changes the position of two elements on the track
-     * @param {*} item1 
-     * @param {*} item2 
+     * @param {HTMLElement} item1 
+     * @param {HTMLElement} item2 
      */
     changePosition(item1, item2) {
         let indexTarget = this.elements.findIndex(element => element.id === item1.id);
@@ -286,24 +285,24 @@ export default class EditManager {
 
     /**
      * Changes StartTime or Duration of an Element
-     * @param {string} key 
-     * @param {*} timeObject Object containing startTime and duartion
+     * @param {String} key 
+     * @param {Object} timeObject Object containing startTime and duartion
      */
     changeTime(key, timeObject) {
-        this.durationMap.set(key,timeObject);
+        this.durationMap.set(key, timeObject);
         this.trackNode.dispatchEvent(TrackChange);
     }
 
     /**
      * Returns next Element in the Track if possible
-     * @returns {object} object containing fileKey, startTime and duration
+     * @returns {Object} object containing fileKey, startTime and duration
      */
     next(highlight = true) {
         return this.getElementByIndex(this.currentElement + 1, highlight)
     }
-/**
+    /**
      * Returns previous Element in the Track if possible
-     * @returns {object} object containing fileKey, startTime and duration
+     * @returns {Object} object containing fileKey, startTime and duration
      */
     previous(highlight = true) {
         return this.getElementByIndex(this.currentElement - 1, highlight)
@@ -312,10 +311,9 @@ export default class EditManager {
     /**
      * Returns Element according to Index in the Track if possible
      * @param {int} Index of the Element
-     * @returns {object} object containing fileKey, startTime and duration
+     * @returns {Object} object containing fileKey, startTime and duration
      */
     getElementByIndex(index, highlight = true) {
-        console.log(index);
         if (this.elements.length > index && index >= 0) {
             this.currentElement = index;
             if (highlight) {
@@ -323,17 +321,17 @@ export default class EditManager {
             }
             const duration = this.durationMap.get(this.elements[index].id);
             return {
-                fileKey: this.fileKeys[this.currentElement], 
+                fileKey: this.fileKeys[this.currentElement],
                 startTime: duration.startTime,
                 duration: duration.duration
             }
         }
         return null;
     }
-/**
+    /**
      * Returns Element according to given time in the Track if possible
-     * @param {int} Time in seconds
-     * @returns {object} object containing fileKey, startTime and duration
+     * @param {Number} time in seconds
+     * @returns {Object} object containing fileKey, startTime and duration
      */
     getElementByTime(time, highlight = true) {
         for (let i = 0; i < this.elements.length; i++) {
@@ -346,7 +344,7 @@ export default class EditManager {
                     this.highlight(this.currentElement)
                 }
                 return {
-                    fileKey: this.fileKeys[i], 
+                    fileKey: this.fileKeys[i],
                     startTime: duration.startTime,
                     duration: duration.duration,
                     time: time - startTime + duration.startTime,
@@ -355,10 +353,10 @@ export default class EditManager {
         }
         return null;
     }
-/**
- * Highlights an element
- * @param {*} index Index for the highlighted element
- */
+    /**
+     * Highlights an element
+     * @param {int} index Index for the highlighted element
+     */
     highlight(index) {
         const element = this.elements[index];
         if (this.elements.length > 1) {
@@ -375,10 +373,10 @@ export default class EditManager {
         element.style.backgroundColor = "#a0d840";
         element.style.color = "black"
     }
-/**
- * Dehighlights an element
- * @param {*} element Index for the dehighlighted element
- */
+    /**
+     * Dehighlights an element
+     * @param {HTMLElement} element Index for the dehighlighted element
+     */
     dehighlight(element) {
         let pictures = element.querySelectorAll(".fileListImage");
         pictures.forEach(pic => {
@@ -389,7 +387,7 @@ export default class EditManager {
     }
 }
 
-let TrackChange = new Event("trackChange", {bubbles: true});
+let TrackChange = new Event("trackChange", { bubbles: true });
 
 function swap(array, index1, index2) {
     const temp = array[index1];
