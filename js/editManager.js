@@ -34,7 +34,8 @@ export default class EditManager {
 
     /**
      * Adds Dragover and Drop Eventlistener to the track. When deopped over the Track
-     * the Element will be added to the Track
+     * the Element will be added to the Track.
+     * @param {object} The Controller that uses the element of the track
      */
     initializeTrack(controller) {
         this.controller = controller;
@@ -83,7 +84,11 @@ export default class EditManager {
             this.startMap.set(container.id, this.getGlobalStartTime.bind(this, container.id));
         }
     }
-
+/**
+ * Returns the global time of an elemnet on the track
+ * @param {int} elementId 
+ * @returns {int} Global time in seconds
+ */
     getGlobalStartTime(elementId) {
         let globalTime = 0;
         for (let i = 0; i < this.elements.length; i++) {
@@ -98,7 +103,7 @@ export default class EditManager {
 
 /**
  * Adds EventListener to the Element on the Track
- * @param {HTML} container 
+ * @param {HTML} container The container to wich the events need to be added.
  */
     addElementEvents(container) {
         this.addDragNDrop(container);
@@ -116,6 +121,7 @@ export default class EditManager {
      * Calculates the index at which the element is inserted based on the drop x-position.
      * 
      * @param {DragEvent} event the event from dropping a element on the track
+     * @returns {int} The index on which the element needs to be dropped
      */
     determineDropIndex(event) {
         let totalWidth = 0;
@@ -151,7 +157,10 @@ export default class EditManager {
             event.stopPropagation()
         })
     }
-
+/**
+ * Adds the settings event to an track element
+ * @param {HTML} item The item to which the event is mapped
+ */
     addOptionsEvent(item){
         let options = item.querySelector(".options");
         if(!options && this.trackNode.id != "effecttrack") {
@@ -178,6 +187,7 @@ export default class EditManager {
 
     /**
      * Removes an element from the track
+     * @param {HTML} item Item that needs to be removed
      */
     removeElement(item) {
         item.parentNode.removeChild(item);
@@ -345,7 +355,10 @@ export default class EditManager {
         }
         return null;
     }
-
+/**
+ * Highlights an element
+ * @param {*} index Index for the highlighted element
+ */
     highlight(index) {
         const element = this.elements[index];
         if (this.elements.length > 1) {
@@ -362,7 +375,10 @@ export default class EditManager {
         element.style.backgroundColor = "#a0d840";
         element.style.color = "black"
     }
-
+/**
+ * Dehighlights an element
+ * @param {*} element Index for the dehighlighted element
+ */
     dehighlight(element) {
         let pictures = element.querySelectorAll(".fileListImage");
         pictures.forEach(pic => {
